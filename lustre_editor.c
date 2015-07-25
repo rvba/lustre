@@ -546,8 +546,8 @@ void editor_keymap( int key)
 				switch(key)
 				{
 					case IKEY: MODE = EDITOR_INSERT;break;
-					case 43: SCALE += .1; break;
-					case 45: SCALE -= .1; break;
+					case 43: SCALE += .02; break;
+					case 45: SCALE -= .02; break;
 					default: keymap_command( key); break;
 				}
 			}
