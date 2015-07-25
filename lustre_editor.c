@@ -27,6 +27,7 @@
 t_file *LUA_FILE = NULL;
 int LUA_INIT = 0;
 static int EDITOR_DEBUG = 0;
+static float SCALE = .1;
 
 #define EDITOR_COMMAND 1
 #define EDITOR_INSERT 2
@@ -545,6 +546,8 @@ void editor_keymap( int key)
 				switch(key)
 				{
 					case IKEY: MODE = EDITOR_INSERT;break;
+					case 43: SCALE += .1; break;
+					case 45: SCALE -= .1; break;
 					default: keymap_command( key); break;
 				}
 			}
@@ -758,8 +761,7 @@ void editor_draw_start( t_context *C)
 
 	if( use_stroke)
 	{
-		float s = .1;
-		glScalef(s,s,s);
+		glScalef(SCALE,SCALE,SCALE);
 	}
 
 	glRasterPos2i(0,0);
