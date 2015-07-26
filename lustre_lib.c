@@ -12,6 +12,7 @@
 #include "lualib.h"
 
 #include "lustre_lib.h"
+#include "lustre.h"
 
 #include "node.h"
 #include "scene.h"
@@ -29,7 +30,6 @@ int LUA_EVERY_FRAME = 0;
 
 int mlua_time( lua_State *L)
 {
-	double t = clock_now_sec_precise();
 	lua_pushnumber( L, clock_now_sec_precise());
 	return 1;
 }
@@ -55,7 +55,6 @@ int lua_every_frame_call( lua_State *L)
 {
 	if( LUA_EVERY_FRAME)
 	{
-		t_context *C = ctx_get();
 		lua_getglobal( L, "every_frame_function");
 		if( lua_pcall( L, 0,0,0) != LUA_OK)
 		{

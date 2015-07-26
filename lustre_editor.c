@@ -39,9 +39,7 @@ static int cursor_y = 0;
 static int cursor_line = 0;
 
 static int editor_content_line_count;
-static int editor_char_height = 15;
 static int line_height = 20;
-static int editor_total_height;
 static int console_line_count = 3;
 static int margin_top = 50;
 
@@ -53,7 +51,6 @@ static int select_end_line;
 
 static void * font = GLUT_BITMAP_9_BY_15;
 static int warning = 0;
-static int lua_file_create = 0;
 
 static int use_stroke = 0;
 static void (* f_draw_letter) ( int letter) = NULL;
@@ -135,7 +132,6 @@ int editor_cursor_blink( void)
 {
 	double tt = clock_now_sec_precise();
 	tt *= 10;
-	int yes;
 	long int xxx = (long int) tt;
 	int ty = (int) xxx;
 	if( ty % 4 == 0)
@@ -406,7 +402,7 @@ int editor_cmd_exec( void)
 	}
 }
 
-static editor_cmd_new( void)
+static void editor_cmd_new( void)
 {
 	LUA_FILE = file_new("sketch.lua");
 	file_make( LUA_FILE);

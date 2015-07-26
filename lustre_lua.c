@@ -173,8 +173,6 @@ static void mn_lua_module_add( t_context *C)
 
 void mn_lua_load_script( const char *filepath)
 {
-	t_context *C = ctx_get();
-
 	if( filepath)
 	{
 		s_cp( LUA_SKETCH_PATH, filepath, 4096);
@@ -193,7 +191,6 @@ void mn_lua_load_script( const char *filepath)
 
 void mn_lua_exec_script( const char *filepath)
 {
-	t_context *C = ctx_get();
 	mn_lua_load_script( filepath);
 	LUA_OPEN = 1;
 	LUA_AUTO_EXEC = 1;
@@ -210,8 +207,7 @@ void mn_lua_conf( void)
 	}
 	else
 	{
-		int version = lua_tonumber( LUA_STATE, -1);
-		(float) version; 
+	//	int version = lua_tonumber( LUA_STATE, -1);
 	}
 }
 

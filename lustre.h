@@ -37,6 +37,10 @@ extern int LUA_EVERY_FRAME;
 void mn_lua_add_object( struct Object *obj);
 void mn_lua_free_object( struct Object *obj);
 
+void mn_lua_error( void);
+
+// lustre_editor
+
 struct MINscreen *screen_editor_make( struct Context *C);
 void editor_open( struct Context *C);
 extern int LUA_INIT;
@@ -44,6 +48,8 @@ extern struct File *LUA_FILE;
 
 void editor_keyboard( int key);
 void ed_init( struct Context *C);
+
+int editor_cmd_exec( void);
 
 
 #endif
