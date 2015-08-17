@@ -29,6 +29,7 @@
 #include "lustre.h"
 #include "stone.h"
 #include "stone_lua.h"
+#include "stdmath.h"
 
 lua_State *LUA_STATE = NULL;
 char LUA_SKETCH_PATH[4096];
@@ -340,6 +341,8 @@ int mn_lua_init( void)
 
 	// Register Stucco
 	lua_stone_register( LUA_STATE);
+	lua_mat4_register( LUA_STATE);
+	lua_stdmath_register( LUA_STATE);
 
 	STONE_DRAW_FUNCTION = lustre_draw;
 
