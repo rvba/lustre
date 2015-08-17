@@ -830,9 +830,12 @@ void screen_editor( t_screen *screen)
 
 	screen_switch_2d( screen);
 	editor_init( C);
+	glDisable(GL_POINT);
 
 	if( LUA_FILE)	editor_draw_file( C);
 	else		editor_draw_prompt( C);
+
+	glEnable(GL_POINT);
 }
 
 t_screen *screen_editor_make( t_context *C)
