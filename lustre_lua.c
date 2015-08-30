@@ -252,10 +252,9 @@ lua_State *mn_lua_get( void)
 	return LUA_STATE;
 }
 
-void lustre_draw( t_lua_stone *lua_stone)
+void lustre_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
-	//stone_show( stone);
 	t_stone *stone = lua_stone->stone;
 	stone_merge( stone, NULL);
 
@@ -344,7 +343,7 @@ int mn_lua_init( void)
 	lua_mat4_register( LUA_STATE);
 	lua_stdmath_register( LUA_STATE);
 
-	STONE_DRAW_FUNCTION = lustre_draw;
+	STONE_BUILD_FUNCTION = lustre_build;
 
 	editor_scan_args( C);
 
