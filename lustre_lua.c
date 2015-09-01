@@ -30,6 +30,7 @@
 #include "stone.h"
 #include "stone_lua.h"
 #include "stdmath.h"
+#include "stdmath_lua.h"
 
 lua_State *LUA_STATE = NULL;
 char LUA_SKETCH_PATH[4096];
