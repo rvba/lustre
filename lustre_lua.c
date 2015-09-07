@@ -261,16 +261,22 @@ void lustre_build( t_lua_stone *lua_stone)
 
 	scene_store(C->scene,1);
 	float *vertex = stone_get_vertex_buffer( stone);
-	int *faces = stone_get_face_buffer( stone);
+	int quad_count = stone_get_quad_count( stone);
+	int tri_count = stone_get_tri_count( stone);
+	int *quads = stone_get_quad_buffer( stone, quad_count);
+	int *tris = stone_get_tri_buffer( stone, tri_count);
 	int *edges = stone_get_edge_buffer( stone);
+
+	printf("face count %d\n", stone->face_count);
 
 	t_object *object = lua_stone->object = op_add_mesh_data( "stone", 
 			stone->vertex_count,
-			stone->face_count,
-			0,
+			quad_count,
+			tri_count,
 			vertex,
-			faces,
-			NULL);
+			quads,
+			tris
+			);
 
 	mn_lua_add_object( object);
 
@@ -284,7 +290,8 @@ void lustre_build( t_lua_stone *lua_stone)
 
 
 	free(vertex);
-	free(faces);
+	free(quads);
+	free(tris);
 
 	if( !stone_screen_init)
 	{
