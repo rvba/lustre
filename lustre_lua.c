@@ -218,17 +218,9 @@ void mn_lua_load_conf( void)
 	*/
 }
 
-// Get lua_State *L
-
-lua_State *mn_lua_get( void)
-{
-	return LU_LUA_STATE;
-}
-
-
 // Init Lua System
 
-void editor_scan_args( t_context *C)
+void lu_scan_args( t_context *C)
 {
 	const char *arg = app_get_arg( C->app, 1);
 
@@ -275,7 +267,7 @@ int lustre_init( void)
 
 	STONE_BUILD_FUNCTION = lustre_build;
 
-	editor_scan_args( C);
+	lu_scan_args( C);
 
 	return 1;
 }

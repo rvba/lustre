@@ -26,7 +26,6 @@ void mn_lua_exec_auto( void);
 
 int lustre_init( void);
 int mn_lua_load( const char *filename);
-struct lua_State *mn_lua_get( void);
 
 extern int LUA_EXEC;
 extern int LU_LOAD;
