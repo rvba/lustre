@@ -62,7 +62,7 @@ void mn_lua_remove_objects( t_context *C)
 }
 
 
-void lu_objects_delete( void)
+void lu_lib_objects_delete( void)
 {
 	t_context *C = ctx_get();
 
@@ -70,14 +70,7 @@ void lu_objects_delete( void)
 		mn_lua_remove_objects( C);
 }
 
-void mn_lua_free_object( struct Object *object)
-{
-	t_context *C = ctx_get();
-	lst_link_delete_by_id( objects, object->id.id);
-	scene_node_delete( C->scene, object->id.node);
-}
-
-static t_object *get_object( t_context *C, int id)
+static t_object *lu_lib_object_get( t_context *C, int id)
 {
 	t_lst *lst = scene_lst_get( C->scene, dt_object);
 	if( lst)
@@ -112,7 +105,7 @@ int lu_lib_mesh_set( lua_State *L)
 	lua_setglobal( L, "call");
 
 	t_context *C = ctx_get();
-	t_object *object = get_object( C, id);
+	t_object *object = lu_lib_object_get( C, id);
 	t_mesh *mesh = object->mesh;
 	t_vlst *vlst = mesh->vertex;
 	int count = vlst->count;

@@ -40,14 +40,14 @@ struct MINscreen *lu_editor_screen_init( struct Context *C);
 void lu_editor_open( struct Context *C);
 extern int LU_INIT;
 extern struct File *LU_FILE;
-void editor_keyboard( int key);
+void lu_editor_keymap( int key);
 int lu_editor_cmd_exec( void);
 
 // lustre_lib
 
 void lu_lib_init( struct lua_State *L);
 void lu_lib_object_build( struct Lua_Stone *lua_stone);
-void lu_objects_delete( void);
+void lu_lib_objects_delete( void);
 
 
 #endif

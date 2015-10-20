@@ -139,7 +139,7 @@ static void lu_lua_module( t_module *module)
 	if( LUA_EXEC)
 	{
 
-		lu_objects_delete();
+		lu_lib_objects_delete();
 
 		lu_lua_exec();
 		LUA_EXEC = 0;
