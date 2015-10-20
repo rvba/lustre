@@ -678,7 +678,7 @@ void lu_editor_draw_debug( t_context *C)
 	else if( LU_MODE == LU_EDITOR_SELECT) lu_editor_draw_line( "SELECT ", 0, 0);
 	else lu_editor_draw_line( "INSERT ", 0, 0);
 
-	if( LUA_DEBUG_STATE) lu_editor_draw_line( LUA_DEBUG, 0, 0);
+	if( LU_DEBUG_STATE) lu_editor_draw_line( LU_DEBUG_MSG, 0, 0);
 
 	glPopMatrix();
 }

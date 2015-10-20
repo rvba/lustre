@@ -41,8 +41,8 @@ t_file *lua_file = NULL;
 int USE_PANIC = 0;
 static int SHOW_DATA = 0;
 int LU_LOAD = 0;
-char LUA_DEBUG[4096];
-int LUA_DEBUG_STATE = 0;
+char LU_DEBUG_MSG[4096];
+int LU_DEBUG_STATE = 0;
 static int LUA_OPEN = 0;
 static int LUA_AUTO_EXEC = 0;
 static int LUA_AUTO_EXEC_FORCE = 0;
@@ -85,8 +85,8 @@ static int panic( lua_State *L)
 
 void mn_lua_error( void)
 {
-	sprintf( LUA_DEBUG, "%s\n", lua_tostring( LUA_STATE, -1));
-	LUA_DEBUG_STATE = 1;
+	sprintf( LU_DEBUG_MSG, "%s\n", lua_tostring( LUA_STATE, -1));
+	LU_DEBUG_STATE = 1;
 }
 
 // Lua exec script from editor
@@ -96,9 +96,9 @@ void mn_lua_exec( void)
 	if( SHOW_DATA) printf("%s", lua_file->data);
 	if( USE_PANIC) lua_atpanic( LUA_STATE, panic);
 
-	LUA_DEBUG_STATE = 0;
+	LU_DEBUG_STATE = 0;
 	LUA_EVERY_FRAME = 0;
-	bzero( LUA_DEBUG, 4096);
+	bzero( LU_DEBUG_MSG, 4096);
 
 	if( !setjmp(env))
 	{

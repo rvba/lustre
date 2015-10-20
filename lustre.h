@@ -30,8 +30,8 @@ struct lua_State *mn_lua_get( void);
 extern int LUA_EXEC;
 extern int LU_LOAD;
 extern struct File *lua_file;
-extern char LUA_DEBUG[4096];
-extern int LUA_DEBUG_STATE;
+extern char LU_DEBUG_MSG[4096];
+extern int LU_DEBUG_STATE;
 extern int LUA_EVERY_FRAME;
 
 void mn_lua_add_object( struct Object *obj);
