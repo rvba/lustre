@@ -30,7 +30,7 @@
 #include "stdmath.h"
 #include "stdmath_lua.h"
 
-lua_State *LUA_STATE = NULL;
+lua_State *LU_LUA_STATE = NULL;
 char LU_FILE_PATH[4096];
 int lua_file_open = 0;
 int LUA_EXEC = 0;
@@ -57,7 +57,7 @@ static int panic( lua_State *L)
 
 void mn_lua_error( void)
 {
-	sprintf( LU_DEBUG_MSG, "%s\n", lua_tostring( LUA_STATE, -1));
+	sprintf( LU_DEBUG_MSG, "%s\n", lua_tostring( LU_LUA_STATE, -1));
 	LU_DEBUG_STATE = 1;
 }
 
@@ -66,7 +66,7 @@ void mn_lua_error( void)
 void mn_lua_exec( void)
 {
 	if( SHOW_DATA) printf("%s", lua_file->data);
-	if( USE_PANIC) lua_atpanic( LUA_STATE, panic);
+	if( USE_PANIC) lua_atpanic( LU_LUA_STATE, panic);
 
 	LU_DEBUG_STATE = 0;
 	LUA_EVERY_FRAME = 0;
@@ -74,9 +74,9 @@ void mn_lua_exec( void)
 
 	if( !setjmp(env))
 	{
-		if( luaL_loadbuffer( LUA_STATE, lua_file->data, lua_file->data_size, "buf") == LUA_OK )
+		if( luaL_loadbuffer( LU_LUA_STATE, lua_file->data, lua_file->data_size, "buf") == LUA_OK )
 		{
-			if( !lua_pcall( LUA_STATE, 0, 0, 0))
+			if( !lua_pcall( LU_LUA_STATE, 0, 0, 0))
 			{
 			}
 			else
@@ -134,7 +134,7 @@ static void mn_lua_module( t_module *module)
 	}
 
 	// Call every_frame stored functions
-	lua_every_frame_call( LUA_STATE);
+	lua_every_frame_call( LU_LUA_STATE);
 }
 
 static void mn_lua_module_add( t_context *C)
@@ -174,14 +174,14 @@ void mn_lua_exec_script( const char *filepath)
 
 void mn_lua_conf( void)
 {
-	lua_getglobal( LUA_STATE, "version");
-	if( !lua_isnumber( LUA_STATE, -1))
+	lua_getglobal( LU_LUA_STATE, "version");
+	if( !lua_isnumber( LU_LUA_STATE, -1))
 	{
-		luaL_error( LUA_STATE, "version must be a number");
+		luaL_error( LU_LUA_STATE, "version must be a number");
 	}
 	else
 	{
-	//	int version = lua_tonumber( LUA_STATE, -1);
+	//	int version = lua_tonumber( LU_LUA_STATE, -1);
 	}
 }
 
@@ -192,21 +192,21 @@ void mn_lua_load_conf( void)
 	{
 		if( !setjmp(env))
 		{
-			if( !luaL_loadfile( LUA_STATE, filename))
+			if( !luaL_loadfile( LU_LUA_STATE, filename))
 			{
-			       	if( !lua_pcall( LUA_STATE, 0, 0, 0))
+			       	if( !lua_pcall( LU_LUA_STATE, 0, 0, 0))
 				{
 					// Exec configuration file
 					mn_lua_conf();
 				}
 				else
 				{
-					luaL_error( LUA_STATE, "[LUA] Exec Error: %s", lua_tostring( LUA_STATE, -1));
+					luaL_error( LU_LUA_STATE, "[LUA] Exec Error: %s", lua_tostring( LU_LUA_STATE, -1));
 				}
 			}
 			else
 			{
-				luaL_error( LUA_STATE, "[LUA] Load Error: %s", lua_tostring( LUA_STATE, -1));
+				luaL_error( LU_LUA_STATE, "[LUA] Load Error: %s", lua_tostring( LU_LUA_STATE, -1));
 			}
 		}
 
@@ -222,7 +222,7 @@ void mn_lua_load_conf( void)
 
 lua_State *mn_lua_get( void)
 {
-	return LUA_STATE;
+	return LU_LUA_STATE;
 }
 
 
@@ -251,10 +251,10 @@ int lustre_init( void)
 	t_context *C = ctx_get();
 
 	// New Lua state
-	LUA_STATE = luaL_newstate();
+	LU_LUA_STATE = luaL_newstate();
 
 	// Open Lua Std Libs
-	luaL_openlibs(LUA_STATE);
+	luaL_openlibs(LU_LUA_STATE);
 
 	// Init Editor Screen
 	lu_editor_screen_init( C);
@@ -263,15 +263,15 @@ int lustre_init( void)
 	mn_lua_load_conf();
 
 	// Add Mn Lua libs
-	lua_minuit_init( LUA_STATE);
+	lua_minuit_init( LU_LUA_STATE);
 
 	// Add Lua module
 	mn_lua_module_add( C);
 
 	// Register Stucco
-	lua_stone_register( LUA_STATE);
-	lua_mat4_register( LUA_STATE);
-	lua_stdmath_register( LUA_STATE);
+	lua_stone_register( LU_LUA_STATE);
+	lua_mat4_register( LU_LUA_STATE);
+	lua_stdmath_register( LU_LUA_STATE);
 
 	STONE_BUILD_FUNCTION = lustre_build;
 
