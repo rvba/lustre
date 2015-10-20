@@ -49,8 +49,12 @@ void lu_lib_object_add( struct Object *obj)
 	lst_add( objects, obj, "obj");
 }
 
-void mn_lua_remove_objects( t_context *C)
+void lu_lib_objects_delete( void)
 {
+	t_context *C = ctx_get();
+
+	if( !objects) objects = lst_new("objects");
+
 	t_link *l;
 	for( l = objects->first; l; l = l->next)
 	{
@@ -59,15 +63,6 @@ void mn_lua_remove_objects( t_context *C)
 	}
 
 	lst_cleanup( objects);
-}
-
-
-void lu_lib_objects_delete( void)
-{
-	t_context *C = ctx_get();
-
-		if( !objects) objects = lst_new("objects");
-		mn_lua_remove_objects( C);
 }
 
 static t_object *lu_lib_object_get( t_context *C, int id)
