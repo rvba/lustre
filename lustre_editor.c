@@ -367,7 +367,7 @@ void lu_editor_open( struct Context *C)
 	*/
 }
 
-static void editor_close( t_context *C)
+static void lu_editor_close( t_context *C)
 {
 	t_node *screen_node_editor=scene_get_node_by_type_name( C->scene, dt_screen, "screen_editor");
 	t_screen *screen_editor=screen_node_editor->data;
@@ -431,7 +431,7 @@ static void op_editor_file_open(void)
 static void *editor_file_open( void)
 {
 	t_context *C = ctx_get();
-	editor_close( C);
+	lu_editor_close( C);
 	browser_enter( C, op_editor_file_open);
 	return NULL;
 }
@@ -459,7 +459,7 @@ void lu_editor_keymap( int key)
 				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
 				case 1: lu_lua_exec_auto(); break;	// A
 
-				case TABKEY: editor_close( C); break;
+				case TABKEY: lu_editor_close( C); break;
 
 				case UP_KEY: 
 				case DOWN_KEY:
@@ -556,7 +556,7 @@ void lu_editor_keymap( int key)
 			{
 				case 14: editor_cmd_new(); break;	// N
 				case 15: editor_file_open(); break;	// O
-				case TABKEY: editor_close( C); break;
+				case TABKEY: lu_editor_close( C); break;
 			}
 
 		}
@@ -565,7 +565,7 @@ void lu_editor_keymap( int key)
 			switch( key)
 			{
 				case ESCKEY: break;
-				case TABKEY: editor_close( C); break;
+				case TABKEY: lu_editor_close( C); break;
 			}
 		}
 	}
