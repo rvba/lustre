@@ -127,7 +127,7 @@ void key_debug( t_context *C, int key)
 
 // Cursor
 
-int editor_cursor_blink( void)
+int lu_editor_cursor_blink( void)
 {
 	double tt = clock_now_sec_precise();
 	tt *= 10;
@@ -609,8 +609,8 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	{
 		int c = ( int) *letter;
 
-		// editor_cursor_blink
-		if( blink && lu_cursor_x == x && lu_cursor_y == y && editor_cursor_blink())
+		// lu_editor_cursor_blink
+		if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 		{
 			if( c == 9 )
 			{
@@ -644,7 +644,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	}
 	
 	// end of line
-	if( blink && lu_cursor_x == x && lu_cursor_y == y && editor_cursor_blink())
+	if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 	{
 		lu_func_draw_letter( b);
 	}
@@ -653,7 +653,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 
 void lu_editor_draw_line_empty( int lx, int ly)
 {
-	if( lu_cursor_y == ly && editor_cursor_blink())
+	if( lu_cursor_y == ly && lu_editor_cursor_blink())
 	{
 		if( use_stroke)
 		{
