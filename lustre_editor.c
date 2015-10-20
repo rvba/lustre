@@ -683,7 +683,7 @@ void screen_editor_draw_debug( t_context *C)
 	glPopMatrix();
 }
 
-void screen_editor_file_open( void)
+void lu_editor_file_open( void)
 {
 	LUA_FILE = file_new(LUA_SKETCH_PATH);
 
@@ -729,7 +729,7 @@ void editor_draw_color( int lx, int ly)
 	}
 }
 
-void editor_init( t_context *C)
+void lu_editor_init( t_context *C)
 {
 
 	glColor3f(1,1,1);
@@ -825,10 +825,10 @@ void lu_editor_screen( t_screen *screen)
 {
 	t_context *C = ctx_get();
 
-	if( !LUA_INIT && LUA_LOAD)  screen_editor_file_open();
+	if( !LUA_INIT && LUA_LOAD)  lu_editor_file_open();
 
 	screen_switch_2d( screen);
-	editor_init( C);
+	lu_editor_init( C);
 	glDisable(GL_POINT);
 
 	if( LUA_FILE)	lu_editor_draw_file( C);
