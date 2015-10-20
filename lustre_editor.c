@@ -37,7 +37,7 @@ static int cursor_x = 0;
 static int cursor_y = 0;
 static int cursor_line = 0;
 
-static int editor_content_line_count;
+static int lu_editor_line_count;
 static int line_height = 20;
 static int console_line_count = 3;
 static int margin_top = 50;
@@ -180,7 +180,7 @@ static void editor_cursor( int dir)
 		case DOWN_KEY:
 			if( cursor_y < line_count - 1) cursor_y++;
 			editor_action_cursor_jump_line( dir);
-			if( cursor_y > cursor_line + editor_content_line_count) cursor_line++;
+			if( cursor_y > cursor_line + lu_editor_line_count) cursor_line++;
 		break;
 
 		case RIGHT_KEY:
@@ -668,7 +668,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 
 void lu_editor_draw_debug( t_context *C)
 {
-	int pos = ((editor_content_line_count + 1)  * line_height);
+	int pos = ((lu_editor_line_count + 1)  * line_height);
 	glPushMatrix();
 	glTranslatef( 0, -pos, 0);
 	glRasterPos2i(0,0);
@@ -736,7 +736,7 @@ void lu_editor_init( t_context *C)
 
 	int wh = C->app->window->height;
 	int h = 20;
-	editor_content_line_count = (( wh - margin_top) / h) - console_line_count;
+	lu_editor_line_count = (( wh - margin_top) / h) - console_line_count;
 
 	if(use_stroke)
 	{
@@ -774,7 +774,7 @@ void lu_editor_draw_file( t_context *C)
 
 	for( l = LUA_FILE->lines->first; l; l = l->next)
 	{
-		if( ly >= cursor_line && ly < cursor_line + editor_content_line_count)
+		if( ly >= cursor_line && ly < cursor_line + lu_editor_line_count)
 		{
 			t_line *line = ( t_line *) l->data;
 
@@ -782,6 +782,7 @@ void lu_editor_draw_file( t_context *C)
 
 			lu_editor_draw_line_number( ly + 1);
 			lu_editor_draw_line_color( lx, ly);
+
 			if( *line->data	)	lu_editor_draw_line( line->data, ly, 1);
 			else			lu_editor_draw_line_empty( lx, ly);
 
