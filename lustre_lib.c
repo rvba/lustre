@@ -25,16 +25,11 @@
 #include "op.h"
 
 #include "stone.h"
-
 #include "stone_lua.h"
 
-#define L_MINUIT "L_MINUIT"
-
 static t_lst *lu_lib_objects = NULL;
-int stone_screen_init = 0;
-
-lua_CFunction LUA_FRAME = NULL;
-int LUA_EVERY_FRAME = 0;
+static int lu_lib_screen_init = 0;
+int LU_EVERY_FRAME = 0;
 
 int lu_lib_time( lua_State *L)
 {
@@ -87,7 +82,7 @@ int lu_lib_every_frame( lua_State *L)
 	luaL_checktype( L, 1, LUA_TFUNCTION);
 	lua_tocfunction( L, 1);
 	lua_setglobal( L, "every_frame_function");
-	LUA_EVERY_FRAME = 1; 
+	LU_EVERY_FRAME = 1; 
 	return 1;
 }
 
@@ -181,11 +176,11 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	free(quads);
 	free(tris);
 
-	if( !stone_screen_init)
+	if( !lu_lib_screen_init)
 	{
 		op_add_screen( NULL);
 		op_add_light(NULL);
-		stone_screen_init = 1;
+		lu_lib_screen_init = 1;
 	}
 
 	scene_store(C->scene,0);

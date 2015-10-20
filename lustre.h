@@ -25,7 +25,7 @@ extern int LUA_EXEC;
 extern int LU_LOAD;
 extern char LU_DEBUG_MSG[4096];
 extern int LU_DEBUG_STATE;
-extern int LUA_EVERY_FRAME;
+extern int LU_EVERY_FRAME;
 extern struct File *lua_file;
 
 void lu_lua_exec_auto( void);

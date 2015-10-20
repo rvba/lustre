@@ -67,7 +67,7 @@ void lu_lua_exec( void)
 	if( LU_LUA_USE_PANIC) lua_atpanic( LU_LUA_STATE, lu_lua_panic);
 
 	LU_DEBUG_STATE = 0;
-	LUA_EVERY_FRAME = 0;
+	LU_EVERY_FRAME = 0;
 	bzero( LU_DEBUG_MSG, 4096);
 
 	if( !setjmp(lu_lua_env))
@@ -103,7 +103,7 @@ void lu_lua_exec_auto( void)
 
 int lua_every_frame_call( lua_State *L)
 {
-	if( LUA_EVERY_FRAME)
+	if( LU_EVERY_FRAME)
 	{
 		lua_getglobal( L, "every_frame_function");
 		if( lua_pcall( L, 0,0,0) != LUA_OK)
