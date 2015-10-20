@@ -42,10 +42,10 @@ static int lu_line_height = 20;
 static int lu_console_line_count = 3;
 static int lu_editor_margin_top = 50;
 
-static int select_init;
-static int select_start_point;
-static int select_start_line;
-static int select_end_line;
+static int lu_select_init;
+static int lu_select_start_point;
+static int lu_select_start_line;
+static int lu_select_end_line;
 
 static void * font = GLUT_BITMAP_9_BY_15;
 static int warning = 0;
@@ -324,20 +324,20 @@ static void editor_action_split( void)
 	}
 }
 
-static void editor_select_delete( void)
+static void lu_editor_select_delete( void)
 {
 	int i;
-	for( i = select_end_line; i >= select_start_line; i-- )
+	for( i = lu_select_end_line; i >= lu_select_start_line; i-- )
 	{
 		if( LU_FILE->tot_line > 0)
 		{
-			line_remove( LU_FILE, select_start_line);
+			line_remove( LU_FILE, lu_select_start_line);
 			lu_cursor_y--;
 		}
 	}
 
 	lu_cursor_y++;
-	select_init = 0;
+	lu_select_init = 0;
 	LU_MODE = LU_EDITOR_COMMAND;
 }
 
@@ -491,33 +491,33 @@ void lu_editor_keymap( int key)
 			if( LU_MODE == LU_EDITOR_SELECT)
 			{
 				// Init selection point
-				if( !select_init)
+				if( !lu_select_init)
 				{
-					select_init = 1;
-					select_start_point = lu_cursor_y;
-					select_start_line = lu_cursor_y;
-					select_end_line = lu_cursor_y;
+					lu_select_init = 1;
+					lu_select_start_point = lu_cursor_y;
+					lu_select_start_line = lu_cursor_y;
+					lu_select_end_line = lu_cursor_y;
 				}
 				else
 				{
 					// Check if cursor > start point
-					if( lu_cursor_y >= select_start_point)
+					if( lu_cursor_y >= lu_select_start_point)
 					{
-						select_start_line = select_start_point;
-						select_end_line = lu_cursor_y;
+						lu_select_start_line = lu_select_start_point;
+						lu_select_end_line = lu_cursor_y;
 					}
 					// or < start point
 					else
 					{
-						select_start_line = lu_cursor_y;
-						select_end_line = select_start_point;
+						lu_select_start_line = lu_cursor_y;
+						lu_select_end_line = lu_select_start_point;
 					}
 				}
 
 				switch(key)
 				{
-					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND; select_init = 0;break;
-					case DELKEY: editor_select_delete(); break;
+					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND; lu_select_init = 0;break;
+					case DELKEY: lu_editor_select_delete(); break;
 				}
 			}
 
@@ -713,7 +713,7 @@ void lu_editor_draw_line_color( int lx, int ly)
 {
 	if( LU_MODE == LU_EDITOR_SELECT)
 	{
-		if(ly < select_end_line && ly >= select_start_line -1)
+		if(ly < lu_select_end_line && ly >= lu_select_start_line -1)
 		{
 			glColor3f(1,0,0);
 		}
