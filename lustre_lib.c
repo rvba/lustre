@@ -21,8 +21,17 @@
 #include "base.h"
 #include "mesh.h"
 #include "vlst.h"
+#include "object.h"
+#include "op.h"
+
+#include "stone.h"
+
+#include "stone_lua.h"
 
 #define L_MINUIT "L_MINUIT"
+
+static t_lst *objects = NULL;
+int stone_screen_init = 0;
 
 lua_CFunction LUA_FRAME = NULL;
 int LUA_EVERY_FRAME = 0;
@@ -31,6 +40,42 @@ int mlua_time( lua_State *L)
 {
 	lua_pushnumber( L, clock_now_sec_precise());
 	return 1;
+}
+
+// Add and removes Mesh Objects
+//
+
+void mn_lua_add_object( struct Object *obj)
+{
+	lst_add( objects, obj, "obj");
+}
+
+void mn_lua_remove_objects( t_context *C)
+{
+	t_link *l;
+	for( l = objects->first; l; l = l->next)
+	{
+		t_object *object = ( t_object *) l->data;
+		scene_node_delete( C->scene, object->id.node);
+	}
+
+	lst_cleanup( objects);
+}
+
+
+void lu_objects_delete( void)
+{
+	t_context *C = ctx_get();
+
+		if( !objects) objects = lst_new("objects");
+		mn_lua_remove_objects( C);
+}
+
+void mn_lua_free_object( struct Object *object)
+{
+	t_context *C = ctx_get();
+	lst_link_delete_by_id( objects, object->id.id);
+	scene_node_delete( C->scene, object->id.node);
 }
 
 static t_object *get_object( t_context *C, int id)
@@ -135,6 +180,57 @@ int lua_get_object( lua_State *L)
 	}
 	return 0;
 }
+
+void lustre_build( t_lua_stone *lua_stone)
+{
+	t_context *C = ctx_get();
+	t_stone *stone = lua_stone->stone;
+	stone_merge( stone, NULL);
+
+	scene_store(C->scene,1);
+	float *vertex = stone_get_vertex_buffer( stone);
+	int quad_count = stone_get_quad_count( stone);
+	int tri_count = stone_get_tri_count( stone);
+	int *quads = stone_get_quad_buffer( stone, quad_count);
+	int *tris = stone_get_tri_buffer( stone, tri_count);
+	int *edges = stone_get_edge_buffer( stone);
+
+	printf("face count %d\n", stone->face_count);
+
+	t_object *object = lua_stone->object = op_add_mesh_data( "stone", 
+			stone->vertex_count,
+			quad_count,
+			tri_count,
+			vertex,
+			quads,
+			tris
+			);
+
+	mn_lua_add_object( object);
+
+	if( edges)
+	{
+		int edge_count = stone->edge_count;
+		t_mesh *mesh = object->mesh;
+		mesh->edges = vlst_make( "edges", dt_uint, 2, edge_count, edges);
+		mesh->state.with_line =1;
+	}
+
+
+	free(vertex);
+	free(quads);
+	free(tris);
+
+	if( !stone_screen_init)
+	{
+		op_add_screen( NULL);
+		op_add_light(NULL);
+		stone_screen_init = 1;
+	}
+
+	scene_store(C->scene,0);
+
+}	
 
 void mlua_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 {
