@@ -584,7 +584,7 @@ static void draw_letter_vector( int letter)
 	glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, letter);
 }
 
-void screen_editor_draw_number( int y)
+void lu_editor_draw_line_number( int y)
 {
 	char pos[6]; 
 	sprintf(pos, "%d   ", y);
@@ -666,7 +666,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 	}
 }
 
-void screen_editor_draw_debug( t_context *C)
+void lu_editor_draw_debug( t_context *C)
 {
 	int pos = ((editor_content_line_count + 1)  * line_height);
 	glPushMatrix();
@@ -710,7 +710,7 @@ void lu_editor_file_open( void)
 	}
 }
 
-void editor_draw_color( int lx, int ly)
+void lu_editor_draw_line_color( int lx, int ly)
 {
 	if( MODE == EDITOR_SELECT)
 	{
@@ -780,8 +780,8 @@ void lu_editor_draw_file( t_context *C)
 
 			glPushMatrix();
 
-			screen_editor_draw_number( ly + 1);
-			editor_draw_color( lx, ly);
+			lu_editor_draw_line_number( ly + 1);
+			lu_editor_draw_line_color( lx, ly);
 			if( *line->data	)	lu_editor_draw_line( line->data, ly, 1);
 			else			lu_editor_draw_line_empty( lx, ly);
 
@@ -805,7 +805,7 @@ void lu_editor_draw_file( t_context *C)
 	}
 
 
-	screen_editor_draw_debug( C);
+	lu_editor_draw_debug( C);
 
 	glPopMatrix();
 }
