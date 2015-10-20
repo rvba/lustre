@@ -23,14 +23,14 @@
 #include "scene.h"
 #include "lustre.h"
 
+#define LU_EDITOR_COMMAND 1
+#define LU_EDITOR_INSERT 2
+#define LU_EDITOR_SELECT 3
+
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
 static float SCALE = .1;
-
-#define LU_EDITOR_COMMAND 1
-#define LU_EDITOR_INSERT 2
-#define LU_EDITOR_SELECT 3
 
 static int LU_MODE = LU_EDITOR_COMMAND;
 static int lu_cursor_x = 0;
