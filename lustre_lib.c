@@ -30,7 +30,7 @@
 
 #define L_MINUIT "L_MINUIT"
 
-static t_lst *objects = NULL;
+static t_lst *lu_lib_objects = NULL;
 int stone_screen_init = 0;
 
 lua_CFunction LUA_FRAME = NULL;
@@ -46,23 +46,23 @@ int lu_lib_time( lua_State *L)
 
 void lu_lib_object_add( struct Object *obj)
 {
-	lst_add( objects, obj, "obj");
+	lst_add( lu_lib_objects, obj, "obj");
 }
 
 void lu_lib_objects_delete( void)
 {
 	t_context *C = ctx_get();
 
-	if( !objects) objects = lst_new("objects");
+	if( !lu_lib_objects) lu_lib_objects = lst_new("objects");
 
 	t_link *l;
-	for( l = objects->first; l; l = l->next)
+	for( l = lu_lib_objects->first; l; l = l->next)
 	{
 		t_object *object = ( t_object *) l->data;
 		scene_node_delete( C->scene, object->id.node);
 	}
 
-	lst_cleanup( objects);
+	lst_cleanup( lu_lib_objects);
 }
 
 static t_object *lu_lib_object_get( t_context *C, int id)
