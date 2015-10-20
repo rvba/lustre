@@ -597,7 +597,7 @@ void screen_editor_draw_number( int y)
 
 }
 
-void editor_draw_line( char *string, int y, int blink)
+void lu_editor_draw_line( char *string, int y, int blink)
 {
 	int x=0;
 	char *letter;
@@ -651,7 +651,7 @@ void editor_draw_line( char *string, int y, int blink)
 
 }
 
-void editor_draw_line_empty( int lx, int ly)
+void lu_editor_draw_line_empty( int lx, int ly)
 {
 	if( cursor_y == ly && editor_cursor_blink())
 	{
@@ -674,11 +674,11 @@ void screen_editor_draw_debug( t_context *C)
 	glRasterPos2i(0,0);
 
 
-	if( MODE == EDITOR_COMMAND) editor_draw_line( "COMMAND ", 0, 0);
-	else if( MODE == EDITOR_SELECT) editor_draw_line( "SELECT ", 0, 0);
-	else editor_draw_line( "INSERT ", 0, 0);
+	if( MODE == EDITOR_COMMAND) lu_editor_draw_line( "COMMAND ", 0, 0);
+	else if( MODE == EDITOR_SELECT) lu_editor_draw_line( "SELECT ", 0, 0);
+	else lu_editor_draw_line( "INSERT ", 0, 0);
 
-	if( LUA_DEBUG_STATE) editor_draw_line( LUA_DEBUG, 0, 0);
+	if( LUA_DEBUG_STATE) lu_editor_draw_line( LUA_DEBUG, 0, 0);
 
 	glPopMatrix();
 }
@@ -748,7 +748,7 @@ void editor_init( t_context *C)
 	}	
 }
 
-void editor_draw_start( t_context *C)
+void lu_editor_draw_start( t_context *C)
 {
 	glPushMatrix();
 	glLoadIdentity();
@@ -770,7 +770,7 @@ void lu_editor_draw_file( t_context *C)
 	int ly = 0;
 	t_link *l;
 
-	editor_draw_start( C);
+	lu_editor_draw_start( C);
 
 	for( l = LUA_FILE->lines->first; l; l = l->next)
 	{
@@ -782,8 +782,8 @@ void lu_editor_draw_file( t_context *C)
 
 			screen_editor_draw_number( ly + 1);
 			editor_draw_color( lx, ly);
-			if( *line->data	)	editor_draw_line( line->data, ly, 1);
-			else			editor_draw_line_empty( lx, ly);
+			if( *line->data	)	lu_editor_draw_line( line->data, ly, 1);
+			else			lu_editor_draw_line_empty( lx, ly);
 
 			glPopMatrix();
 
@@ -812,10 +812,10 @@ void lu_editor_draw_file( t_context *C)
 
 void lu_editor_draw_prompt( t_context *C)
 {
-	editor_draw_start( C);
+	lu_editor_draw_start( C);
 	glPushMatrix();
 	char msg[] = ">";
-	editor_draw_line( msg, 0, 1);
+	lu_editor_draw_line( msg, 0, 1);
 	cursor_x = strlen( msg);
 	glPopMatrix();
 	glPopMatrix();
