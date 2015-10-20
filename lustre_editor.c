@@ -52,7 +52,7 @@ static void * font = GLUT_BITMAP_9_BY_15;
 static int warning = 0;
 
 static int use_stroke = 0;
-static void (* f_draw_letter) ( int letter) = NULL;
+static void (* lu_func_draw_letter) ( int letter) = NULL;
 static void draw_letter_bitmap( int letter);
 static void draw_letter_vector( int letter);
 
@@ -590,10 +590,10 @@ void lu_editor_draw_line_number( int y)
 	sprintf(pos, "%d   ", y);
 	glColor3f(.5,.5,.5);
 
-	f_draw_letter( pos[0]);
-	f_draw_letter( pos[1]);
-	f_draw_letter( pos[2]);
-	f_draw_letter( pos[3]);
+	lu_func_draw_letter( pos[0]);
+	lu_func_draw_letter( pos[1]);
+	lu_func_draw_letter( pos[2]);
+	lu_func_draw_letter( pos[3]);
 
 }
 
@@ -614,30 +614,30 @@ void lu_editor_draw_line( char *string, int y, int blink)
 		{
 			if( c == 9 )
 			{
-				f_draw_letter( b);
-				f_draw_letter( b);
-				f_draw_letter( b);
-				f_draw_letter( b);
+				lu_func_draw_letter( b);
+				lu_func_draw_letter( b);
+				lu_func_draw_letter( b);
+				lu_func_draw_letter( b);
 
 			}
 			else
 			{
 				if( use_stroke) glColor3f(.5,.5,.5);
-				f_draw_letter( b);
+				lu_func_draw_letter( b);
 				if( use_stroke) glColor3f(1,1,1);
 			}
 		}
 		// tab
 		else if( c == 9)
 		{
-			f_draw_letter( 32);
-			f_draw_letter( 32);
-			f_draw_letter( 32);
-			f_draw_letter( 32);
+			lu_func_draw_letter( 32);
+			lu_func_draw_letter( 32);
+			lu_func_draw_letter( 32);
+			lu_func_draw_letter( 32);
 		}
 		else
 		{
-			f_draw_letter( c);
+			lu_func_draw_letter( c);
 		}
 
 		x += 1;
@@ -646,7 +646,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	// end of line
 	if( blink && cursor_x == x && cursor_y == y && editor_cursor_blink())
 	{
-		f_draw_letter( b);
+		lu_func_draw_letter( b);
 	}
 
 }
@@ -740,11 +740,11 @@ void lu_editor_init( t_context *C)
 
 	if(use_stroke)
 	{
-		f_draw_letter = draw_letter_vector;
+		lu_func_draw_letter = draw_letter_vector;
 	}
 	else
 	{
-		f_draw_letter = draw_letter_bitmap;
+		lu_func_draw_letter = draw_letter_bitmap;
 	}	
 }
 
