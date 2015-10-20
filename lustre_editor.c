@@ -25,14 +25,14 @@
 
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
-static int EDITOR_DEBUG = 0;
+static int LU_EDITOR_DEBUG = 0;
 static float SCALE = .1;
 
-#define EDITOR_COMMAND 1
-#define EDITOR_INSERT 2
-#define EDITOR_SELECT 3
+#define LU_EDITOR_COMMAND 1
+#define LU_EDITOR_INSERT 2
+#define LU_EDITOR_SELECT 3
 
-static int MODE = EDITOR_COMMAND;
+static int LU_MODE = LU_EDITOR_COMMAND;
 static int cursor_x = 0;
 static int cursor_y = 0;
 static int cursor_line = 0;
@@ -192,7 +192,7 @@ static void editor_cursor( int dir)
 		break;
 	}
 
-	if( EDITOR_DEBUG) cursor_show();
+	if( LU_EDITOR_DEBUG) cursor_show();
 
 }
 
@@ -339,7 +339,7 @@ static void editor_select_delete( void)
 
 	cursor_y++;
 	select_init = 0;
-	MODE = EDITOR_COMMAND;
+	LU_MODE = LU_EDITOR_COMMAND;
 }
 
 // Commands
@@ -443,7 +443,7 @@ void lu_editor_keymap( int key)
 {
 	t_context *C = ctx_get();
 
-	if( EDITOR_DEBUG) key_debug( C, key);
+	if( LU_EDITOR_DEBUG) key_debug( C, key);
 
 	if( LU_FILE)
 	{
@@ -457,7 +457,7 @@ void lu_editor_keymap( int key)
 				case 5: editor_cmd_exec(); break;	// E
 				case 15: editor_file_open(); break;	// O
 				case 20: use_stroke = !use_stroke; break;	// T
-				case 2: EDITOR_DEBUG = !EDITOR_DEBUG; break; //B
+				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
 				case 1: mn_lua_exec_auto(); break;	// A
 
 				case TABKEY: editor_close( C); break;
@@ -485,11 +485,11 @@ void lu_editor_keymap( int key)
 					editor_cursor( key);
 				break;
 
-				case UP_VKEY: MODE = EDITOR_SELECT; break;
+				case UP_VKEY: LU_MODE = LU_EDITOR_SELECT; break;
 			}
 
-			// SELECT MODE
-			if( MODE == EDITOR_SELECT)
+			// SELECT LU_MODE
+			if( LU_MODE == LU_EDITOR_SELECT)
 			{
 				// Init selection point
 				if( !select_init)
@@ -517,30 +517,30 @@ void lu_editor_keymap( int key)
 
 				switch(key)
 				{
-					case ESCKEY: MODE = EDITOR_COMMAND; select_init = 0;break;
+					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND; select_init = 0;break;
 					case DELKEY: editor_select_delete(); break;
 				}
 			}
 
-			// INSERT MODE
-			else if( MODE == EDITOR_INSERT)
+			// INSERT LU_MODE
+			else if( LU_MODE == LU_EDITOR_INSERT)
 			{
 				switch(key)
 				{
 					case DELKEY: editor_action_delete(1); break; //SUPPR
 					case BACKSPACEKEY: editor_action_delete( 0); break;
 					case RETURNKEY: editor_action_split(); break;
-					case ESCKEY: MODE = EDITOR_COMMAND;break;
+					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND;break;
 					default: editor_action_edit( key); break;
 				}
 			}
 
-			// COMMAND MODE
+			// COMMAND LU_MODE
 			else
 			{
 				switch(key)
 				{
-					case IKEY: MODE = EDITOR_INSERT;break;
+					case IKEY: LU_MODE = LU_EDITOR_INSERT;break;
 					case 43: SCALE += .02; break;
 					case 45: SCALE -= .02; break;
 					default: keymap_command( key); break;
@@ -674,8 +674,8 @@ void lu_editor_draw_debug( t_context *C)
 	glRasterPos2i(0,0);
 
 
-	if( MODE == EDITOR_COMMAND) lu_editor_draw_line( "COMMAND ", 0, 0);
-	else if( MODE == EDITOR_SELECT) lu_editor_draw_line( "SELECT ", 0, 0);
+	if( LU_MODE == LU_EDITOR_COMMAND) lu_editor_draw_line( "COMMAND ", 0, 0);
+	else if( LU_MODE == LU_EDITOR_SELECT) lu_editor_draw_line( "SELECT ", 0, 0);
 	else lu_editor_draw_line( "INSERT ", 0, 0);
 
 	if( LUA_DEBUG_STATE) lu_editor_draw_line( LUA_DEBUG, 0, 0);
@@ -712,7 +712,7 @@ void lu_editor_file_open( void)
 
 void lu_editor_draw_line_color( int lx, int ly)
 {
-	if( MODE == EDITOR_SELECT)
+	if( LU_MODE == LU_EDITOR_SELECT)
 	{
 		if(ly < select_end_line && ly >= select_start_line -1)
 		{
