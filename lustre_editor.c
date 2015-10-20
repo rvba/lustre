@@ -24,7 +24,7 @@
 #include "lustre.h"
 
 t_file *LU_FILE = NULL;
-int LUA_INIT = 0;
+int LU_INIT = 0;
 static int EDITOR_DEBUG = 0;
 static float SCALE = .1;
 
@@ -406,7 +406,7 @@ static void editor_cmd_new( void)
 	LU_FILE = file_new("sketch.lua");
 	file_make( LU_FILE);
 	file_line_add( LU_FILE, 0, "");
-	LUA_INIT = 1;
+	LU_INIT = 1;
 	cursor_x = 0;
 }
 
@@ -694,7 +694,7 @@ void lu_editor_file_open( void)
 			printf("opening %s\n", LUA_SKETCH_PATH);
 			file_read( LU_FILE);
 			file_read_lines(LU_FILE);
-			LUA_INIT = 1;
+			LU_INIT = 1;
 			file_close( LU_FILE);
 		}
 	}
@@ -826,7 +826,7 @@ void lu_editor_screen( t_screen *screen)
 {
 	t_context *C = ctx_get();
 
-	if( !LUA_INIT && LUA_LOAD)  lu_editor_file_open();
+	if( !LU_INIT && LU_LOAD)  lu_editor_file_open();
 
 	screen_switch_2d( screen);
 	lu_editor_init( C);

@@ -40,7 +40,7 @@ static jmp_buf env;
 t_file *lua_file = NULL;
 int USE_PANIC = 0;
 static int SHOW_DATA = 0;
-int LUA_LOAD = 0;
+int LU_LOAD = 0;
 char LUA_DEBUG[4096];
 int LUA_DEBUG_STATE = 0;
 static int LUA_OPEN = 0;
@@ -177,8 +177,8 @@ void mn_lua_load_script( const char *filepath)
 	if( filepath)
 	{
 		s_cp( LUA_SKETCH_PATH, filepath, 4096);
-		LUA_LOAD = 1;
-		LUA_INIT = 0;
+		LU_LOAD = 1;
+		LU_INIT = 0;
 		if(LU_FILE)
 		{
 			file_close(LU_FILE);

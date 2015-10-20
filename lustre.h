@@ -28,7 +28,7 @@ int mn_lua_load( const char *filename);
 struct lua_State *mn_lua_get( void);
 
 extern int LUA_EXEC;
-extern int LUA_LOAD;
+extern int LU_LOAD;
 extern struct File *lua_file;
 extern char LUA_DEBUG[4096];
 extern int LUA_DEBUG_STATE;
@@ -43,7 +43,7 @@ void mn_lua_error( void);
 
 struct MINscreen *lu_editor_screen_init( struct Context *C);
 void editor_open( struct Context *C);
-extern int LUA_INIT;
+extern int LU_INIT;
 extern struct File *LU_FILE;
 
 void editor_keyboard( int key);
