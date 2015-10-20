@@ -179,11 +179,11 @@ void mn_lua_load_script( const char *filepath)
 		s_cp( LUA_SKETCH_PATH, filepath, 4096);
 		LUA_LOAD = 1;
 		LUA_INIT = 0;
-		if(LUA_FILE)
+		if(LU_FILE)
 		{
-			file_close(LUA_FILE);
-			file_free(LUA_FILE);
-			LUA_FILE = NULL;
+			file_close(LU_FILE);
+			file_free(LU_FILE);
+			LU_FILE = NULL;
 		}
 	}
 }

@@ -23,7 +23,7 @@
 #include "scene.h"
 #include "lustre.h"
 
-t_file *LUA_FILE = NULL;
+t_file *LU_FILE = NULL;
 int LUA_INIT = 0;
 static int EDITOR_DEBUG = 0;
 static float SCALE = .1;
@@ -78,9 +78,9 @@ t_line *line_get( int pos)
 {
 	int i = 0;
 	t_link *l;
-	if( LUA_FILE->lines)
+	if( LU_FILE->lines)
 	{
-		for( l = LUA_FILE->lines->first; l; l = l->next)
+		for( l = LU_FILE->lines->first; l; l = l->next)
 		{
 			t_line *line = ( t_line *) l->data;
 			if ( i == pos) return line;
@@ -90,7 +90,7 @@ t_line *line_get( int pos)
 	// File is empty, add first line
 	else
 	{
-		file_line_add( LUA_FILE, 0, "");
+		file_line_add( LU_FILE, 0, "");
 		line_get( pos);
 	}
 
@@ -167,7 +167,7 @@ static void editor_action_cursor_jump_line( int dir)
 static void editor_cursor( int dir)
 {
 	t_line *line = line_get( cursor_y);
-	int line_count = LUA_FILE->tot_line;
+	int line_count = LU_FILE->tot_line;
 	int char_count = line->size;
 	switch(dir)
 	{
@@ -207,10 +207,10 @@ static void editor_action_delete( int offset)
 		if( line->size == 1)
 		{
 			// Make sure it's not the last line
-			if(LUA_FILE->tot_line > 1)
+			if(LU_FILE->tot_line > 1)
 			{
 				// Remove this line
-				line_remove( LUA_FILE, cursor_y);
+				line_remove( LU_FILE, cursor_y);
 				// Jump to previous line (or stay)
 				if( cursor_y + offset > 0)
 				{
@@ -236,17 +236,17 @@ static void editor_action_delete( int offset)
 				{
 					// If end of line 
 					// Check it's not the last line
-					if( cursor_y < LUA_FILE->tot_line)
+					if( cursor_y < LU_FILE->tot_line)
 					{
 						t_line *line = line_get( cursor_y);
 						// If end of line, join with next one
 						if( line->size - 1 == cursor_x) // before \0
 						{
 							// Check for next line to join
-							if( cursor_y < LUA_FILE->tot_line-1)
+							if( cursor_y < LU_FILE->tot_line-1)
 							{
-								file_line_join( LUA_FILE, cursor_y, cursor_y + 1);
-								if( cursor_y > LUA_FILE->tot_line) cursor_y--;
+								file_line_join( LU_FILE, cursor_y, cursor_y + 1);
+								if( cursor_y > LU_FILE->tot_line) cursor_y--;
 							}
 						}
 						// else, delete a char
@@ -272,7 +272,7 @@ static void editor_action_delete( int offset)
 					// Join this line with previous one
 					t_line *line_before = line_get( cursor_y - 1);
 					int pos = line_before->size;
-					file_line_join( LUA_FILE, cursor_y -1, cursor_y);
+					file_line_join( LU_FILE, cursor_y -1, cursor_y);
 					cursor_y--;
 					cursor_x = pos - 1;
 				}
@@ -302,7 +302,7 @@ static void editor_action_edit( int key)
 
 	}
 	
-	if( LUA_FILE)
+	if( LU_FILE)
 	{
 		t_line *line = line_get( cursor_y );
 		if( line)
@@ -319,7 +319,7 @@ static void editor_action_split( void)
 	t_line *line = line_get( cursor_y);
 	if( line)
 	{
-		line_split( LUA_FILE, cursor_y, cursor_x);
+		line_split( LU_FILE, cursor_y, cursor_x);
 		cursor_y++;
 		cursor_x = 0;
 	}
@@ -330,9 +330,9 @@ static void editor_select_delete( void)
 	int i;
 	for( i = select_end_line; i >= select_start_line; i-- )
 	{
-		if( LUA_FILE->tot_line > 0)
+		if( LU_FILE->tot_line > 0)
 		{
-			line_remove( LUA_FILE, select_start_line);
+			line_remove( LU_FILE, select_start_line);
 			cursor_y--;
 		}
 	}
@@ -346,7 +346,7 @@ static void editor_select_delete( void)
 
 static void editor_cmd_save( void)
 {
-	file_write_lines( LUA_FILE);
+	file_write_lines( LU_FILE);
 }
 
 void editor_open( struct Context *C)
@@ -388,10 +388,10 @@ static void editor_close( t_context *C)
 
 int editor_cmd_exec( void)
 {
-	if( LUA_FILE)
+	if( LU_FILE)
 	{
-		file_write_data( LUA_FILE);
-		lua_file = LUA_FILE;
+		file_write_data( LU_FILE);
+		lua_file = LU_FILE;
 		LUA_EXEC = 1;
 		return 1;
 	}
@@ -403,9 +403,9 @@ int editor_cmd_exec( void)
 
 static void editor_cmd_new( void)
 {
-	LUA_FILE = file_new("sketch.lua");
-	file_make( LUA_FILE);
-	file_line_add( LUA_FILE, 0, "");
+	LU_FILE = file_new("sketch.lua");
+	file_make( LU_FILE);
+	file_line_add( LU_FILE, 0, "");
 	LUA_INIT = 1;
 	cursor_x = 0;
 }
@@ -414,19 +414,19 @@ static void op_editor_file_open(void)
 {
 	t_context *C=ctx_get();
 
-	t_file *LUA_FILE = file_new( C->app->path_file);
-	file_init(LUA_FILE);
+	t_file *LU_FILE = file_new( C->app->path_file);
+	file_init(LU_FILE);
 
-	if(is(LUA_FILE->ext,"lua"))
+	if(is(LU_FILE->ext,"lua"))
 	{
-		mn_lua_load_script( LUA_FILE->path);
+		mn_lua_load_script( LU_FILE->path);
 	}
 	else
 	{
 		printf("Not a lua file\n");
 	}
 
-	file_free( LUA_FILE);
+	file_free( LU_FILE);
 }
 
 static void *editor_file_open( void)
@@ -445,7 +445,7 @@ void lu_editor_keymap( int key)
 
 	if( EDITOR_DEBUG) key_debug( C, key);
 
-	if( LUA_FILE)
+	if( LU_FILE)
 	{
 		// Commands
 		if( C->app->keyboard->ctrl)
@@ -685,23 +685,23 @@ void lu_editor_draw_debug( t_context *C)
 
 void lu_editor_file_open( void)
 {
-	LUA_FILE = file_new(LUA_SKETCH_PATH);
+	LU_FILE = file_new(LUA_SKETCH_PATH);
 
-	if( file_exists( LUA_FILE))
+	if( file_exists( LU_FILE))
 	{
-		if( file_open( LUA_FILE, "r"))
+		if( file_open( LU_FILE, "r"))
 		{
 			printf("opening %s\n", LUA_SKETCH_PATH);
-			file_read( LUA_FILE);
-			file_read_lines(LUA_FILE);
+			file_read( LU_FILE);
+			file_read_lines(LU_FILE);
 			LUA_INIT = 1;
-			file_close( LUA_FILE);
+			file_close( LU_FILE);
 		}
 	}
 	else
 	{
-		file_free( LUA_FILE);
-		LUA_FILE = NULL;
+		file_free( LU_FILE);
+		LU_FILE = NULL;
 		if( !warning)
 		{
 			printf("file not found %s\n", LUA_SKETCH_PATH);
@@ -772,7 +772,7 @@ void lu_editor_draw_file( t_context *C)
 
 	lu_editor_draw_start( C);
 
-	for( l = LUA_FILE->lines->first; l; l = l->next)
+	for( l = LU_FILE->lines->first; l; l = l->next)
 	{
 		if( ly >= cursor_line && ly < cursor_line + lu_editor_line_count)
 		{
@@ -832,7 +832,7 @@ void lu_editor_screen( t_screen *screen)
 	lu_editor_init( C);
 	glDisable(GL_POINT);
 
-	if( LUA_FILE)	lu_editor_draw_file( C);
+	if( LU_FILE)	lu_editor_draw_file( C);
 	else		lu_editor_draw_prompt( C);
 
 	glEnable(GL_POINT);
