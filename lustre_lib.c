@@ -11,7 +11,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "lustre_lib.h"
 #include "lustre.h"
 
 #include "node.h"

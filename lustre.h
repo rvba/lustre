@@ -51,5 +51,11 @@ void ed_init( struct Context *C);
 
 int editor_cmd_exec( void);
 
+// lustre_lib
+
+struct lua_State;
+int lua_every_frame_call( struct lua_State *L);
+void lua_minuit_init( struct lua_State *L);
+
 
 #endif
