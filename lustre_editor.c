@@ -39,11 +39,10 @@ static int lu_cursor_current_line = 0;
 
 static int lu_editor_line_count;
 static int lu_line_height = 20;
-static int console_line_count = 3;
-static int margin_top = 50;
+static int lu_console_line_count = 3;
+static int lu_editor_margin_top = 50;
 
 static int select_init;
-
 static int select_start_point;
 static int select_start_line;
 static int select_end_line;
@@ -736,7 +735,7 @@ void lu_editor_init( t_context *C)
 
 	int wh = C->app->window->height;
 	int h = 20;
-	lu_editor_line_count = (( wh - margin_top) / h) - console_line_count;
+	lu_editor_line_count = (( wh - lu_editor_margin_top) / h) - lu_console_line_count;
 
 	if(use_stroke)
 	{
@@ -752,7 +751,7 @@ void lu_editor_draw_start( t_context *C)
 {
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 50, C->app->window->height - margin_top, 0);
+	glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
 
 	if( use_stroke)
 	{
