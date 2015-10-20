@@ -42,8 +42,8 @@ int LU_LOAD = 0;
 char LU_DEBUG_MSG[4096];
 int LU_DEBUG_STATE = 0;
 static int LU_EDITOR_OPEN = 0;
-static int LUA_AUTO_EXEC = 0;
-static int LUA_AUTO_EXEC_FORCE = 0;
+static int LU_LUA_AUTO_EXEC = 0;
+static int LU_LUA_AUTO_EXEC_FORCE = 0;
 
 
 
@@ -99,8 +99,8 @@ void lu_lua_exec( void)
 
 void lu_lua_exec_auto( void)
 {
-	LUA_AUTO_EXEC_FORCE = !LUA_AUTO_EXEC_FORCE;
-	LUA_AUTO_EXEC = LUA_AUTO_EXEC_FORCE;
+	LU_LUA_AUTO_EXEC_FORCE = !LU_LUA_AUTO_EXEC_FORCE;
+	LU_LUA_AUTO_EXEC = LU_LUA_AUTO_EXEC_FORCE;
 }
 
 // Lua Module : called every frame
@@ -117,10 +117,10 @@ static void mn_lua_module( t_module *module)
 	}
 
 	// Auto exec
-	if( LUA_AUTO_EXEC)
+	if( LU_LUA_AUTO_EXEC)
 	{
-		if(editor_cmd_exec()) LUA_AUTO_EXEC = 0;
-		if( LUA_AUTO_EXEC_FORCE) LUA_AUTO_EXEC = 1;
+		if(editor_cmd_exec()) LU_LUA_AUTO_EXEC = 0;
+		if( LU_LUA_AUTO_EXEC_FORCE) LU_LUA_AUTO_EXEC = 1;
 	}
 
 	// Exec editor sketch
@@ -167,7 +167,7 @@ void lu_lua_exec_script( const char *filepath)
 {
 	lu_lua_load_file( filepath);
 	LU_EDITOR_OPEN = 1;
-	LUA_AUTO_EXEC = 1;
+	LU_LUA_AUTO_EXEC = 1;
 }
 
 // Load Configuration file
