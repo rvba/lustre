@@ -334,7 +334,7 @@ int mn_lua_init( void)
 	luaL_openlibs(LUA_STATE);
 
 	// Init Editor Screen
-	screen_editor_make( C);
+	lu_editor_screen_init( C);
 
 	// Load configuration file
 	mn_lua_load_conf();

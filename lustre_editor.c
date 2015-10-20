@@ -8,7 +8,6 @@
  */
 
 #include <ctype.h>
-#include "screen.h"
 #include "ctx.h"
 #include "file.h"
 #include "term.h"
@@ -822,7 +821,7 @@ void editor_draw_prompt( t_context *C)
 	glPopMatrix();
 }
 
-void screen_editor( t_screen *screen)
+void lu_editor_screen( t_screen *screen)
 {
 	t_context *C = ctx_get();
 
@@ -838,9 +837,9 @@ void screen_editor( t_screen *screen)
 	glEnable(GL_POINT);
 }
 
-t_screen *screen_editor_make( t_context *C)
+t_screen *lu_editor_screen_init( t_context *C)
 {
-	t_screen *screen = screen_default( "screen_editor", screen_editor);
+	t_screen *screen = screen_default( "screen_editor", lu_editor_screen);
 	screen->keymap = editor_keymap;
 	return screen;
 };
