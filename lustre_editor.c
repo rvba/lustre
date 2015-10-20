@@ -118,7 +118,7 @@ void lu_mod_show( t_context *C)
 	if( C->app->keyboard->ctrl) printf("CTRL ");
 }
 
-void key_debug( t_context *C, int key)
+void lu_key_debug( t_context *C, int key)
 {
 	lu_mod_show( C);
 	lu_key_show( key);
@@ -152,7 +152,7 @@ static void lu_editor_cursor_move_at_end( void)
 	}
 }
 
-static void editor_action_cursor_jump_line( int dir)
+static void lu_editor_cursor_jump_to_line( int dir)
 {
 	t_line *line = lu_line_get( lu_cursor_y);
 	if( line)
@@ -172,13 +172,13 @@ static void lu_editor_cursor_move( int dir)
 	{
 		case UP_KEY:
 			if( lu_cursor_y > 0) lu_cursor_y--;
-			editor_action_cursor_jump_line( dir);
+			lu_editor_cursor_jump_to_line( dir);
 			if( lu_cursor_y < lu_cursor_current_line) lu_cursor_current_line--;
 		break;
 
 		case DOWN_KEY:
 			if( lu_cursor_y < line_count - 1) lu_cursor_y++;
-			editor_action_cursor_jump_line( dir);
+			lu_editor_cursor_jump_to_line( dir);
 			if( lu_cursor_y > lu_cursor_current_line + lu_editor_line_count) lu_cursor_current_line++;
 		break;
 
@@ -280,25 +280,11 @@ static void lu_editor_char_delete( int offset)
 	}
 }
 
-static void editor_action_edit( int key)
+static void lu_editor_char_add( int key)
 {
-	/*
-	switch( key)
-	{
-		case 0:
-		case 202:
-		case LEFT_KEY:
-		case RIGHT_KEY:
-		case UP_KEY:
-		case DOWN_KEY:
-
-		       	return;
-	}
-	*/
 	if( !lu_iseditkey(key))
 	{
 		return;
-
 	}
 	
 	if( LU_FILE)
@@ -313,7 +299,7 @@ static void editor_action_edit( int key)
 	}
 }
 
-static void editor_action_split( void)
+static void lu_editor_line_split( void)
 {
 	t_line *line = lu_line_get( lu_cursor_y);
 	if( line)
@@ -343,7 +329,7 @@ static void lu_editor_select_delete( void)
 
 // Commands
 
-static void editor_cmd_save( void)
+static void lu_editor_cmd_save( void)
 {
 	file_write_lines( LU_FILE);
 }
@@ -385,7 +371,7 @@ static void lu_editor_close( t_context *C)
 	*/
 }
 
-int editor_cmd_exec( void)
+int lu_editor_cmd_exec( void)
 {
 	if( LU_FILE)
 	{
@@ -471,7 +457,7 @@ void lu_editor_keymap( int key)
 {
 	t_context *C = ctx_get();
 
-	if( LU_EDITOR_DEBUG) key_debug( C, key);
+	if( LU_EDITOR_DEBUG) lu_key_debug( C, key);
 
 	if( LU_FILE)
 	{
@@ -481,8 +467,8 @@ void lu_editor_keymap( int key)
 			switch( key)
 			{
 
-				case 19: editor_cmd_save(); break;	// S
-				case 5: editor_cmd_exec(); break;	// E
+				case 19: lu_editor_cmd_save(); break;	// S
+				case 5: lu_editor_cmd_exec(); break;	// E
 				case 15: lu_editor_cmd_file_open(); break;	// O
 				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
 				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
@@ -557,9 +543,9 @@ void lu_editor_keymap( int key)
 				{
 					case DELKEY: lu_editor_char_delete(1); break; 
 					case BACKSPACEKEY: lu_editor_char_delete( 0); break;
-					case RETURNKEY: editor_action_split(); break;
+					case RETURNKEY: lu_editor_line_split(); break;
 					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND;break;
-					default: editor_action_edit( key); break;
+					default: lu_editor_char_add( key); break;
 				}
 			}
 

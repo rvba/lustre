@@ -49,7 +49,7 @@ extern struct File *LU_FILE;
 void editor_keyboard( int key);
 void ed_init( struct Context *C);
 
-int editor_cmd_exec( void);
+int lu_editor_cmd_exec( void);
 
 // lustre_lib
 

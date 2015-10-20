@@ -117,7 +117,7 @@ static void lu_lua_module( t_module *module)
 	// Auto exec
 	if( LU_LUA_AUTO_EXEC)
 	{
-		if(editor_cmd_exec()) LU_LUA_AUTO_EXEC = 0;
+		if(lu_editor_cmd_exec()) LU_LUA_AUTO_EXEC = 0;
 		if( LU_LUA_AUTO_EXEC_FORCE) LU_LUA_AUTO_EXEC = 1;
 	}
 
