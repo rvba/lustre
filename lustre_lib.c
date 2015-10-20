@@ -102,7 +102,7 @@ int lua_every_frame_call( lua_State *L)
 		lua_getglobal( L, "every_frame_function");
 		if( lua_pcall( L, 0,0,0) != LUA_OK)
 		{
-			mn_lua_error();
+			lu_lua_error();
 			return 0;
 		}
 	}

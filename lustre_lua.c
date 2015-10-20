@@ -55,7 +55,7 @@ static int panic( lua_State *L)
 	return 1;
 }
 
-void mn_lua_error( void)
+void lu_lua_error( void)
 {
 	sprintf( LU_DEBUG_MSG, "%s\n", lua_tostring( LU_LUA_STATE, -1));
 	LU_DEBUG_STATE = 1;
@@ -81,12 +81,12 @@ void lu_lua_exec( void)
 			}
 			else
 			{
-				mn_lua_error();
+				lu_lua_error();
 			}
 		}
 		else
 		{
-			mn_lua_error();
+			lu_lua_error();
 		}
 	}
 	else
@@ -105,7 +105,7 @@ void lu_lua_exec_auto( void)
 
 // Lua Module : called every frame
 
-static void lu_module( t_module *module)
+static void lu_lua_module( t_module *module)
 {
 	t_context *C = ctx_get();
 
@@ -140,7 +140,7 @@ static void lu_module( t_module *module)
 static void lu_module_add( t_context *C)
 {
 	t_module *module = mode_module_add( C->mode, "lua", NULL);
-	module->update = lu_module;
+	module->update = lu_lua_module;
 }
 
 // Loads a sketch to be executed

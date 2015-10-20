@@ -37,7 +37,7 @@ extern int LUA_EVERY_FRAME;
 void mn_lua_add_object( struct Object *obj);
 void mn_lua_free_object( struct Object *obj);
 
-void mn_lua_error( void);
+void lu_lua_error( void);
 
 // lustre_editor
 
