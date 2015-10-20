@@ -20,7 +20,7 @@ struct Lua_Stone;
 
 extern char LU_FILE_PATH[4096];
 
-void mn_lua_load_script( const char *filepath);
+void lu_lua_load_file( const char *filepath);
 void lu_lua_exec_script( const char *filepath);
 void lu_lua_exec_auto( void);
 

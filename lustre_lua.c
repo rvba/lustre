@@ -145,7 +145,7 @@ static void mn_lua_module_add( t_context *C)
 
 // Loads a sketch to be executed
 
-void mn_lua_load_script( const char *filepath)
+void lu_lua_load_file( const char *filepath)
 {
 	if( filepath)
 	{
@@ -165,7 +165,7 @@ void mn_lua_load_script( const char *filepath)
 
 void lu_lua_exec_script( const char *filepath)
 {
-	mn_lua_load_script( filepath);
+	lu_lua_load_file( filepath);
 	LU_EDITOR_OPEN = 1;
 	LUA_AUTO_EXEC = 1;
 }

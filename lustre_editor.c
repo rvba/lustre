@@ -418,7 +418,7 @@ static void op_editor_file_open(void)
 
 	if(is(LU_FILE->ext,"lua"))
 	{
-		mn_lua_load_script( LU_FILE->path);
+		lu_lua_load_file( LU_FILE->path);
 	}
 	else
 	{
