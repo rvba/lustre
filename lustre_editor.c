@@ -439,7 +439,7 @@ static void *editor_file_open( void)
 
 // Keymap
 
-void editor_keymap( int key)
+void lu_editor_keymap( int key)
 {
 	t_context *C = ctx_get();
 
@@ -840,6 +840,6 @@ void lu_editor_screen( t_screen *screen)
 t_screen *lu_editor_screen_init( t_context *C)
 {
 	t_screen *screen = screen_default( "screen_editor", lu_editor_screen);
-	screen->keymap = editor_keymap;
+	screen->keymap = lu_editor_keymap;
 	return screen;
 };
