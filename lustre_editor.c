@@ -400,6 +400,8 @@ int editor_cmd_exec( void)
 	}
 }
 
+// File
+
 static void lu_editor_cmd_file_new( void)
 {
 	LU_FILE = file_new("sketch.lua");
@@ -409,7 +411,7 @@ static void lu_editor_cmd_file_new( void)
 	lu_cursor_x = 0;
 }
 
-static void op_editor_file_open(void)
+static void lu_editor_op_file_open(void)
 {
 	t_context *C=ctx_get();
 
@@ -428,12 +430,39 @@ static void op_editor_file_open(void)
 	file_free( LU_FILE);
 }
 
-static void *editor_file_open( void)
+static void *lu_editor_cmd_file_open( void)
 {
 	t_context *C = ctx_get();
 	lu_editor_close( C);
-	browser_enter( C, op_editor_file_open);
+	browser_enter( C, lu_editor_op_file_open);
 	return NULL;
+}
+
+void lu_editor_file_open( void)
+{
+	LU_FILE = file_new(LU_FILE_PATH);
+
+	if( file_exists( LU_FILE))
+	{
+		if( file_open( LU_FILE, "r"))
+		{
+			printf("opening %s\n", LU_FILE_PATH);
+			file_read( LU_FILE);
+			file_read_lines(LU_FILE);
+			LU_INIT = 1;
+			file_close( LU_FILE);
+		}
+	}
+	else
+	{
+		file_free( LU_FILE);
+		LU_FILE = NULL;
+		if( !lu_editor_file_warning)
+		{
+			printf("file not found %s\n", LU_FILE_PATH);
+			lu_editor_file_warning = 1;
+		}
+	}
 }
 
 // Keymap
@@ -454,7 +483,7 @@ void lu_editor_keymap( int key)
 
 				case 19: editor_cmd_save(); break;	// S
 				case 5: editor_cmd_exec(); break;	// E
-				case 15: editor_file_open(); break;	// O
+				case 15: lu_editor_cmd_file_open(); break;	// O
 				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
 				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
 				case 1: lu_lua_exec_auto(); break;	// A
@@ -555,7 +584,7 @@ void lu_editor_keymap( int key)
 			switch( key)
 			{
 				case 14: lu_editor_cmd_file_new(); break;	// N
-				case 15: editor_file_open(); break;	// O
+				case 15: lu_editor_cmd_file_open(); break;	// O
 				case TABKEY: lu_editor_close( C); break;
 			}
 
@@ -680,33 +709,6 @@ void lu_editor_draw_debug( t_context *C)
 	if( LU_DEBUG_STATE) lu_editor_draw_line( LU_DEBUG_MSG, 0, 0);
 
 	glPopMatrix();
-}
-
-void lu_editor_file_open( void)
-{
-	LU_FILE = file_new(LU_FILE_PATH);
-
-	if( file_exists( LU_FILE))
-	{
-		if( file_open( LU_FILE, "r"))
-		{
-			printf("opening %s\n", LU_FILE_PATH);
-			file_read( LU_FILE);
-			file_read_lines(LU_FILE);
-			LU_INIT = 1;
-			file_close( LU_FILE);
-		}
-	}
-	else
-	{
-		file_free( LU_FILE);
-		LU_FILE = NULL;
-		if( !lu_editor_file_warning)
-		{
-			printf("file not found %s\n", LU_FILE_PATH);
-			lu_editor_file_warning = 1;
-		}
-	}
 }
 
 void lu_editor_draw_line_color( int lx, int ly)
