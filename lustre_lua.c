@@ -246,7 +246,7 @@ void editor_scan_args( t_context *C)
 	}
 }
 
-int mn_lua_init( void)
+int lustre_init( void)
 {
 	t_context *C = ctx_get();
 

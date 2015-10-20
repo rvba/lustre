@@ -24,7 +24,7 @@ void mn_lua_load_script( const char *filepath);
 void mn_lua_exec_script( const char *filepath);
 void mn_lua_exec_auto( void);
 
-int mn_lua_init( void);
+int lustre_init( void);
 int mn_lua_load( const char *filename);
 struct lua_State *mn_lua_get( void);
 
