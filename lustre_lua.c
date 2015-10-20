@@ -105,7 +105,7 @@ void lu_lua_exec_auto( void)
 
 // Lua Module : called every frame
 
-static void mn_lua_module( t_module *module)
+static void lu_module( t_module *module)
 {
 	t_context *C = ctx_get();
 
@@ -140,7 +140,7 @@ static void mn_lua_module( t_module *module)
 static void lu_module_add( t_context *C)
 {
 	t_module *module = mode_module_add( C->mode, "lua", NULL);
-	module->update = mn_lua_module;
+	module->update = lu_module;
 }
 
 // Loads a sketch to be executed
@@ -260,13 +260,14 @@ int lustre_init( void)
 	// Add Lua module
 	lu_module_add( C);
 
-	// Register Stucco
+	// Register Stone
 	lua_stone_register( LU_LUA_STATE);
 	lua_mat4_register( LU_LUA_STATE);
 	lua_stdmath_register( LU_LUA_STATE);
 
 	STONE_BUILD_FUNCTION = lustre_build;
 
+	// Scan args
 	lu_scan_args( C);
 
 	return 1;
