@@ -52,8 +52,8 @@ static int lu_editor_file_warning = 0;
 
 static int lu_editor_stroke_rendering = 0;
 static void (* lu_func_draw_letter) ( int letter) = NULL;
-static void draw_letter_bitmap( int letter);
-static void draw_letter_vector( int letter);
+static void lu_draw_letter_bitmap( int letter);
+static void lu_draw_letter_vector( int letter);
 
 // Utils
 
@@ -573,12 +573,12 @@ void lu_editor_keymap( int key)
 
 // Screen
 
-static void draw_letter_bitmap( int letter)
+static void lu_draw_letter_bitmap( int letter)
 {
 	glutBitmapCharacter(lu_editor_font,letter);
 }
 
-static void draw_letter_vector( int letter)
+static void lu_draw_letter_vector( int letter)
 {
 	glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, letter);
 }
@@ -739,11 +739,11 @@ void lu_editor_init( t_context *C)
 
 	if(lu_editor_stroke_rendering)
 	{
-		lu_func_draw_letter = draw_letter_vector;
+		lu_func_draw_letter = lu_draw_letter_vector;
 	}
 	else
 	{
-		lu_func_draw_letter = draw_letter_bitmap;
+		lu_func_draw_letter = lu_draw_letter_bitmap;
 	}	
 }
 
