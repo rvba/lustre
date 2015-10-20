@@ -48,9 +48,9 @@ static int lu_select_start_line;
 static int lu_select_end_line;
 
 static void * lu_editor_font = GLUT_BITMAP_9_BY_15;
-static int warning = 0;
+static int lu_editor_file_warning = 0;
 
-static int use_stroke = 0;
+static int lu_editor_stroke_rendering = 0;
 static void (* lu_func_draw_letter) ( int letter) = NULL;
 static void draw_letter_bitmap( int letter);
 static void draw_letter_vector( int letter);
@@ -455,7 +455,7 @@ void lu_editor_keymap( int key)
 				case 19: editor_cmd_save(); break;	// S
 				case 5: editor_cmd_exec(); break;	// E
 				case 15: editor_file_open(); break;	// O
-				case 20: use_stroke = !use_stroke; break;	// T
+				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
 				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
 				case 1: mn_lua_exec_auto(); break;	// A
 
@@ -601,7 +601,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	int x=0;
 	char *letter;
 	int b;
-	if( use_stroke) b = (int) '_';
+	if( lu_editor_stroke_rendering) b = (int) '_';
 	else b = 2;
 
 	for( letter = string; *letter; letter++)
@@ -621,9 +621,9 @@ void lu_editor_draw_line( char *string, int y, int blink)
 			}
 			else
 			{
-				if( use_stroke) glColor3f(.5,.5,.5);
+				if( lu_editor_stroke_rendering) glColor3f(.5,.5,.5);
 				lu_func_draw_letter( b);
-				if( use_stroke) glColor3f(1,1,1);
+				if( lu_editor_stroke_rendering) glColor3f(1,1,1);
 			}
 		}
 		// tab
@@ -654,7 +654,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 {
 	if( lu_cursor_y == ly && lu_editor_cursor_blink())
 	{
-		if( use_stroke)
+		if( lu_editor_stroke_rendering)
 		{
 			glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, '_');
 		}
@@ -701,10 +701,10 @@ void lu_editor_file_open( void)
 	{
 		file_free( LU_FILE);
 		LU_FILE = NULL;
-		if( !warning)
+		if( !lu_editor_file_warning)
 		{
 			printf("file not found %s\n", LU_FILE_PATH);
-			warning = 1;
+			lu_editor_file_warning = 1;
 		}
 	}
 }
@@ -737,7 +737,7 @@ void lu_editor_init( t_context *C)
 	int h = 20;
 	lu_editor_line_count = (( wh - lu_editor_margin_top) / h) - lu_console_line_count;
 
-	if(use_stroke)
+	if(lu_editor_stroke_rendering)
 	{
 		lu_func_draw_letter = draw_letter_vector;
 	}
@@ -753,7 +753,7 @@ void lu_editor_draw_start( t_context *C)
 	glLoadIdentity();
 	glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
 
-	if( use_stroke)
+	if( lu_editor_stroke_rendering)
 	{
 		glScalef(LU_SCALE,LU_SCALE,LU_SCALE);
 	}
@@ -787,7 +787,7 @@ void lu_editor_draw_file( t_context *C)
 
 			glPopMatrix();
 
-			if( use_stroke)
+			if( lu_editor_stroke_rendering)
 			{
 				glTranslatef(0,-180,0);
 			}
