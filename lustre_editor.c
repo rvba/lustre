@@ -762,7 +762,7 @@ void editor_draw_start( t_context *C)
 	glRasterPos2i(0,0);
 }
 
-void editor_draw_file( t_context *C)
+void lu_editor_draw_file( t_context *C)
 {
 
 	int y = -20;
@@ -810,7 +810,7 @@ void editor_draw_file( t_context *C)
 	glPopMatrix();
 }
 
-void editor_draw_prompt( t_context *C)
+void lu_editor_draw_prompt( t_context *C)
 {
 	editor_draw_start( C);
 	glPushMatrix();
@@ -831,8 +831,8 @@ void lu_editor_screen( t_screen *screen)
 	editor_init( C);
 	glDisable(GL_POINT);
 
-	if( LUA_FILE)	editor_draw_file( C);
-	else		editor_draw_prompt( C);
+	if( LUA_FILE)	lu_editor_draw_file( C);
+	else		lu_editor_draw_prompt( C);
 
 	glEnable(GL_POINT);
 }
