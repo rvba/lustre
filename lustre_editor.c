@@ -35,7 +35,7 @@ static float LU_SCALE = .1;
 static int LU_MODE = LU_EDITOR_COMMAND;
 static int lu_cursor_x = 0;
 static int lu_cursor_y = 0;
-static int cursor_line = 0;
+static int lu_cursor_current_line = 0;
 
 static int lu_editor_line_count;
 static int lu_line_height = 20;
@@ -143,7 +143,7 @@ int lu_editor_cursor_blink( void)
 	}
 }
 
-static void editor_cursor_at_end( void)
+static void lu_editor_cursor_move_at_end( void)
 {
 	t_line *line = line_get( lu_cursor_y);
 	if( line)
@@ -174,13 +174,13 @@ static void lu_editor_cursor_move( int dir)
 		case UP_KEY:
 			if( lu_cursor_y > 0) lu_cursor_y--;
 			editor_action_cursor_jump_line( dir);
-			if( lu_cursor_y < cursor_line) cursor_line--;
+			if( lu_cursor_y < lu_cursor_current_line) lu_cursor_current_line--;
 		break;
 
 		case DOWN_KEY:
 			if( lu_cursor_y < line_count - 1) lu_cursor_y++;
 			editor_action_cursor_jump_line( dir);
-			if( lu_cursor_y > cursor_line + lu_editor_line_count) cursor_line++;
+			if( lu_cursor_y > lu_cursor_current_line + lu_editor_line_count) lu_cursor_current_line++;
 		break;
 
 		case RIGHT_KEY:
@@ -216,7 +216,7 @@ static void editor_action_delete( int offset)
 				{
 					lu_cursor_y = lu_cursor_y - 1 + offset;
 					// if backspace go to end of previous line
-					if( !offset) editor_cursor_at_end();
+					if( !offset) lu_editor_cursor_move_at_end();
 				}
 			}
 		}
@@ -774,7 +774,7 @@ void lu_editor_draw_file( t_context *C)
 
 	for( l = LU_FILE->lines->first; l; l = l->next)
 	{
-		if( ly >= cursor_line && ly < cursor_line + lu_editor_line_count)
+		if( ly >= lu_cursor_current_line && ly < lu_cursor_current_line + lu_editor_line_count)
 		{
 			t_line *line = ( t_line *) l->data;
 
