@@ -30,7 +30,7 @@
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
-static float SCALE = .1;
+static float LU_SCALE = .1;
 
 static int LU_MODE = LU_EDITOR_COMMAND;
 static int lu_cursor_x = 0;
@@ -164,7 +164,7 @@ static void editor_action_cursor_jump_line( int dir)
 	}
 }
 
-static void editor_cursor( int dir)
+static void lu_editor_cursor_move( int dir)
 {
 	t_line *line = line_get( lu_cursor_y);
 	int line_count = LU_FILE->tot_line;
@@ -466,7 +466,7 @@ void lu_editor_keymap( int key)
 				case DOWN_KEY:
 				case LEFT_KEY:
 				case RIGHT_KEY:
-					editor_cursor( key);
+					lu_editor_cursor_move( key);
 				break;
 			}
 		}
@@ -482,7 +482,7 @@ void lu_editor_keymap( int key)
 				case DOWN_KEY:
 				case LEFT_KEY:
 				case RIGHT_KEY:
-					editor_cursor( key);
+					lu_editor_cursor_move( key);
 				break;
 
 				case UP_VKEY: LU_MODE = LU_EDITOR_SELECT; break;
@@ -541,8 +541,8 @@ void lu_editor_keymap( int key)
 				switch(key)
 				{
 					case IKEY: LU_MODE = LU_EDITOR_INSERT;break;
-					case 43: SCALE += .02; break;
-					case 45: SCALE -= .02; break;
+					case 43: LU_SCALE += .02; break;
+					case 45: LU_SCALE -= .02; break;
 					default: keymap_command( key); break;
 				}
 			}
@@ -756,7 +756,7 @@ void lu_editor_draw_start( t_context *C)
 
 	if( use_stroke)
 	{
-		glScalef(SCALE,SCALE,SCALE);
+		glScalef(LU_SCALE,LU_SCALE,LU_SCALE);
 	}
 
 	glRasterPos2i(0,0);
