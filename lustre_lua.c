@@ -34,10 +34,10 @@ lua_State *LU_LUA_STATE = NULL;
 char LU_FILE_PATH[4096];
 int lua_file_open = 0;
 int LUA_EXEC = 0;
-static jmp_buf env;
+static jmp_buf lu_lua_env;
 t_file *lua_file = NULL;
-int USE_PANIC = 0;
-static int SHOW_DATA = 0;
+int LU_LUA_USE_PANIC = 0;
+static int LU_LUA_SHOW_FILE = 0;
 int LU_LOAD = 0;
 char LU_DEBUG_MSG[4096];
 int LU_DEBUG_STATE = 0;
@@ -45,13 +45,11 @@ static int LU_EDITOR_OPEN = 0;
 static int LU_LUA_AUTO_EXEC = 0;
 static int LU_LUA_AUTO_EXEC_FORCE = 0;
 
-
-
 // Error managment
 
-static int panic( lua_State *L)
+static int lu_lua_panic( lua_State *L)
 {
-	longjmp( env, 1);
+	longjmp( lu_lua_env, 1);
 	return 1;
 }
 
@@ -65,14 +63,14 @@ void lu_lua_error( void)
 
 void lu_lua_exec( void)
 {
-	if( SHOW_DATA) printf("%s", lua_file->data);
-	if( USE_PANIC) lua_atpanic( LU_LUA_STATE, panic);
+	if( LU_LUA_SHOW_FILE) printf("%s", lua_file->data);
+	if( LU_LUA_USE_PANIC) lua_atpanic( LU_LUA_STATE, lu_lua_panic);
 
 	LU_DEBUG_STATE = 0;
 	LUA_EVERY_FRAME = 0;
 	bzero( LU_DEBUG_MSG, 4096);
 
-	if( !setjmp(env))
+	if( !setjmp(lu_lua_env))
 	{
 		if( luaL_loadbuffer( LU_LUA_STATE, lua_file->data, lua_file->data_size, "buf") == LUA_OK )
 		{
@@ -137,7 +135,7 @@ static void lu_lua_module( t_module *module)
 	lua_every_frame_call( LU_LUA_STATE);
 }
 
-static void lu_module_add( t_context *C)
+static void lu_lua_module_add( t_context *C)
 {
 	t_module *module = mode_module_add( C->mode, "lua", NULL);
 	module->update = lu_lua_module;
@@ -190,7 +188,7 @@ void lu_lua_load_conf( void)
 {
 	if( sys_file_exists( filename))
 	{
-		if( !setjmp(env))
+		if( !setjmp(lu_lua_env))
 		{
 			if( !luaL_loadfile( LU_LUA_STATE, filename))
 			{
@@ -220,7 +218,7 @@ void lu_lua_load_conf( void)
 
 // Init Lua System
 
-void lu_scan_args( t_context *C)
+void lu_lua_scan_args( t_context *C)
 {
 	const char *arg = app_get_arg( C->app, 1);
 
@@ -258,7 +256,7 @@ int lustre_init( void)
 	lu_lib_init( LU_LUA_STATE);
 
 	// Add Lua module
-	lu_module_add( C);
+	lu_lua_module_add( C);
 
 	// Register Stone
 	lua_stone_register( LU_LUA_STATE);
@@ -268,7 +266,7 @@ int lustre_init( void)
 	STONE_BUILD_FUNCTION = lustre_build;
 
 	// Scan args
-	lu_scan_args( C);
+	lu_lua_scan_args( C);
 
 	return 1;
 }
