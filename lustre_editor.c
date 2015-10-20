@@ -47,7 +47,7 @@ static int lu_select_start_point;
 static int lu_select_start_line;
 static int lu_select_end_line;
 
-static void * font = GLUT_BITMAP_9_BY_15;
+static void * lu_editor_font = GLUT_BITMAP_9_BY_15;
 static int warning = 0;
 
 static int use_stroke = 0;
@@ -575,7 +575,7 @@ void lu_editor_keymap( int key)
 
 static void draw_letter_bitmap( int letter)
 {
-	glutBitmapCharacter(font,letter);
+	glutBitmapCharacter(lu_editor_font,letter);
 }
 
 static void draw_letter_vector( int letter)
@@ -660,7 +660,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 		}
 		else
 		{
-			glutBitmapCharacter(font,2);
+			glutBitmapCharacter(lu_editor_font,2);
 		}
 	}
 }
