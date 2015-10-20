@@ -685,13 +685,13 @@ void lu_editor_draw_debug( t_context *C)
 
 void lu_editor_file_open( void)
 {
-	LU_FILE = file_new(LUA_SKETCH_PATH);
+	LU_FILE = file_new(LU_FILE_PATH);
 
 	if( file_exists( LU_FILE))
 	{
 		if( file_open( LU_FILE, "r"))
 		{
-			printf("opening %s\n", LUA_SKETCH_PATH);
+			printf("opening %s\n", LU_FILE_PATH);
 			file_read( LU_FILE);
 			file_read_lines(LU_FILE);
 			LU_INIT = 1;
@@ -704,7 +704,7 @@ void lu_editor_file_open( void)
 		LU_FILE = NULL;
 		if( !warning)
 		{
-			printf("file not found %s\n", LUA_SKETCH_PATH);
+			printf("file not found %s\n", LU_FILE_PATH);
 			warning = 1;
 		}
 	}

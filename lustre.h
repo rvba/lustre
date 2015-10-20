@@ -17,7 +17,7 @@ struct MNScreen;
 struct Object;
 struct File;
 
-extern char LUA_SKETCH_PATH[4096];
+extern char LU_FILE_PATH[4096];
 
 void mn_lua_load_script( const char *filepath);
 void mn_lua_exec_script( const char *filepath);

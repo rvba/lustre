@@ -32,7 +32,7 @@
 #include "stdmath_lua.h"
 
 lua_State *LUA_STATE = NULL;
-char LUA_SKETCH_PATH[4096];
+char LU_FILE_PATH[4096];
 int lua_file_open = 0;
 static t_lst *objects = NULL;
 int LUA_EXEC = 0;
@@ -176,7 +176,7 @@ void mn_lua_load_script( const char *filepath)
 {
 	if( filepath)
 	{
-		s_cp( LUA_SKETCH_PATH, filepath, 4096);
+		s_cp( LU_FILE_PATH, filepath, 4096);
 		LU_LOAD = 1;
 		LU_INIT = 0;
 		if(LU_FILE)
