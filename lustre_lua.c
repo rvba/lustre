@@ -25,7 +25,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "lustre_lib.h"
 #include "lustre.h"
 #include "stone.h"
 #include "stone_lua.h"
