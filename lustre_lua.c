@@ -263,7 +263,7 @@ int lustre_init( void)
 	lua_mat4_register( LU_LUA_STATE);
 	lua_stdmath_register( LU_LUA_STATE);
 
-	STONE_BUILD_FUNCTION = lustre_build;
+	STONE_BUILD_FUNCTION = lu_lib_object_build;
 
 	// Scan args
 	lu_lua_scan_args( C);

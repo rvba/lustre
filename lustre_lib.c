@@ -36,7 +36,7 @@ int stone_screen_init = 0;
 lua_CFunction LUA_FRAME = NULL;
 int LUA_EVERY_FRAME = 0;
 
-int mlua_time( lua_State *L)
+int lu_lib_time( lua_State *L)
 {
 	lua_pushnumber( L, clock_now_sec_precise());
 	return 1;
@@ -44,7 +44,7 @@ int mlua_time( lua_State *L)
 
 // Add and removes Mesh Objects
 
-void mn_lua_add_object( struct Object *obj)
+void lu_lib_object_add( struct Object *obj)
 {
 	lst_add( objects, obj, "obj");
 }
@@ -108,7 +108,7 @@ int lua_every_frame_call( lua_State *L)
 	return 0;
 }
 
-int lua_every_frame( lua_State *L)
+int lu_lib_every_frame( lua_State *L)
 {
 	luaL_checktype( L, 1, LUA_TFUNCTION);
 	lua_tocfunction( L, 1);
@@ -117,7 +117,7 @@ int lua_every_frame( lua_State *L)
 	return 1;
 }
 
-int lua_set_mesh( lua_State *L)
+int lu_lib_mesh_set( lua_State *L)
 {
 	int id = luaL_checkinteger( L, 1);	// Object ID
 	luaL_checktype( L, 2, LUA_TFUNCTION);	// CFunc
@@ -167,7 +167,7 @@ int lua_set_mesh( lua_State *L)
 	return 0;
 }
 
-int lua_get_object( lua_State *L)
+int lu_lib_object_get( lua_State *L)
 {
 	int id = luaL_checkinteger( L, 1 );
 	t_context *C = ctx_get();
@@ -180,7 +180,7 @@ int lua_get_object( lua_State *L)
 	return 0;
 }
 
-void lustre_build( t_lua_stone *lua_stone)
+void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
 	t_stone *stone = lua_stone->stone;
@@ -205,7 +205,7 @@ void lustre_build( t_lua_stone *lua_stone)
 			tris
 			);
 
-	mn_lua_add_object( object);
+	lu_lib_object_add( object);
 
 	if( edges)
 	{
@@ -239,9 +239,9 @@ void lu_lib_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 
 void lu_lib_init( lua_State *L)
 {
-	lu_lib_register( L, lua_every_frame, "every_frame");
-	lu_lib_register( L, lua_get_object, "get_object");
-	lu_lib_register( L, lua_set_mesh, "set_mesh");
-	lu_lib_register( L, mlua_time, "time");
+	lu_lib_register( L, lu_lib_every_frame, "every_frame");
+	lu_lib_register( L, lu_lib_object_get, "get_object");
+	lu_lib_register( L, lu_lib_mesh_set, "set_mesh");
+	lu_lib_register( L, lu_lib_time, "time");
 }
 
