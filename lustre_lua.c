@@ -172,6 +172,7 @@ void lu_lua_exec_script( const char *filepath)
 
 // Load Configuration file
 
+/*
 void mn_lua_conf( void)
 {
 	lua_getglobal( LU_LUA_STATE, "version");
@@ -185,9 +186,8 @@ void mn_lua_conf( void)
 	}
 }
 
-void mn_lua_load_conf( void)
+void lu_lua_load_conf( void)
 {
-	/*
 	if( sys_file_exists( filename))
 	{
 		if( !setjmp(env))
@@ -215,8 +215,8 @@ void mn_lua_load_conf( void)
 	{
 		printf("mn_lua_load: error while loading %s\n", filename);
 	}
-	*/
 }
+*/
 
 // Init Lua System
 
@@ -252,7 +252,7 @@ int lustre_init( void)
 	lu_editor_screen_init( C);
 
 	// Load configuration file
-	mn_lua_load_conf();
+	//lu_lua_load_conf();
 
 	// Add Mn Lua libs
 	lua_minuit_init( LU_LUA_STATE);
