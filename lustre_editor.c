@@ -197,7 +197,7 @@ static void lu_editor_cursor_move( int dir)
 
 // Actions
 
-static void editor_action_delete( int offset)
+static void lu_editor_char_delete( int offset)
 {
 	t_line *line = lu_line_get( lu_cursor_y );
 	if(line)
@@ -400,7 +400,7 @@ int editor_cmd_exec( void)
 	}
 }
 
-static void editor_cmd_new( void)
+static void lu_editor_cmd_file_new( void)
 {
 	LU_FILE = file_new("sketch.lua");
 	file_make( LU_FILE);
@@ -526,8 +526,8 @@ void lu_editor_keymap( int key)
 			{
 				switch(key)
 				{
-					case DELKEY: editor_action_delete(1); break; 
-					case BACKSPACEKEY: editor_action_delete( 0); break;
+					case DELKEY: lu_editor_char_delete(1); break; 
+					case BACKSPACEKEY: lu_editor_char_delete( 0); break;
 					case RETURNKEY: editor_action_split(); break;
 					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND;break;
 					default: editor_action_edit( key); break;
@@ -554,7 +554,7 @@ void lu_editor_keymap( int key)
 		{
 			switch( key)
 			{
-				case 14: editor_cmd_new(); break;	// N
+				case 14: lu_editor_cmd_file_new(); break;	// N
 				case 15: editor_file_open(); break;	// O
 				case TABKEY: lu_editor_close( C); break;
 			}
