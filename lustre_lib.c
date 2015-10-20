@@ -43,7 +43,6 @@ int mlua_time( lua_State *L)
 }
 
 // Add and removes Mesh Objects
-//
 
 void mn_lua_add_object( struct Object *obj)
 {
@@ -232,7 +231,7 @@ void lustre_build( t_lua_stone *lua_stone)
 
 }	
 
-void mlua_register( lua_State *L, int (* f)( lua_State *L), const char *name)
+void lu_lib_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 {
 	lua_pushcfunction( L, f);
 	lua_setglobal( L, name);
@@ -240,9 +239,9 @@ void mlua_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 
 void lu_lib_init( lua_State *L)
 {
-	mlua_register( L, lua_every_frame, "every_frame");
-	mlua_register( L, lua_get_object, "get_object");
-	mlua_register( L, lua_set_mesh, "set_mesh");
-	mlua_register( L, mlua_time, "time");
+	lu_lib_register( L, lua_every_frame, "every_frame");
+	lu_lib_register( L, lua_get_object, "get_object");
+	lu_lib_register( L, lua_set_mesh, "set_mesh");
+	lu_lib_register( L, mlua_time, "time");
 }
 

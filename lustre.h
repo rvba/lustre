@@ -45,7 +45,6 @@ int lu_editor_cmd_exec( void);
 
 // lustre_lib
 
-struct lua_State;
 int lua_every_frame_call( struct lua_State *L);
 void lu_lib_init( struct lua_State *L);
 void lustre_build( struct Lua_Stone *lua_stone);
