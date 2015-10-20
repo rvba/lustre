@@ -487,7 +487,7 @@ void lu_editor_keymap( int key)
 				case UP_VKEY: LU_MODE = LU_EDITOR_SELECT; break;
 			}
 
-			// SELECT LU_MODE
+			// SELECT MODE
 			if( LU_MODE == LU_EDITOR_SELECT)
 			{
 				// Init selection point
@@ -521,12 +521,12 @@ void lu_editor_keymap( int key)
 				}
 			}
 
-			// INSERT LU_MODE
+			// INSERT MODE
 			else if( LU_MODE == LU_EDITOR_INSERT)
 			{
 				switch(key)
 				{
-					case DELKEY: editor_action_delete(1); break; //SUPPR
+					case DELKEY: editor_action_delete(1); break; 
 					case BACKSPACEKEY: editor_action_delete( 0); break;
 					case RETURNKEY: editor_action_split(); break;
 					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND;break;
@@ -534,7 +534,7 @@ void lu_editor_keymap( int key)
 				}
 			}
 
-			// COMMAND LU_MODE
+			// COMMAND MODE
 			else
 			{
 				switch(key)
