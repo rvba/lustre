@@ -153,19 +153,6 @@ int lu_lib_mesh_set( lua_State *L)
 	return 0;
 }
 
-int lu_lib_object_get( lua_State *L)
-{
-	int id = luaL_checkinteger( L, 1 );
-	t_context *C = ctx_get();
-	t_node *node = scene_get_node_by_id( C->scene, id);
-	if( node)
-	{
-		t_object *object = ( t_object *) node->data;
-		printf("object:%s\n", object->id.name);
-	}
-	return 0;
-}
-
 void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
@@ -226,7 +213,6 @@ void lu_lib_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 void lu_lib_init( lua_State *L)
 {
 	lu_lib_register( L, lu_lib_every_frame, "every_frame");
-	lu_lib_register( L, lu_lib_object_get, "get_object");
 	lu_lib_register( L, lu_lib_mesh_set, "set_mesh");
 	lu_lib_register( L, lu_lib_time, "time");
 }
