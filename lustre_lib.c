@@ -94,20 +94,6 @@ static t_object *get_object( t_context *C, int id)
 	return NULL;
 }
 
-int lua_every_frame_call( lua_State *L)
-{
-	if( LUA_EVERY_FRAME)
-	{
-		lua_getglobal( L, "every_frame_function");
-		if( lua_pcall( L, 0,0,0) != LUA_OK)
-		{
-			lu_lua_error();
-			return 0;
-		}
-	}
-	return 0;
-}
-
 int lu_lib_every_frame( lua_State *L)
 {
 	luaL_checktype( L, 1, LUA_TFUNCTION);

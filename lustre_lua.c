@@ -101,6 +101,20 @@ void lu_lua_exec_auto( void)
 	LU_LUA_AUTO_EXEC = LU_LUA_AUTO_EXEC_FORCE;
 }
 
+int lua_every_frame_call( lua_State *L)
+{
+	if( LUA_EVERY_FRAME)
+	{
+		lua_getglobal( L, "every_frame_function");
+		if( lua_pcall( L, 0,0,0) != LUA_OK)
+		{
+			lu_lua_error();
+			return 0;
+		}
+	}
+	return 0;
+}
+
 // Lua Module : called every frame
 
 static void lu_lua_module( t_module *module)
