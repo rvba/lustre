@@ -457,7 +457,7 @@ void lu_editor_keymap( int key)
 				case 15: editor_file_open(); break;	// O
 				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
 				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
-				case 1: mn_lua_exec_auto(); break;	// A
+				case 1: lu_lua_exec_auto(); break;	// A
 
 				case TABKEY: editor_close( C); break;
 

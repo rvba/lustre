@@ -41,7 +41,7 @@ static int SHOW_DATA = 0;
 int LU_LOAD = 0;
 char LU_DEBUG_MSG[4096];
 int LU_DEBUG_STATE = 0;
-static int LUA_OPEN = 0;
+static int LU_EDITOR_OPEN = 0;
 static int LUA_AUTO_EXEC = 0;
 static int LUA_AUTO_EXEC_FORCE = 0;
 
@@ -63,7 +63,7 @@ void mn_lua_error( void)
 
 // Lua exec script from editor
 
-void mn_lua_exec( void)
+void lu_lua_exec( void)
 {
 	if( SHOW_DATA) printf("%s", lua_file->data);
 	if( USE_PANIC) lua_atpanic( LU_LUA_STATE, panic);
@@ -97,7 +97,7 @@ void mn_lua_exec( void)
 
 // Switch to auto-exec mode
 
-void mn_lua_exec_auto( void)
+void lu_lua_exec_auto( void)
 {
 	LUA_AUTO_EXEC_FORCE = !LUA_AUTO_EXEC_FORCE;
 	LUA_AUTO_EXEC = LUA_AUTO_EXEC_FORCE;
@@ -110,10 +110,10 @@ static void mn_lua_module( t_module *module)
 	t_context *C = ctx_get();
 
 	// Auto switch to editor screen
-	if( LUA_OPEN)
+	if( LU_EDITOR_OPEN)
 	{
 		editor_open( C);
-		LUA_OPEN = 0;
+		LU_EDITOR_OPEN = 0;
 	}
 
 	// Auto exec
@@ -129,7 +129,7 @@ static void mn_lua_module( t_module *module)
 
 		lu_objects_delete();
 
-		mn_lua_exec();
+		lu_lua_exec();
 		LUA_EXEC = 0;
 	}
 
@@ -163,10 +163,10 @@ void mn_lua_load_script( const char *filepath)
 
 // Load && exec sketch (from vim)
 
-void mn_lua_exec_script( const char *filepath)
+void lu_lua_exec_script( const char *filepath)
 {
 	mn_lua_load_script( filepath);
-	LUA_OPEN = 1;
+	LU_EDITOR_OPEN = 1;
 	LUA_AUTO_EXEC = 1;
 }
 
@@ -232,7 +232,7 @@ void lu_scan_args( t_context *C)
 			if( filename)
 			{
 				printf("loading: %s\n", filename);
-				mn_lua_exec_script( filename);
+				lu_lua_exec_script( filename);
 			}
 		}
 	}

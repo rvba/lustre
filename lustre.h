@@ -21,8 +21,8 @@ struct Lua_Stone;
 extern char LU_FILE_PATH[4096];
 
 void mn_lua_load_script( const char *filepath);
-void mn_lua_exec_script( const char *filepath);
-void mn_lua_exec_auto( void);
+void lu_lua_exec_script( const char *filepath);
+void lu_lua_exec_auto( void);
 
 int lustre_init( void);
 int mn_lua_load( const char *filename);
