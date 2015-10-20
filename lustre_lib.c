@@ -238,7 +238,7 @@ void mlua_register( lua_State *L, int (* f)( lua_State *L), const char *name)
 	lua_setglobal( L, name);
 }
 
-void lua_minuit_init( lua_State *L)
+void lu_lib_init( lua_State *L)
 {
 	mlua_register( L, lua_every_frame, "every_frame");
 	mlua_register( L, lua_get_object, "get_object");

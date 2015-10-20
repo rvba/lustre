@@ -137,7 +137,7 @@ static void mn_lua_module( t_module *module)
 	lua_every_frame_call( LU_LUA_STATE);
 }
 
-static void mn_lua_module_add( t_context *C)
+static void lu_module_add( t_context *C)
 {
 	t_module *module = mode_module_add( C->mode, "lua", NULL);
 	module->update = mn_lua_module;
@@ -254,11 +254,11 @@ int lustre_init( void)
 	// Load configuration file
 	//lu_lua_load_conf();
 
-	// Add Mn Lua libs
-	lua_minuit_init( LU_LUA_STATE);
+	// Add Lustre lib
+	lu_lib_init( LU_LUA_STATE);
 
 	// Add Lua module
-	mn_lua_module_add( C);
+	lu_module_add( C);
 
 	// Register Stucco
 	lua_stone_register( LU_LUA_STATE);

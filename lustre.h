@@ -55,7 +55,7 @@ int editor_cmd_exec( void);
 
 struct lua_State;
 int lua_every_frame_call( struct lua_State *L);
-void lua_minuit_init( struct lua_State *L);
+void lu_lib_init( struct lua_State *L);
 void lustre_build( struct Lua_Stone *lua_stone);
 void lu_objects_delete( void);
 
