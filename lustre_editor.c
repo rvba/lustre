@@ -348,7 +348,7 @@ static void editor_cmd_save( void)
 	file_write_lines( LU_FILE);
 }
 
-void editor_open( struct Context *C)
+void lu_editor_open( struct Context *C)
 {
 	t_node *screen_node=scene_get_node_by_type_name( C->scene, dt_screen, "screen_editor");
 	if( !screen_node)

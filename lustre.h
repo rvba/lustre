@@ -42,7 +42,7 @@ void lu_lua_error( void);
 // lustre_editor
 
 struct MINscreen *lu_editor_screen_init( struct Context *C);
-void editor_open( struct Context *C);
+void lu_editor_open( struct Context *C);
 extern int LU_INIT;
 extern struct File *LU_FILE;
 

@@ -22,7 +22,7 @@ void editor_keyboard( int key)
 	switch( key)
 	{
 		case TABKEY:
-			if(C->app->keyboard->ctrl) editor_open( C);
+			if(C->app->keyboard->ctrl) lu_editor_open( C);
 		       	break;
 	}
 }

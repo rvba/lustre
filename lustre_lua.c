@@ -110,7 +110,7 @@ static void lu_lua_module( t_module *module)
 	// Auto switch to editor screen
 	if( LU_EDITOR_OPEN)
 	{
-		editor_open( C);
+		lu_editor_open( C);
 		LU_EDITOR_OPEN = 0;
 	}
 
