@@ -57,7 +57,7 @@ static void lu_draw_letter_vector( int letter);
 
 // Utils
 
-static int iseditkey( int key)
+static int lu_iseditkey( int key)
 {
 	if(
 		key == 8 || // BACKSPACE
@@ -73,7 +73,7 @@ static int iseditkey( int key)
 	}
 }
 
-t_line *line_get( int pos)
+t_line *lu_line_get( int pos)
 {
 	int i = 0;
 	t_link *l;
@@ -90,38 +90,38 @@ t_line *line_get( int pos)
 	else
 	{
 		file_line_add( LU_FILE, 0, "");
-		line_get( pos);
+		lu_line_get( pos);
 	}
 
 	return NULL;
 }
 
-static char char_under_cursor()
+static char lu_get_char_under_cursor()
 {
-	t_line *line = line_get( lu_cursor_y);
+	t_line *line = lu_line_get( lu_cursor_y);
 	char *data = ( char *) line->data;
 	return *( data + lu_cursor_x);
 }
 
-void cursor_show()
+void lu_cursor_show()
 {
-	printf("cursor: x:%d y:%d char:[%c]\n", lu_cursor_x, lu_cursor_y, char_under_cursor());
+	printf("cursor: x:%d y:%d char:[%c]\n", lu_cursor_x, lu_cursor_y, lu_get_char_under_cursor());
 }
 
-void key_show( int key)
+void lu_key_show( int key)
 {
 	printf("This key:%d %s\n", key, event_name(key));
 }
 
-void mod_show( t_context *C)
+void lu_mod_show( t_context *C)
 {
 	if( C->app->keyboard->ctrl) printf("CTRL ");
 }
 
 void key_debug( t_context *C, int key)
 {
-	mod_show( C);
-	key_show( key);
+	lu_mod_show( C);
+	lu_key_show( key);
 }
 
 // Cursor
@@ -144,7 +144,7 @@ int lu_editor_cursor_blink( void)
 
 static void lu_editor_cursor_move_at_end( void)
 {
-	t_line *line = line_get( lu_cursor_y);
+	t_line *line = lu_line_get( lu_cursor_y);
 	if( line)
 	{
 		int char_count = line->size;
@@ -154,7 +154,7 @@ static void lu_editor_cursor_move_at_end( void)
 
 static void editor_action_cursor_jump_line( int dir)
 {
-	t_line *line = line_get( lu_cursor_y);
+	t_line *line = lu_line_get( lu_cursor_y);
 	if( line)
 	{
 		int char_count = line->size;
@@ -165,7 +165,7 @@ static void editor_action_cursor_jump_line( int dir)
 
 static void lu_editor_cursor_move( int dir)
 {
-	t_line *line = line_get( lu_cursor_y);
+	t_line *line = lu_line_get( lu_cursor_y);
 	int line_count = LU_FILE->tot_line;
 	int char_count = line->size;
 	switch(dir)
@@ -191,7 +191,7 @@ static void lu_editor_cursor_move( int dir)
 		break;
 	}
 
-	if( LU_EDITOR_DEBUG) cursor_show();
+	if( LU_EDITOR_DEBUG) lu_cursor_show();
 
 }
 
@@ -199,7 +199,7 @@ static void lu_editor_cursor_move( int dir)
 
 static void editor_action_delete( int offset)
 {
-	t_line *line = line_get( lu_cursor_y );
+	t_line *line = lu_line_get( lu_cursor_y );
 	if(line)
 	{
 		// If Line is One character long (empty)
@@ -237,7 +237,7 @@ static void editor_action_delete( int offset)
 					// Check it's not the last line
 					if( lu_cursor_y < LU_FILE->tot_line)
 					{
-						t_line *line = line_get( lu_cursor_y);
+						t_line *line = lu_line_get( lu_cursor_y);
 						// If end of line, join with next one
 						if( line->size - 1 == lu_cursor_x) // before \0
 						{
@@ -269,7 +269,7 @@ static void editor_action_delete( int offset)
 				if( lu_cursor_y > 0)
 				{
 					// Join this line with previous one
-					t_line *line_before = line_get( lu_cursor_y - 1);
+					t_line *line_before = lu_line_get( lu_cursor_y - 1);
 					int pos = line_before->size;
 					file_line_join( LU_FILE, lu_cursor_y -1, lu_cursor_y);
 					lu_cursor_y--;
@@ -295,7 +295,7 @@ static void editor_action_edit( int key)
 		       	return;
 	}
 	*/
-	if( !iseditkey(key))
+	if( !lu_iseditkey(key))
 	{
 		return;
 
@@ -303,7 +303,7 @@ static void editor_action_edit( int key)
 	
 	if( LU_FILE)
 	{
-		t_line *line = line_get( lu_cursor_y );
+		t_line *line = lu_line_get( lu_cursor_y );
 		if( line)
 		{
 			char c = ( char) key;
@@ -315,7 +315,7 @@ static void editor_action_edit( int key)
 
 static void editor_action_split( void)
 {
-	t_line *line = line_get( lu_cursor_y);
+	t_line *line = lu_line_get( lu_cursor_y);
 	if( line)
 	{
 		line_split( LU_FILE, lu_cursor_y, lu_cursor_x);
