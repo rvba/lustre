@@ -250,6 +250,11 @@ void lu_lua_scan_args( t_context *C)
 	}
 }
 
+void lustre_register( void(* func)(lua_State *L))
+{
+	func( LU_LUA_STATE);
+}
+
 int lustre_init( void)
 {
 	t_context *C = ctx_get();

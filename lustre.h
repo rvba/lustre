@@ -32,6 +32,7 @@ void lu_lua_exec_auto( void);
 void lu_lua_load_file( const char *filepath);
 void lu_lua_error( void);
 
+void lustre_register( void(* func)(struct lua_State *L));
 int lustre_init( void);
 
 // lustre_editor
