@@ -23,6 +23,10 @@
 #include "scene.h"
 #include "lustre.h"
 
+#ifdef HAVE_TRUETYPE
+#include "txt.h"
+#endif
+
 #define LU_EDITOR_COMMAND 1
 #define LU_EDITOR_INSERT 2
 #define LU_EDITOR_SELECT 3
@@ -51,6 +55,7 @@ static void * lu_editor_font = GLUT_BITMAP_9_BY_15;
 static int lu_editor_file_warning = 0;
 
 static int lu_editor_stroke_rendering = 0;
+static int lu_editor_ttf_rendering = 0;
 static void (* lu_func_draw_letter) ( int letter) = NULL;
 static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
@@ -598,6 +603,11 @@ static void lu_draw_letter_vector( int letter)
 	glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, letter);
 }
 
+static void lu_draw_letter_ttf( int letter)
+{
+	txt_ttf_draw_char( letter);
+}
+
 void lu_editor_draw_line_number( int y)
 {
 	char pos[6]; 
@@ -669,7 +679,11 @@ void lu_editor_draw_line_empty( int lx, int ly)
 {
 	if( lu_cursor_y == ly && lu_editor_cursor_blink())
 	{
-		if( lu_editor_stroke_rendering)
+		if (lu_editor_ttf_rendering)
+		{
+			txt_ttf_draw_char( 2);
+		}
+		else if( lu_editor_stroke_rendering)
 		{
 			glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, '_');
 		}
@@ -728,7 +742,11 @@ void lu_editor_init( t_context *C)
 	int h = 20;
 	lu_editor_line_count = (( wh - lu_editor_margin_top) / h) - lu_console_line_count;
 
-	if(lu_editor_stroke_rendering)
+	if( lu_editor_ttf_rendering)
+	{
+		lu_func_draw_letter = lu_draw_letter_ttf;
+	}
+	else if(lu_editor_stroke_rendering)
 	{
 		lu_func_draw_letter = lu_draw_letter_vector;
 	}
@@ -744,7 +762,12 @@ void lu_editor_draw_start( t_context *C)
 	glLoadIdentity();
 	glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
 
-	if( lu_editor_stroke_rendering)
+	if( lu_editor_ttf_rendering)
+	{
+		float _s = .2;
+		glScalef(LU_SCALE*_s,LU_SCALE*_s,LU_SCALE*_s);
+	}
+	else if( lu_editor_stroke_rendering)
 	{
 		glScalef(LU_SCALE,LU_SCALE,LU_SCALE);
 	}
@@ -778,7 +801,11 @@ void lu_editor_draw_file( t_context *C)
 
 			glPopMatrix();
 
-			if( lu_editor_stroke_rendering)
+			if( lu_editor_ttf_rendering)
+			{
+				txt_ttf_vertical_offset( -1);
+			}
+			else if( lu_editor_stroke_rendering)
 			{
 				glTranslatef(0,-180,0);
 			}
@@ -816,6 +843,7 @@ void lu_editor_screen( t_screen *screen)
 {
 	t_context *C = ctx_get();
 
+
 	if( !LU_INIT && LU_LOAD)  lu_editor_file_open();
 
 	screen_switch_2d( screen);
@@ -832,5 +860,11 @@ t_screen *lu_editor_screen_init( t_context *C)
 {
 	t_screen *screen = screen_default( "screen_editor", lu_editor_screen);
 	screen->keymap = lu_editor_keymap;
+
+	#ifdef HAVE_TRUETYPE
+	printf("Using TTF\n");
+	if( txt_ttf_init()) lu_editor_ttf_rendering = 1;
+	#endif
+
 	return screen;
 };
