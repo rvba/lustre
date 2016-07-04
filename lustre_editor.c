@@ -33,7 +33,7 @@
 
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
-static int LU_EDITOR_DEBUG = 0;
+static int LU_EDITOR_DEBUG = 1;
 static float LU_SCALE = .1;
 
 static int LU_MODE = LU_EDITOR_COMMAND;
@@ -59,8 +59,16 @@ static int lu_editor_ttf_rendering = 0;
 static void (* lu_func_draw_letter) ( int letter) = NULL;
 static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
+static int lu_use_number = 0;
+static int lu_use_debug = 0;
 
 // Utils
+
+void lu_switch( int *target)
+{
+	printf("::%d\n", *target);
+	*target = !(*target);
+}
 
 static int lu_iseditkey( int key)
 {
@@ -352,10 +360,6 @@ void lu_editor_open( struct Context *C)
 
 	screen_main->is_active = 1;
 	screen_main->is_visible = 1;
-	/*
-	printf("editor open\n");
-	screen_switch_by_name( "screen_editor");
-	*/
 }
 
 static void lu_editor_close( t_context *C)
@@ -369,11 +373,6 @@ static void lu_editor_close( t_context *C)
 	t_node *screen_node=scene_get_node_by_type_name( C->scene, dt_screen, "screen_main");
 	t_screen *screen_main=screen_node->data;
 	C->ui->screen_active = screen_main;
-
-	/*
-	printf("editor close!!\n");
-	screen_switch_by_name( "screen_main");
-	*/
 }
 
 int lu_editor_cmd_exec( void)
@@ -462,7 +461,7 @@ void lu_editor_keymap( int key)
 {
 	t_context *C = ctx_get();
 
-	if( LU_EDITOR_DEBUG) lu_key_debug( C, key);
+	if( lu_use_debug) lu_key_debug( C, key);
 
 	if( LU_FILE)
 	{
@@ -476,8 +475,10 @@ void lu_editor_keymap( int key)
 				case 5: lu_editor_cmd_exec(); break;	// E
 				case 15: lu_editor_cmd_file_open(); break;	// O
 				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
-				case 2: LU_EDITOR_DEBUG = !LU_EDITOR_DEBUG; break; //B
 				case 1: lu_lua_exec_auto(); break;	// A
+
+				case 14:lu_switch(&lu_use_number); break;	// N
+				case 4: lu_switch(&lu_use_debug); break; // D
 
 				case TABKEY: lu_editor_close( C); break;
 
@@ -562,12 +563,13 @@ void lu_editor_keymap( int key)
 					case IKEY: LU_MODE = LU_EDITOR_INSERT;break;
 					case 43: LU_SCALE += .02; break;
 					case 45: LU_SCALE -= .02; break;
+
 					default: keymap_command( key); break;
 				}
 			}
 		}
 	}
-
+	// NO FILE
 	else
 	{
 		if( C->app->keyboard->ctrl)
@@ -592,6 +594,26 @@ void lu_editor_keymap( int key)
 }
 
 // Screen
+
+static void lu_draw_cursor( void)
+{
+	float width = 60;
+	float height = 300;
+	float t = 100;
+	float y = 280;
+	
+	glPushMatrix();
+	glTranslatef(t,y,0);
+	glColor3f(1,1,1);
+	glBegin(GL_QUADS);
+	glVertex2f(width,-height);
+	glVertex2f(width,height);
+	glVertex2f(-width,height);
+	glVertex2f(-width,-height);
+	glEnd();
+	glPopMatrix();
+}
+
 
 static void lu_draw_letter_bitmap( int letter)
 {
@@ -618,7 +640,6 @@ void lu_editor_draw_line_number( int y)
 	lu_func_draw_letter( pos[1]);
 	lu_func_draw_letter( pos[2]);
 	lu_func_draw_letter( pos[3]);
-
 }
 
 void lu_editor_draw_line( char *string, int y, int blink)
@@ -636,6 +657,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 		// lu_editor_cursor_blink
 		if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 		{
+			//tab
 			if( c == 9 )
 			{
 				lu_func_draw_letter( b);
@@ -646,9 +668,16 @@ void lu_editor_draw_line( char *string, int y, int blink)
 			}
 			else
 			{
-				if( lu_editor_stroke_rendering) glColor3f(.5,.5,.5);
-				lu_func_draw_letter( b);
-				if( lu_editor_stroke_rendering) glColor3f(1,1,1);
+				if( lu_editor_ttf_rendering)
+				{
+					lu_draw_cursor();
+				}
+				else
+				{
+					if( lu_editor_stroke_rendering) glColor3f(.5,.5,.5);
+					lu_func_draw_letter( b);
+					if( lu_editor_stroke_rendering) glColor3f(1,1,1);
+				}
 			}
 		}
 		// tab
@@ -670,7 +699,14 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	// end of line
 	if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 	{
-		lu_func_draw_letter( b);
+		if( lu_editor_ttf_rendering)
+		{
+			lu_draw_cursor();
+		}
+		else
+		{
+			lu_func_draw_letter( b);
+		}
 	}
 
 }
@@ -681,7 +717,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 	{
 		if (lu_editor_ttf_rendering)
 		{
-			txt_ttf_draw_char( 2);
+			lu_draw_cursor();
 		}
 		else if( lu_editor_stroke_rendering)
 		{
@@ -694,7 +730,7 @@ void lu_editor_draw_line_empty( int lx, int ly)
 	}
 }
 
-void lu_editor_draw_debug( t_context *C)
+void lu_editor_draw_console( t_context *C)
 {
 	int pos = ((lu_editor_line_count + 1)  * lu_line_height);
 	glPushMatrix();
@@ -761,6 +797,7 @@ void lu_editor_draw_start( t_context *C)
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
+	glColor3f(1,1,1);
 
 	if( lu_editor_ttf_rendering)
 	{
@@ -793,7 +830,7 @@ void lu_editor_draw_file( t_context *C)
 
 			glPushMatrix();
 
-			lu_editor_draw_line_number( ly + 1);
+			if( lu_use_number) lu_editor_draw_line_number( ly + 1);
 			lu_editor_draw_line_color( lx, ly);
 
 			if( *line->data	)	lu_editor_draw_line( line->data, ly, 1);
@@ -823,7 +860,7 @@ void lu_editor_draw_file( t_context *C)
 	}
 
 
-	lu_editor_draw_debug( C);
+	lu_editor_draw_console( C);
 
 	glPopMatrix();
 }
@@ -862,7 +899,6 @@ t_screen *lu_editor_screen_init( t_context *C)
 	screen->keymap = lu_editor_keymap;
 
 	#ifdef HAVE_TRUETYPE
-	printf("Using TTF\n");
 	if( txt_ttf_init()) lu_editor_ttf_rendering = 1;
 	#endif
 
