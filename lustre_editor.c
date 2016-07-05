@@ -31,9 +31,13 @@
 #define LU_EDITOR_INSERT 2
 #define LU_EDITOR_SELECT 3
 
+#define LU_RENDER_BITMAP 1
+#define LU_RENDER_STROKE 2
+#define LU_RENDER_TTF 3
+
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
-static int LU_EDITOR_DEBUG = 1;
+static int LU_EDITOR_DEBUG = 0;
 static float LU_SCALE = .1;
 
 static int LU_MODE = LU_EDITOR_COMMAND;
@@ -54,20 +58,37 @@ static int lu_select_end_line;
 static void * lu_editor_font = GLUT_BITMAP_9_BY_15;
 static int lu_editor_file_warning = 0;
 
-static int lu_editor_stroke_rendering = 0;
-static int lu_editor_ttf_rendering = 0;
+static int LU_RENDER = LU_RENDER_BITMAP;
 static void (* lu_func_draw_letter) ( int letter) = NULL;
 static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
+static int lu_use_autofocus = 1;
 
 // Utils
 
 void lu_switch( int *target)
 {
-	printf("::%d\n", *target);
 	*target = !(*target);
+}
+
+inline void lu_set_render( int render)
+{
+	LU_RENDER = render;
+}
+
+void lu_switch_rendering( void)
+{
+	if( LU_RENDER == LU_RENDER_BITMAP) LU_RENDER = LU_RENDER_TTF;
+	else if( LU_RENDER == LU_RENDER_TTF) LU_RENDER = LU_RENDER_STROKE;
+	else LU_RENDER = LU_RENDER_BITMAP;
+}
+
+inline int lu_is_render( int render)
+{
+	if( LU_RENDER == render) return 1;
+	else return 0;
 }
 
 static int lu_iseditkey( int key)
@@ -107,6 +128,22 @@ t_line *lu_line_get( int pos)
 	}
 
 	return NULL;
+}
+
+static int lu_line_length( void)
+{
+	if( LU_FILE)
+	{
+	t_line *line = lu_line_get(0);
+	if( !line) return 0;
+	else
+	{
+		if( line->data) { return strlen( line->data); }
+		else return 0;
+	}
+	}
+	else
+		return 0;
 }
 
 static char lu_get_char_under_cursor()
@@ -474,11 +511,12 @@ void lu_editor_keymap( int key)
 				case 19: lu_editor_cmd_save(); break;	// S
 				case 5: lu_editor_cmd_exec(); break;	// E
 				case 15: lu_editor_cmd_file_open(); break;	// O
-				case 20: lu_editor_stroke_rendering = !lu_editor_stroke_rendering; break;	// T
+				case 20: lu_switch_rendering(); break;	// T
 				case 1: lu_lua_exec_auto(); break;	// A
 
 				case 14:lu_switch(&lu_use_number); break;	// N
 				case 4: lu_switch(&lu_use_debug); break; // D
+				case 6: lu_switch(&lu_use_autofocus); break;	// F
 
 				case TABKEY: lu_editor_close( C); break;
 
@@ -647,7 +685,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	int x=0;
 	char *letter;
 	int b;
-	if( lu_editor_stroke_rendering) b = (int) '_';
+	if( lu_is_render( LU_RENDER_STROKE)) b = (int) '_';
 	else b = 2;
 
 	for( letter = string; *letter; letter++)
@@ -668,15 +706,15 @@ void lu_editor_draw_line( char *string, int y, int blink)
 			}
 			else
 			{
-				if( lu_editor_ttf_rendering)
+				if( lu_is_render(LU_RENDER_TTF))
 				{
 					lu_draw_cursor();
 				}
 				else
 				{
-					if( lu_editor_stroke_rendering) glColor3f(.5,.5,.5);
+					if( lu_is_render( LU_RENDER_STROKE)) glColor3f(.5,.5,.5);
 					lu_func_draw_letter( b);
-					if( lu_editor_stroke_rendering) glColor3f(1,1,1);
+					if( lu_is_render( LU_RENDER_STROKE)) glColor3f(1,1,1);
 				}
 			}
 		}
@@ -699,7 +737,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 	// end of line
 	if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 	{
-		if( lu_editor_ttf_rendering)
+		if( lu_is_render(LU_RENDER_TTF))
 		{
 			lu_draw_cursor();
 		}
@@ -715,11 +753,11 @@ void lu_editor_draw_line_empty( int lx, int ly)
 {
 	if( lu_cursor_y == ly && lu_editor_cursor_blink())
 	{
-		if (lu_editor_ttf_rendering)
+		if( lu_is_render(LU_RENDER_TTF))
 		{
 			lu_draw_cursor();
 		}
-		else if( lu_editor_stroke_rendering)
+		else if( lu_is_render( LU_RENDER_STROKE))
 		{
 			glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, '_');
 		}
@@ -778,11 +816,11 @@ void lu_editor_init( t_context *C)
 	int h = 20;
 	lu_editor_line_count = (( wh - lu_editor_margin_top) / h) - lu_console_line_count;
 
-	if( lu_editor_ttf_rendering)
+	if( lu_is_render(LU_RENDER_TTF))
 	{
 		lu_func_draw_letter = lu_draw_letter_ttf;
 	}
-	else if(lu_editor_stroke_rendering)
+	else if(lu_is_render( LU_RENDER_STROKE))
 	{
 		lu_func_draw_letter = lu_draw_letter_vector;
 	}
@@ -792,19 +830,99 @@ void lu_editor_init( t_context *C)
 	}	
 }
 
+int old_length = 0;
+int sign;
+
 void lu_editor_draw_start( t_context *C)
 {
 	glPushMatrix();
 	glLoadIdentity();
-	glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
 	glColor3f(1,1,1);
 
-	if( lu_editor_ttf_rendering)
+	if( lu_use_autofocus && lu_is_render( LU_RENDER_TTF))
+	{
+		int db = 0;
+		/* number of characters in first line */
+		int length = lu_line_length();
+
+		/* max auto-focaus characters */
+		int max = 24;
+		if (length > max) length = max;
+		
+		/* set initial state */
+		/* scale is the inverse of length*/
+		float s;
+		float l = (float) length;
+		if (length == 0)
+		{
+			old_length = length;
+			l = 0.01;
+			sign = 1;
+			s = 5;
+		}
+
+		/* if new state */
+		if( old_length != length)
+		{
+			if(db) printf("length:%d\n", length);
+			/* get delta sign */
+			if( length > old_length) sign = -1;
+			else sign = 1;
+
+			/* store state */
+			old_length = length;
+			if( db) printf("sign:%d\n", sign);
+
+		}	
+
+		s =  5.0f - (l * 0.7f); // 5 at max
+		if(s <= 0.1) s = 0.1;
+		if(db)
+		{
+		printf("s:%f\n", s);
+		printf("lu scale:%f\n", LU_SCALE);
+		printf("sign:%d\n", sign);
+		}
+
+		int wh = C->app->window->height;
+		float t =   (float)length / (float) max ;
+		float dt = ((float) wh - 50 ) * (t - 0);
+		if(db)
+		{
+		printf("t:%f\n",t);
+		printf("dt:%f\n",dt);
+		}
+
+		if(sign > 0)
+		{
+			if( LU_SCALE <= s)
+			{
+				LU_SCALE += (LU_SCALE / 10);
+			}
+
+		}
+		else
+		{
+			if( LU_SCALE >= s)
+			{
+				LU_SCALE -= (LU_SCALE / 10);
+			}
+		}
+		// 5 -> 0.1
+
+		glTranslatef( 50, dt, 0);
+	}
+	else
+	{
+		glTranslatef( 50, C->app->window->height - lu_editor_margin_top, 0);
+	}
+
+	if( lu_is_render(LU_RENDER_TTF))
 	{
 		float _s = .2;
 		glScalef(LU_SCALE*_s,LU_SCALE*_s,LU_SCALE*_s);
 	}
-	else if( lu_editor_stroke_rendering)
+	else if( lu_is_render(LU_RENDER_STROKE))
 	{
 		glScalef(LU_SCALE,LU_SCALE,LU_SCALE);
 	}
@@ -838,11 +956,11 @@ void lu_editor_draw_file( t_context *C)
 
 			glPopMatrix();
 
-			if( lu_editor_ttf_rendering)
+			if( lu_is_render(LU_RENDER_TTF))
 			{
 				txt_ttf_vertical_offset( -1);
 			}
-			else if( lu_editor_stroke_rendering)
+			else if(lu_is_render( LU_RENDER_STROKE))
 			{
 				glTranslatef(0,-180,0);
 			}
@@ -869,7 +987,7 @@ void lu_editor_draw_prompt( t_context *C)
 {
 	lu_editor_draw_start( C);
 	glPushMatrix();
-	char msg[] = ">";
+	char msg[] = "";
 	lu_editor_draw_line( msg, 0, 1);
 	lu_cursor_x = strlen( msg);
 	glPopMatrix();
@@ -879,7 +997,6 @@ void lu_editor_draw_prompt( t_context *C)
 void lu_editor_screen( t_screen *screen)
 {
 	t_context *C = ctx_get();
-
 
 	if( !LU_INIT && LU_LOAD)  lu_editor_file_open();
 
@@ -899,8 +1016,10 @@ t_screen *lu_editor_screen_init( t_context *C)
 	screen->keymap = lu_editor_keymap;
 
 	#ifdef HAVE_TRUETYPE
-	if( txt_ttf_init()) lu_editor_ttf_rendering = 1;
+	txt_ttf_init();
 	#endif
+
+	lu_set_render( LU_RENDER_BITMAP);
 
 	return screen;
 };
