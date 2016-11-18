@@ -663,10 +663,12 @@ static void lu_draw_letter_vector( int letter)
 	glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, letter);
 }
 
+#ifdef HAVE_TRUETYPE
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
 }
+#endif
 
 void lu_editor_draw_line_number( int y)
 {
@@ -818,7 +820,9 @@ void lu_editor_init( t_context *C)
 
 	if( lu_is_render(LU_RENDER_TTF))
 	{
+		#ifdef HAVE_TRUETYPE
 		lu_func_draw_letter = lu_draw_letter_ttf;
+		#endif
 	}
 	else if(lu_is_render( LU_RENDER_STROKE))
 	{
@@ -958,7 +962,9 @@ void lu_editor_draw_file( t_context *C)
 
 			if( lu_is_render(LU_RENDER_TTF))
 			{
+				#ifdef HAVE_TRUETYPE
 				txt_ttf_vertical_offset( -1);
+				#endif
 			}
 			else if(lu_is_render( LU_RENDER_STROKE))
 			{
