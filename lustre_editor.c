@@ -23,7 +23,7 @@
 #include "scene.h"
 #include "lustre.h"
 
-#ifdef HAVE_TRUETYPE
+#ifdef HAVE_FREETYPE
 #include "txt.h"
 #endif
 
@@ -66,6 +66,12 @@ static int lu_use_number = 0;
 static int lu_use_debug = 0;
 static int lu_use_autofocus = 1;
 
+static int LU_HAVE_FREETYPE = 0;
+
+#ifdef HAVE_FREETYPE
+LU_HAVE_FREETYPE = 1;
+#endif
+
 // Utils
 
 void lu_switch( int *target)
@@ -80,7 +86,8 @@ inline void lu_set_render( int render)
 
 void lu_switch_rendering( void)
 {
-	if( LU_RENDER == LU_RENDER_BITMAP) LU_RENDER = LU_RENDER_TTF;
+	if( LU_RENDER == LU_RENDER_BITMAP && LU_HAVE_FREETYPE) LU_RENDER = LU_RENDER_TTF;
+	else if( LU_RENDER == LU_RENDER_BITMAP) LU_RENDER = LU_RENDER_STROKE;
 	else if( LU_RENDER == LU_RENDER_TTF) LU_RENDER = LU_RENDER_STROKE;
 	else LU_RENDER = LU_RENDER_BITMAP;
 }
@@ -663,7 +670,7 @@ static void lu_draw_letter_vector( int letter)
 	glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, letter);
 }
 
-#ifdef HAVE_TRUETYPE
+#ifdef HAVE_FREETYPE
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
@@ -818,9 +825,9 @@ void lu_editor_init( t_context *C)
 	int h = 20;
 	lu_editor_line_count = (( wh - lu_editor_margin_top) / h) - lu_console_line_count;
 
-	if( lu_is_render(LU_RENDER_TTF))
+	if( lu_is_render(LU_RENDER_TTF) && LU_HAVE_FREETYPE)
 	{
-		#ifdef HAVE_TRUETYPE
+		#ifdef HAVE_FREETYPE
 		lu_func_draw_letter = lu_draw_letter_ttf;
 		#endif
 	}
@@ -960,9 +967,9 @@ void lu_editor_draw_file( t_context *C)
 
 			glPopMatrix();
 
-			if( lu_is_render(LU_RENDER_TTF))
+			if( lu_is_render(LU_RENDER_TTF) && LU_HAVE_FREETYPE)
 			{
-				#ifdef HAVE_TRUETYPE
+				#ifdef HAVE_FREETYPE
 				txt_ttf_vertical_offset( -1);
 				#endif
 			}
@@ -1021,7 +1028,7 @@ t_screen *lu_editor_screen_init( t_context *C)
 	t_screen *screen = screen_default( "screen_editor", lu_editor_screen);
 	screen->keymap = lu_editor_keymap;
 
-	#ifdef HAVE_TRUETYPE
+	#ifdef HAVE_FREETYPE
 	txt_ttf_init();
 	#endif
 
