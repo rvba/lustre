@@ -25,6 +25,9 @@
 
 #ifdef HAVE_FREETYPE
 #include "txt.h"
+static int LU_HAVE_FREETYPE = 1;
+#else
+static int LU_HAVE_FREETYPE = 0;
 #endif
 
 #define LU_EDITOR_COMMAND 1
@@ -66,11 +69,8 @@ static int lu_use_number = 0;
 static int lu_use_debug = 0;
 static int lu_use_autofocus = 1;
 
-static int LU_HAVE_FREETYPE = 0;
 
-#ifdef HAVE_FREETYPE
-LU_HAVE_FREETYPE = 1;
-#endif
+
 
 // Utils
 
