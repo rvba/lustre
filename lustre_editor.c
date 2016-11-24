@@ -42,7 +42,11 @@ static int LU_HAVE_FREETYPE = 0;
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
-static float LU_SCALE = .1;
+
+//static float LU_SCALE = .1;
+static float LU_SCALE = 1;
+static float LU_FOCUS_X = 0;
+static float LU_FOCUS_Y = 0;
 
 static int LU_MODE = LU_EDITOR_COMMAND;
 static int lu_cursor_x = 0;
@@ -70,7 +74,7 @@ static int lu_use_number = 0;
 static int lu_use_debug = 0;
 static int lu_use_autofocus = 1;
 
-
+static t_screen *LU_SCREEN = NULL;
 
 
 // Utils
@@ -675,6 +679,9 @@ static void lu_draw_letter_vector( int letter)
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
+	float w = txt_ttf_glyph_get_width(letter);
+	float h = txt_ttf_glyph_get_height(letter);
+	lu_bbox_do( w,h);
 	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
 }
 
@@ -683,12 +690,20 @@ float LU_BBOX_MAX_X = 0;
 float LU_BBOX_MIN_Y = 0;
 float LU_BBOX_MAX_Y = 0;
 
-void lu_do_bbox(float x, float y)
+void lu_bbox_do(float x, float y)
 {
 	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
 	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
 	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
 	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
+}
+
+void lu_bbox_reset( void)
+{
+	LU_BBOX_MIN_X = 0;
+	LU_BBOX_MAX_X = 0;
+	LU_BBOX_MIN_Y = 0;
+	LU_BBOX_MAX_Y = 0;
 }
 #endif
 
@@ -867,6 +882,7 @@ void lu_editor_draw_start( t_context *C)
 
 	if( lu_use_autofocus && lu_is_render( LU_RENDER_TTF))
 	{
+		#if 0
 		int db = 0;
 		/* number of characters in first line */
 		int length = lu_line_length();
@@ -938,6 +954,62 @@ void lu_editor_draw_start( t_context *C)
 		// 5 -> 0.1
 
 		glTranslatef( 50, dt, 0);
+		#endif
+
+		/* debug screen */
+		t_viewport *v = screen_viewport_get( LU_SCREEN);
+
+		glDisable(GL_LIGHTING);
+		glDisable(GL_DEPTH_TEST);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glPolygonMode(GL_FRONT,GL_FILL);
+
+		double margin = 1;
+
+		glPushMatrix();
+		glLoadIdentity();
+		glColor3f(1,1,1);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f( v->left + margin, v->top - margin ,0);
+		glVertex3f( v->right - margin, v->top - margin ,0);
+		glVertex3f( v->right - margin , v->bottom + margin ,0);
+		glVertex3f( v->left + margin , v->bottom + margin ,0);
+		glEnd();
+
+		glPushMatrix();
+		glLoadIdentity();
+		glColor3f(1,1,1);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f( LU_BBOX_MIN_X, LU_BBOX_MAX_Y,0);
+		glVertex3f( LU_BBOX_MAX_X, LU_BBOX_MAX_Y,0);
+		glVertex3f( LU_BBOX_MAX_X, LU_BBOX_MAX_Y,0);
+		glVertex3f( LU_BBOX_MIN_X, LU_BBOX_MIN_Y,0);
+		glEnd();
+
+
+		/*
+		glColor3f(0,1,0);
+		glPushMatrix();
+		glTranslatef(v->left,0,0);
+		glScalef(0.001f,0.001f,1);
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(0,-LU_AUTO_HEIGHT/2.0f,0);
+		glVertex3f(LU_AUTO_WIDTH,-LU_AUTO_HEIGHT/2.0f,0);
+		glVertex3f(LU_AUTO_WIDTH,LU_AUTO_HEIGHT/2.0f,0);
+		glVertex3f(0,LU_AUTO_HEIGHT/2.0f,0);
+		glEnd();
+		glPopMatrix();
+		*/
+
+		glTranslatef(v->left,0,0);
+		//float s = 1 ;
+		float s = 0.1f;
+		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
+		glTranslatef( LU_FOCUS_X, LU_FOCUS_Y,0);
+
+		lu_bbox_reset();
+
+		//printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
 	}
 	else
 	{
@@ -1033,33 +1105,7 @@ void lu_editor_screen( t_screen *screen)
 	lu_editor_init( C);
 	glDisable(GL_POINT);
 
-	/* debug screen */
-	t_viewport *v = screen_viewport_get( screen);
-
-	glDisable(GL_LIGHTING);
-	glDisable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPolygonMode(GL_FRONT,GL_FILL);
-
-	double margin = 1;
-
-	glPushMatrix();
-	glLoadIdentity();
-	glColor3f(1,1,1);
-	glBegin(GL_LINE_LOOP);
-	glVertex3f( v->left + margin, v->top - margin ,0);
-	glVertex3f( v->right - margin, v->top - margin ,0);
-	glVertex3f( v->right - margin , v->bottom + margin ,0);
-	glVertex3f( v->left + margin , v->bottom + margin ,0);
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3f(0,0,0);
-	glVertex3f(100,0,0);
-	glEnd();
-	glPopMatrix();
-
-	//printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
+	LU_SCREEN = screen;
 
 	if( LU_FILE)	lu_editor_draw_file( C);
 	else		lu_editor_draw_prompt( C);
