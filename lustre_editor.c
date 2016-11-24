@@ -20,6 +20,7 @@
 #include "base.h"
 #include "node.h"
 #include "screen.h"
+#include "viewport.h"
 #include "scene.h"
 #include "lustre.h"
 
@@ -674,6 +675,20 @@ static void lu_draw_letter_vector( int letter)
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
+	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
+}
+
+float LU_BBOX_MIN_X = 0;
+float LU_BBOX_MAX_X = 0;
+float LU_BBOX_MIN_Y = 0;
+float LU_BBOX_MAX_Y = 0;
+
+void lu_do_bbox(float x, float y)
+{
+	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
+	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
+	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
+	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
 }
 #endif
 
@@ -856,6 +871,7 @@ void lu_editor_draw_start( t_context *C)
 		/* number of characters in first line */
 		int length = lu_line_length();
 
+
 		/* max auto-focaus characters */
 		int max = 24;
 		if (length > max) length = max;
@@ -1016,6 +1032,34 @@ void lu_editor_screen( t_screen *screen)
 	screen_switch_2d( screen);
 	lu_editor_init( C);
 	glDisable(GL_POINT);
+
+	/* debug screen */
+	t_viewport *v = screen_viewport_get( screen);
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glPolygonMode(GL_FRONT,GL_FILL);
+
+	double margin = 1;
+
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(1,1,1);
+	glBegin(GL_LINE_LOOP);
+	glVertex3f( v->left + margin, v->top - margin ,0);
+	glVertex3f( v->right - margin, v->top - margin ,0);
+	glVertex3f( v->right - margin , v->bottom + margin ,0);
+	glVertex3f( v->left + margin , v->bottom + margin ,0);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0,0,0);
+	glVertex3f(100,0,0);
+	glEnd();
+	glPopMatrix();
+
+	//printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
 
 	if( LU_FILE)	lu_editor_draw_file( C);
 	else		lu_editor_draw_prompt( C);
