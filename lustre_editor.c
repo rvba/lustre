@@ -55,6 +55,10 @@ static int lu_cursor_current_line = 0;
 
 static int lu_editor_line_count;
 static int lu_line_height = 20;
+/* global dim for mono types */
+static float lu_char_height = 0;
+static float lu_char_width = 0;
+
 static int lu_console_line_count = 3;
 static int lu_editor_margin_top = 50;
 
@@ -704,9 +708,7 @@ void lu_bbox_reset( void)
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
-	float w = txt_ttf_glyph_get_width(letter);
-	float h = txt_ttf_glyph_get_height(letter);
-	lu_bbox_do( w,h);
+	lu_bbox_do( lu_char_width, lu_char_height);
 	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
 }
 #endif
@@ -980,6 +982,7 @@ void lu_editor_draw_start( t_context *C)
 		glVertex3f( v->left + margin , v->bottom + margin ,0);
 		glEnd();
 
+		/*
 		glPushMatrix();
 		glLoadIdentity();
 		glColor3f(1,1,1);
@@ -989,6 +992,7 @@ void lu_editor_draw_start( t_context *C)
 		glVertex3f( LU_BBOX_MAX_X, LU_BBOX_MAX_Y,0);
 		glVertex3f( LU_BBOX_MIN_X, LU_BBOX_MIN_Y,0);
 		glEnd();
+		*/
 
 
 		/*
@@ -1005,11 +1009,13 @@ void lu_editor_draw_start( t_context *C)
 		glPopMatrix();
 		*/
 
-		glTranslatef(v->left,0,0);
+		//glTranslatef(v->left,0,0);
+		glTranslatef(v->left,v->top,0);
 		//float s = 1 ;
 		float s = 0.1f;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
-		glTranslatef( LU_FOCUS_X, LU_FOCUS_Y,0);
+		//glTranslatef(0,-lu_char_height*LU_SCALE,0);
+		//glTranslatef( LU_FOCUS_X, LU_FOCUS_Y,0);
 
 		lu_bbox_reset();
 
@@ -1123,7 +1129,15 @@ t_screen *lu_editor_screen_init( t_context *C)
 	screen->keymap = lu_editor_keymap;
 
 	#ifdef HAVE_FREETYPE
-	if( ! txt_ttf_init()) LU_HAVE_FREETYPE=0;
+	if( ! txt_ttf_init())
+	{
+		LU_HAVE_FREETYPE=0;
+	}
+	else
+	{
+		lu_char_width = txt_ttf_glyph_get_width((int)'a');
+		lu_char_height = txt_ttf_glyph_get_height((int)'a');
+	}	
 	#endif
 
 	lu_set_render( LU_RENDER_BITMAP);
