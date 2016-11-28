@@ -142,6 +142,8 @@ t_line *lu_line_get( int pos)
 	return NULL;
 }
 
+/*...not used...*/
+#if 0
 static int lu_line_length( void)
 {
 	if( LU_FILE)
@@ -157,6 +159,7 @@ static int lu_line_length( void)
 	else
 		return 0;
 }
+#endif
 
 static char lu_get_char_under_cursor()
 {
@@ -676,14 +679,6 @@ static void lu_draw_letter_vector( int letter)
 }
 
 #ifdef HAVE_FREETYPE
-static void lu_draw_letter_ttf( int letter)
-{
-	txt_ttf_draw_char( letter);
-	float w = txt_ttf_glyph_get_width(letter);
-	float h = txt_ttf_glyph_get_height(letter);
-	lu_bbox_do( w,h);
-	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
-}
 
 float LU_BBOX_MIN_X = 0;
 float LU_BBOX_MAX_X = 0;
@@ -704,6 +699,15 @@ void lu_bbox_reset( void)
 	LU_BBOX_MAX_X = 0;
 	LU_BBOX_MIN_Y = 0;
 	LU_BBOX_MAX_Y = 0;
+}
+
+static void lu_draw_letter_ttf( int letter)
+{
+	txt_ttf_draw_char( letter);
+	float w = txt_ttf_glyph_get_width(letter);
+	float h = txt_ttf_glyph_get_height(letter);
+	lu_bbox_do( w,h);
+	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
 }
 #endif
 
