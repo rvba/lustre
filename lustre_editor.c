@@ -1119,7 +1119,7 @@ t_screen *lu_editor_screen_init( t_context *C)
 	screen->keymap = lu_editor_keymap;
 
 	#ifdef HAVE_FREETYPE
-	txt_ttf_init();
+	if( ! txt_ttf_init()) LU_HAVE_FREETYPE=0;
 	#endif
 
 	lu_set_render( LU_RENDER_BITMAP);
