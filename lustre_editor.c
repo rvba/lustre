@@ -898,9 +898,12 @@ void lu_editor_draw_start( t_context *C)
 
 		double margin = 1;
 
+		/*
 		glPushMatrix();
 		glLoadIdentity();
 		glColor3f(1,1,1);
+		*/
+
 		glBegin(GL_LINE_LOOP);
 		glVertex3f( v->left + margin, v->top - margin ,0);
 		glVertex3f( v->right - margin, v->top - margin ,0);
@@ -936,7 +939,7 @@ void lu_editor_draw_start( t_context *C)
 		*/
 
 		//glTranslatef(v->left,0,0);
-		glTranslatef(v->left,v->top,0);
+		glTranslatef(v->left,v->top - 100 ,0);
 		//float s = 1 ;
 		float s = 0.1f;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
