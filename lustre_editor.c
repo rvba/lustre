@@ -45,8 +45,8 @@ static int LU_EDITOR_DEBUG = 0;
 
 //static float LU_SCALE = .1;
 static float LU_SCALE = 1;
-static float LU_FOCUS_X = 0;
-static float LU_FOCUS_Y = 0;
+//static float LU_FOCUS_X = 0;
+//static float LU_FOCUS_Y = 0;
 
 static int LU_MODE = LU_EDITOR_COMMAND;
 static int lu_cursor_x = 0;
@@ -888,80 +888,6 @@ void lu_editor_draw_start( t_context *C)
 
 	if( lu_use_autofocus && lu_is_render( LU_RENDER_TTF))
 	{
-		#if 0
-		int db = 0;
-		/* number of characters in first line */
-		int length = lu_line_length();
-
-
-		/* max auto-focaus characters */
-		int max = 24;
-		if (length > max) length = max;
-		
-		/* set initial state */
-		/* scale is the inverse of length*/
-		float s;
-		float l = (float) length;
-		if (length == 0)
-		{
-			old_length = length;
-			l = 0.01;
-			sign = 1;
-			s = 5;
-		}
-
-		/* if new state */
-		if( old_length != length)
-		{
-			if(db) printf("length:%d\n", length);
-			/* get delta sign */
-			if( length > old_length) sign = -1;
-			else sign = 1;
-
-			/* store state */
-			old_length = length;
-			if( db) printf("sign:%d\n", sign);
-
-		}	
-
-		s =  5.0f - (l * 0.7f); // 5 at max
-		if(s <= 0.1) s = 0.1;
-		if(db)
-		{
-		printf("s:%f\n", s);
-		printf("lu scale:%f\n", LU_SCALE);
-		printf("sign:%d\n", sign);
-		}
-
-		int wh = C->app->window->height;
-		float t =   (float)length / (float) max ;
-		float dt = ((float) wh - 50 ) * (t - 0);
-		if(db)
-		{
-		printf("t:%f\n",t);
-		printf("dt:%f\n",dt);
-		}
-
-		if(sign > 0)
-		{
-			if( LU_SCALE <= s)
-			{
-				LU_SCALE += (LU_SCALE / 10);
-			}
-
-		}
-		else
-		{
-			if( LU_SCALE >= s)
-			{
-				LU_SCALE -= (LU_SCALE / 10);
-			}
-		}
-		// 5 -> 0.1
-
-		glTranslatef( 50, dt, 0);
-		#endif
-
 		/* debug screen */
 		t_viewport *v = screen_viewport_get( LU_SCREEN);
 
@@ -1140,7 +1066,7 @@ t_screen *lu_editor_screen_init( t_context *C)
 	}	
 	#endif
 
-	lu_set_render( LU_RENDER_BITMAP);
+	lu_set_render( LU_RENDER_TTF);
 
 	return screen;
 };
