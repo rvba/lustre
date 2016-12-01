@@ -55,6 +55,7 @@ static int lu_cursor_current_line = 0;
 
 static int lu_editor_line_count;
 static int lu_line_height = 20;
+
 /* global dim for mono types */
 static float lu_char_height = 0;
 static float lu_char_width = 0;
@@ -880,6 +881,23 @@ void lu_editor_init( t_context *C)
 int old_length = 0;
 int sign;
 
+
+void lu_db( void)
+{
+	static int done = 0;
+	if( !done)
+	{
+		done = 1;
+		t_viewport *v = screen_viewport_get( LU_SCREEN);
+		printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
+		printf("a: %f %f\n",txt_ttf_glyph_get_width((int)'a'), txt_ttf_glyph_get_height('a'));
+		printf("b: %f %f\n",txt_ttf_glyph_get_width((int)'b'), txt_ttf_glyph_get_height('b'));
+		printf("c: %f %f\n",txt_ttf_glyph_get_width((int)'c'), txt_ttf_glyph_get_height('c'));
+		printf("d: %f %f\n",txt_ttf_glyph_get_width((int)'d'), txt_ttf_glyph_get_height('d'));
+		printf("e: %f %f\n",txt_ttf_glyph_get_width((int)'e'), txt_ttf_glyph_get_height('e'));
+	}
+}
+
 void lu_editor_draw_start( t_context *C)
 {
 	glPushMatrix();
@@ -898,12 +916,6 @@ void lu_editor_draw_start( t_context *C)
 
 		double margin = 1;
 
-		/*
-		glPushMatrix();
-		glLoadIdentity();
-		glColor3f(1,1,1);
-		*/
-
 		glBegin(GL_LINE_LOOP);
 		glVertex3f( v->left + margin, v->top - margin ,0);
 		glVertex3f( v->right - margin, v->top - margin ,0);
@@ -911,44 +923,13 @@ void lu_editor_draw_start( t_context *C)
 		glVertex3f( v->left + margin , v->bottom + margin ,0);
 		glEnd();
 
-		/*
-		glPushMatrix();
-		glLoadIdentity();
-		glColor3f(1,1,1);
-		glBegin(GL_LINE_LOOP);
-		glVertex3f( LU_BBOX_MIN_X, LU_BBOX_MAX_Y,0);
-		glVertex3f( LU_BBOX_MAX_X, LU_BBOX_MAX_Y,0);
-		glVertex3f( LU_BBOX_MAX_X, LU_BBOX_MAX_Y,0);
-		glVertex3f( LU_BBOX_MIN_X, LU_BBOX_MIN_Y,0);
-		glEnd();
-		*/
-
-
-		/*
-		glColor3f(0,1,0);
-		glPushMatrix();
-		glTranslatef(v->left,0,0);
-		glScalef(0.001f,0.001f,1);
-		glBegin(GL_LINE_LOOP);
-		glVertex3f(0,-LU_AUTO_HEIGHT/2.0f,0);
-		glVertex3f(LU_AUTO_WIDTH,-LU_AUTO_HEIGHT/2.0f,0);
-		glVertex3f(LU_AUTO_WIDTH,LU_AUTO_HEIGHT/2.0f,0);
-		glVertex3f(0,LU_AUTO_HEIGHT/2.0f,0);
-		glEnd();
-		glPopMatrix();
-		*/
-
-		//glTranslatef(v->left,0,0);
 		glTranslatef(v->left,v->top - 100 ,0);
-		//float s = 1 ;
-		float s = 0.1f;
+		//float s = 0.1f;
+		float s = 1;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
-		//glTranslatef(0,-lu_char_height*LU_SCALE,0);
-		//glTranslatef( LU_FOCUS_X, LU_FOCUS_Y,0);
-
 		lu_bbox_reset();
+		lu_db();
 
-		//printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
 	}
 	else
 	{
@@ -957,8 +938,10 @@ void lu_editor_draw_start( t_context *C)
 
 	if( lu_is_render(LU_RENDER_TTF))
 	{
+		/*
 		float _s = .2;
 		glScalef(LU_SCALE*_s,LU_SCALE*_s,LU_SCALE*_s);
+		*/
 	}
 	else if( lu_is_render(LU_RENDER_STROKE))
 	{
@@ -1064,12 +1047,12 @@ t_screen *lu_editor_screen_init( t_context *C)
 	}
 	else
 	{
-		lu_char_width = txt_ttf_glyph_get_width((int)'a');
-		lu_char_height = txt_ttf_glyph_get_height((int)'a');
+		lu_char_width = txt_ttf_glyph_get_width((int)'b');
+		lu_char_height = txt_ttf_glyph_get_height((int)'b');
 	}	
 	#endif
 
-	lu_set_render( LU_RENDER_TTF);
+	lu_set_render( LU_RENDER_BITMAP);
 
 	return screen;
 };
