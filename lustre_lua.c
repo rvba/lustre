@@ -30,6 +30,10 @@
 #include "stdmath.h"
 #include "stdmath_lua.h"
 
+#ifdef HAVE_TINYSPLINE
+#include "stone_spline_lua.h"
+#endif
+
 lua_State *LU_LUA_STATE = NULL;
 char LU_FILE_PATH[4096];
 int lua_file_open = 0;
@@ -281,6 +285,10 @@ int lustre_init( void)
 	lua_stone_register( LU_LUA_STATE);
 	lua_mat4_register( LU_LUA_STATE);
 	lua_stdmath_register( LU_LUA_STATE);
+
+	#ifdef HAVE_TINYSPLINE
+	lua_stone_spline_register( LU_LUA_STATE);
+	#endif
 
 	STONE_BUILD_FUNCTION = lu_lib_object_build;
 
