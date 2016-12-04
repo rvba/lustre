@@ -57,8 +57,10 @@ static int lu_editor_line_count;
 static int lu_line_height = 20;
 
 /* global dim for mono types */
+#ifdef HAVE_FREETYPE
 static float lu_char_height = 0;
 static float lu_char_width = 0;
+#endif
 
 static int lu_console_line_count = 3;
 static int lu_editor_margin_top = 50;
@@ -888,6 +890,7 @@ void lu_db( void)
 	if( !done)
 	{
 		done = 1;
+		#ifdef HAVE_FREETYPE
 		t_viewport *v = screen_viewport_get( LU_SCREEN);
 		printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
 		printf("a: %f %f\n",txt_ttf_glyph_get_width((int)'a'), txt_ttf_glyph_get_height('a'));
@@ -895,6 +898,7 @@ void lu_db( void)
 		printf("c: %f %f\n",txt_ttf_glyph_get_width((int)'c'), txt_ttf_glyph_get_height('c'));
 		printf("d: %f %f\n",txt_ttf_glyph_get_width((int)'d'), txt_ttf_glyph_get_height('d'));
 		printf("e: %f %f\n",txt_ttf_glyph_get_width((int)'e'), txt_ttf_glyph_get_height('e'));
+		#endif
 	}
 }
 
@@ -906,6 +910,7 @@ void lu_editor_draw_start( t_context *C)
 
 	if( lu_use_autofocus && lu_is_render( LU_RENDER_TTF))
 	{
+		#ifdef HAVE_FREETYPE
 		/* debug screen */
 		t_viewport *v = screen_viewport_get( LU_SCREEN);
 
@@ -929,6 +934,7 @@ void lu_editor_draw_start( t_context *C)
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
 		lu_bbox_reset();
 		lu_db();
+		#endif
 
 	}
 	else
