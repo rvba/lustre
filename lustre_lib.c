@@ -150,8 +150,6 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	int *tris = stone_get_tri_buffer( stone, tri_count);
 	int *edges = stone_get_edge_buffer( stone);
 
-	printf("face count %d\n", stone->face_count);
-
 	t_object *object = lua_stone->object = op_add_mesh_data( "stone", 
 			stone->vertex_count,
 			quad_count,
