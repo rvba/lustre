@@ -162,6 +162,29 @@ int lu_lib_mesh_set( lua_State *L)
 	return 0;
 }
 
+int lu_lib_mesh_update( lua_State *L)
+{
+	//printf("[lustre] Update\n");
+	t_context *C = ctx_get();
+
+	const char *name = luaL_checkstring( L, 1);	
+	int indice = luaL_checkinteger( L, 2);
+	float x = luaL_checknumber( L, 3);
+	float y = luaL_checknumber( L, 4);
+	float z = luaL_checknumber( L, 5);
+
+	t_object *object = lu_lib_object_get( C, name);
+	t_mesh *mesh = object->mesh;
+	t_vlst *vlst = mesh->vertex;
+	float *v = ( float *) vlst->data;
+
+	v[indice*3+0] = x;
+	v[indice*3+1] = y;
+	v[indice*3+2] = z;
+
+	return 0;
+}
+
 void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
@@ -221,6 +244,7 @@ void lu_lib_init( lua_State *L)
 {
 	lu_lib_register( L, lu_lib_every_frame, "every_frame");
 	lu_lib_register( L, lu_lib_mesh_set, "set_mesh");
+	lu_lib_register( L, lu_lib_mesh_update, "update_mesh");
 	lu_lib_register( L, lu_lib_time, "time");
 }
 
