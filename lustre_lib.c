@@ -23,11 +23,12 @@
 #include "vlst.h"
 #include "object.h"
 #include "op.h"
+#include "dict.h"
 
 #include "stone.h"
 #include "stone_lua.h"
 
-static t_lst *lu_lib_objects = NULL;
+static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
 int LU_EVERY_FRAME = 0;
 
@@ -41,23 +42,42 @@ int lu_lib_time( lua_State *L)
 
 void lu_lib_object_add( struct Object *obj)
 {
-	lst_add( lu_lib_objects, obj, "obj");
+	if (!lu_lib_objects) lu_lib_objects = dict_make("lustre");
+	t_symbol *symbol = dict_pop(lu_lib_objects,obj->id.name);
+	if( !symbol)
+	{
+		dict_symbol_add( lu_lib_objects, obj->id.name, 0, obj);
+	}
+	else
+	{
+		printf("[lustre] Error can't add existing name: %s\n", obj->id.name);
+	}
 }
 
 void lu_lib_objects_delete( void)
 {
 	t_context *C = ctx_get();
+	t_scene *sc = C->scene;
 
-	if( !lu_lib_objects) lu_lib_objects = lst_new("objects");
-
-	t_link *l;
-	for( l = lu_lib_objects->first; l; l = l->next)
+	if( lu_lib_objects)
 	{
-		t_object *object = ( t_object *) l->data;
-		scene_node_delete( C->scene, object->id.node);
-	}
+		t_dict *dict = lu_lib_objects;
+		if(dict->symbols)
+		{
+			t_link *l;
+			t_symbol *s;
+			for(l=dict->symbols->first;l;l=l->next)
+			{
+				s = l->data;
+				t_object *obj = ( t_object *) s->data;
+				scene_node_delete( C->scene, obj->id.node);
+				scene_delete(sc,s);
+			}
 
-	lst_cleanup( lu_lib_objects);
+			// free list
+			scene_delete(sc,dict->symbols);
+		}
+	}
 }
 
 static t_object *lu_lib_object_get( t_context *C, int id)
