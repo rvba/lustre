@@ -80,21 +80,27 @@ void lu_lib_objects_delete( void)
 	}
 }
 
-static t_object *lu_lib_object_get( t_context *C, int id)
+static t_object *lu_lib_object_get( t_context *C, const char *name)
 {
-	t_lst *lst = scene_lst_get( C->scene, dt_object);
-	if( lst)
+	if( lu_lib_objects)
 	{
-		t_link *link = lst_link_find_by_id( lst, id);
-		if( link)
+		t_symbol *symbol = dict_pop(lu_lib_objects,name);
+		if( symbol)
 		{
-			t_node *node = ( t_node *) link->data;
-			t_object *object = ( t_object *) node->data;
+			t_object *object = ( t_object *) symbol->data;
 			return object;
 		}
+		else
+		{
+			printf("[lustre] Error Object not found %s\n ", name);
+			return NULL;
+		}
 	}
-	
-	return NULL;
+	else
+	{
+		printf("[lustre] Error No object is stored\n ");
+		return NULL;
+	}
 }
 
 int lu_lib_every_frame( lua_State *L)
@@ -108,14 +114,14 @@ int lu_lib_every_frame( lua_State *L)
 
 int lu_lib_mesh_set( lua_State *L)
 {
-	int id = luaL_checkinteger( L, 1);	// Object ID
+	const char *name = luaL_checkstring( L, 1);	// Object ID
 	luaL_checktype( L, 2, LUA_TFUNCTION);	// CFunc
 	lua_tocfunction( L, 2);
 
 	lua_setglobal( L, "call");
 
 	t_context *C = ctx_get();
-	t_object *object = lu_lib_object_get( C, id);
+	t_object *object = lu_lib_object_get( C, name);
 	t_mesh *mesh = object->mesh;
 	t_vlst *vlst = mesh->vertex;
 	int count = vlst->count;
@@ -170,7 +176,7 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	int *tris = stone_get_tri_buffer( stone, tri_count);
 	int *edges = stone_get_edge_buffer( stone);
 
-	t_object *object = lua_stone->object = op_add_mesh_data( "stone", 
+	t_object *object = op_add_mesh_data( stone->name, 
 			stone->vertex_count,
 			quad_count,
 			tri_count,
