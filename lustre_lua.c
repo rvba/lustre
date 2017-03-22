@@ -290,6 +290,10 @@ int lustre_init( void)
 	lua_stone_spline_register( LU_LUA_STATE);
 	#endif
 
+	#ifdef HAVE_LPEG
+	luaopen_lpeg( LU_LUA_STATE);
+	#endif
+
 	STONE_BUILD_FUNCTION = lu_lib_object_build;
 
 	// Scan args
