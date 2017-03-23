@@ -292,6 +292,7 @@ int lustre_init( void)
 
 	#ifdef HAVE_LPEG
 	luaopen_lpeg( LU_LUA_STATE);
+	lua_setglobal( LU_LUA_STATE, "lpeg");
 	#endif
 
 	STONE_BUILD_FUNCTION = lu_lib_object_build;
