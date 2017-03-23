@@ -34,6 +34,10 @@
 #include "stone_spline_lua.h"
 #endif
 
+#ifdef HAVE_LPEG
+#include "lpeg.h"
+#endif
+
 lua_State *LU_LUA_STATE = NULL;
 char LU_FILE_PATH[4096];
 int lua_file_open = 0;
