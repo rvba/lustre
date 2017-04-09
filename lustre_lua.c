@@ -38,6 +38,10 @@
 #include "lpeg.h"
 #endif
 
+#ifdef HAVE_ETHERDREAM
+#include "etherdream_lua.h"
+#endif
+
 lua_State *LU_LUA_STATE = NULL;
 char LU_FILE_PATH[4096];
 int lua_file_open = 0;
@@ -297,6 +301,10 @@ int lustre_init( void)
 	#ifdef HAVE_LPEG
 	luaopen_lpeg( LU_LUA_STATE);
 	lua_setglobal( LU_LUA_STATE, "lpeg");
+	#endif
+
+	#ifdef HAVE_ETHERDREAM
+	lua_etherdream_register( LU_LUA_STATE);
 	#endif
 
 	STONE_BUILD_FUNCTION = lu_lib_object_build;
