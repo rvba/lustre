@@ -74,8 +74,9 @@ void lu_lib_objects_delete( void)
 				scene_delete(sc,s);
 			}
 
-			// free list
-			scene_delete(sc,dict->symbols);
+			// delete dict
+			scene_delete(sc,dict);
+			lu_lib_objects = NULL;
 		}
 	}
 }
