@@ -71,7 +71,6 @@ void lu_lib_objects_delete( void)
 				s = l->data;
 				t_object *obj = ( t_object *) s->data;
 				scene_node_delete( C->scene, obj->id.node);
-				scene_delete(sc,s);
 			}
 
 			// delete dict
