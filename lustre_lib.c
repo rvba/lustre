@@ -188,6 +188,7 @@ int lu_lib_mesh_update( lua_State *L)
 void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
+
 	t_stone *stone = lua_stone->stone;
 	stone_merge( stone, NULL);
 
@@ -208,7 +209,6 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 			tris
 			);
 
-	lu_lib_object_add( object);
 
 	if( edges)
 	{
@@ -229,6 +229,21 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 		op_add_light(NULL);
 		lu_lib_screen_init = 1;
 	}
+
+	if( lua_stone->is_built)
+	{
+		t_object *obj = lu_lib_object_get( C, lua_stone->name);
+		scene_node_delete( C->scene, obj->id.node);
+		t_symbol *symbol = dict_pop(lu_lib_objects, lua_stone->name);
+		symbol->data = object;
+	}
+	else
+	{
+		lu_lib_object_add( object);
+	}
+
+
+	lua_stone->is_built = 1;
 
 	scene_store(C->scene,0);
 
