@@ -255,7 +255,6 @@ void lu_lua_scan_args( t_context *C)
 			char *filename  = (char *) app_get_arg( C->app, 2);
 			if( filename)
 			{
-				printf("loading: %s\n", filename);
 				lu_lua_exec_script( filename);
 			}
 		}

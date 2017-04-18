@@ -495,7 +495,7 @@ void lu_editor_file_open( void)
 	{
 		if( file_open( LU_FILE, "r"))
 		{
-			printf("opening %s\n", LU_FILE_PATH);
+			printf("[lustre] loading %s\n", LU_FILE_PATH);
 			file_read( LU_FILE);
 			file_read_lines(LU_FILE);
 			LU_INIT = 1;
