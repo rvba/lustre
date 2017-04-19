@@ -149,6 +149,62 @@ t_line *lu_line_get( int pos)
 	return NULL;
 }
 
+#ifdef HAVE_FREETYPE
+
+float LU_BBOX_WIDTH = 0;
+float LU_BBOX_HEIGHT = 0;
+
+float LU_BBOX_MIN_X = 0;
+float LU_BBOX_MAX_X = 0;
+float LU_BBOX_MIN_Y = 0;
+float LU_BBOX_MAX_Y = 0;
+
+
+void _lu_bbox_do(float x, float y)
+{
+	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
+	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
+	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
+	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
+	printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
+	printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+}
+
+void lu_bbox_do(float x, float y)
+{
+	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
+	if ( x < LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
+	printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
+	printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+}
+
+
+void lu_bbox_reset( void)
+{
+	LU_BBOX_MIN_X = 0;
+	LU_BBOX_MAX_X = 0;
+	LU_BBOX_MIN_Y = 0;
+	LU_BBOX_MAX_Y = 0;
+}
+
+void lu_bbox_check( void)
+{
+	float var = 0.1;
+	if( (LU_BBOX_MAX_X * LU_SCALE)  < LU_BBOX_WIDTH - 20)
+	{
+		printf("plus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+		LU_SCALE += var;
+
+	}
+	if( (LU_BBOX_MAX_X * LU_SCALE) >= LU_BBOX_WIDTH)
+	{
+		printf("minus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+		LU_SCALE -= var;
+	}
+}
+#endif
+
+
 /*...not used...*/
 #if 0
 static int lu_line_length( void)
@@ -204,7 +260,7 @@ int lu_editor_cursor_blink( void)
 	tt *= 10;
 	long int xxx = (long int) tt;
 	int ty = (int) xxx;
-	if( ty % 4 == 0)
+	if( ty % 8 == 0)
 	{
 		return 0;
 	}
@@ -350,6 +406,7 @@ static void lu_editor_char_delete( int offset)
 			}
 		}
 	}
+	lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height);
 }
 
 static void lu_editor_char_add( int key)
@@ -367,6 +424,7 @@ static void lu_editor_char_add( int key)
 			char c = ( char) key;
 			line_add_data( line, lu_cursor_x, 1, &c);
 			lu_cursor_x++;
+			lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height);
 		}
 	}
 }
@@ -687,31 +745,9 @@ static void lu_draw_letter_vector( int letter)
 
 #ifdef HAVE_FREETYPE
 
-float LU_BBOX_MIN_X = 0;
-float LU_BBOX_MAX_X = 0;
-float LU_BBOX_MIN_Y = 0;
-float LU_BBOX_MAX_Y = 0;
-
-void lu_bbox_do(float x, float y)
-{
-	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
-	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
-	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
-	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
-}
-
-void lu_bbox_reset( void)
-{
-	LU_BBOX_MIN_X = 0;
-	LU_BBOX_MAX_X = 0;
-	LU_BBOX_MIN_Y = 0;
-	LU_BBOX_MAX_Y = 0;
-}
-
 static void lu_draw_letter_ttf( int letter)
 {
 	txt_ttf_draw_char( letter);
-	lu_bbox_do( lu_char_width, lu_char_height);
 	//printf("letter %c width: %f\n", (char) letter, txt_ttf_glyph_get_width( letter)); 
 }
 #endif
@@ -954,7 +990,6 @@ void lu_editor_draw_start( t_context *C)
 		//float s = 0.1f;
 		float s = 1;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
-		lu_bbox_reset();
 		lu_db();
 		#endif
 
@@ -1030,6 +1065,7 @@ void lu_editor_draw_file( t_context *C)
 
 
 	lu_editor_draw_console( C);
+	lu_bbox_check();
 
 	glPopMatrix();
 }
@@ -1044,6 +1080,7 @@ void lu_editor_draw_prompt( t_context *C)
 	glPopMatrix();
 	glPopMatrix();
 }
+int iinit = 0;
 
 void lu_editor_screen( t_screen *screen)
 {
@@ -1061,6 +1098,17 @@ void lu_editor_screen( t_screen *screen)
 	else		lu_editor_draw_prompt( C);
 
 	glEnable(GL_POINT);
+
+	if(!iinit)
+	{
+		iinit = 1;
+
+		t_viewport *v = screen_viewport_get( LU_SCREEN);
+		lu_bbox_reset();
+		LU_BBOX_WIDTH = v->right;
+		LU_BBOX_HEIGHT = v->top;
+		printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
+	}
 }
 
 t_screen *lu_editor_screen_init( t_context *C)
@@ -1078,6 +1126,7 @@ t_screen *lu_editor_screen_init( t_context *C)
 		lu_char_width = txt_ttf_glyph_get_width((int)'b');
 		lu_char_height = txt_ttf_glyph_get_height((int)'b');
 	}	
+
 	#endif
 
 	lu_set_render( LU_RENDER_BITMAP);
