@@ -892,7 +892,8 @@ void lu_db( void)
 		done = 1;
 		#ifdef HAVE_FREETYPE
 		t_viewport *v = screen_viewport_get( LU_SCREEN);
-		printf("%f %f %f %f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
+		printf("viewport values:\n");
+		printf("left:%f right:%f bottom:%f top:%f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
 		printf("a: %f %f\n",txt_ttf_glyph_get_width((int)'a'), txt_ttf_glyph_get_height('a'));
 		printf("b: %f %f\n",txt_ttf_glyph_get_width((int)'b'), txt_ttf_glyph_get_height('b'));
 		printf("c: %f %f\n",txt_ttf_glyph_get_width((int)'c'), txt_ttf_glyph_get_height('c'));
@@ -921,6 +922,7 @@ void lu_editor_draw_start( t_context *C)
 
 		double margin = 1;
 
+		/* Draw Frame */
 		glBegin(GL_LINE_LOOP);
 		glVertex3f( v->left + margin, v->top - margin ,0);
 		glVertex3f( v->right - margin, v->top - margin ,0);
@@ -928,7 +930,7 @@ void lu_editor_draw_start( t_context *C)
 		glVertex3f( v->left + margin , v->bottom + margin ,0);
 		glEnd();
 
-		glTranslatef(v->left,v->top - 100 ,0);
+		//glTranslatef(v->left,v->top - 100 ,0);
 		//float s = 0.1f;
 		float s = 1;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
