@@ -741,6 +741,26 @@ void lu_editor_draw_line( char *string, int y, int blink)
 		int c = ( int) *letter;
 
 		// lu_editor_cursor_blink
+		
+		if( lu_is_render(LU_RENDER_TTF))
+		{
+			if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
+				lu_draw_cursor();
+
+			if( c == 9 )
+			{
+				lu_func_draw_letter( 32);
+				lu_func_draw_letter( 32);
+				lu_func_draw_letter( 32);
+				lu_func_draw_letter( 32);
+
+			}
+			else
+			{
+				lu_func_draw_letter( c);
+			}
+		}
+		else
 		if( blink && lu_cursor_x == x && lu_cursor_y == y && lu_editor_cursor_blink())
 		{
 			//tab
