@@ -166,16 +166,22 @@ void _lu_bbox_do(float x, float y)
 	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
 	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
 	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
-	printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
-	printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+	if(LU_EDITOR_DEBUG)
+	{
+		printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
+		printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+	}
 }
 
 void lu_bbox_do(float x, float y)
 {
 	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
 	if ( x < LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
-	printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
-	printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+	if(LU_EDITOR_DEBUG)
+	{
+		printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
+		printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+	}
 }
 
 
@@ -192,12 +198,14 @@ void lu_bbox_check( void)
 	float var = 0.1;
 	if( (LU_BBOX_MAX_X * LU_SCALE)  < LU_BBOX_WIDTH - 20)
 	{
-		printf("plus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+		if(LU_EDITOR_DEBUG)
+			printf("plus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
 		LU_SCALE += var;
 
 	}
 	if( (LU_BBOX_MAX_X * LU_SCALE) >= LU_BBOX_WIDTH)
 	{
+		if(LU_EDITOR_DEBUG)
 		printf("minus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
 		LU_SCALE -= var;
 	}
@@ -1107,7 +1115,8 @@ void lu_editor_screen( t_screen *screen)
 		lu_bbox_reset();
 		LU_BBOX_WIDTH = v->right;
 		LU_BBOX_HEIGHT = v->top;
-		printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
+		if(LU_EDITOR_DEBUG)
+			printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
 	}
 }
 
