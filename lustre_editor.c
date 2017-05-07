@@ -44,7 +44,9 @@ int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
 
 //static float LU_SCALE = .1;
-static float LU_SCALE = 1;
+static float LU_SCALE = 0.1;
+static float LU_MIN_SCALE = 0.1;
+static float LU_MAX_SCALE = 10;
 //static float LU_FOCUS_X = 0;
 //static float LU_FOCUS_Y = 0;
 
@@ -159,31 +161,19 @@ float LU_BBOX_MAX_X = 0;
 float LU_BBOX_MIN_Y = 0;
 float LU_BBOX_MAX_Y = 0;
 
-
-void _lu_bbox_do(float x, float y)
-{
-	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
-	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
-	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
-	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
-	if(LU_EDITOR_DEBUG)
-	{
-		printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
-		printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
-	}
-}
-
 void lu_bbox_do(float x, float y)
 {
 	if ( x > LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
-	if ( x < LU_BBOX_MAX_X) LU_BBOX_MAX_X = x;
+	if ( x < LU_BBOX_MIN_X) LU_BBOX_MIN_X = x;
+
+	if ( y > LU_BBOX_MAX_Y) LU_BBOX_MAX_Y = y;
+	if ( y < LU_BBOX_MIN_Y) LU_BBOX_MIN_Y = y;
 	if(LU_EDITOR_DEBUG)
 	{
 		printf("bbox: x:%f y:%f scale:%f \n", x, y, LU_SCALE);
 		printf("check max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
 	}
 }
-
 
 void lu_bbox_reset( void)
 {
@@ -193,22 +183,41 @@ void lu_bbox_reset( void)
 	LU_BBOX_MAX_Y = 0;
 }
 
+void lu_bbox_debug( const char *msg)
+{
+	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) ;
+	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) ;
+	float screen_width = LU_BBOX_WIDTH;
+	float screen_height = LU_BBOX_HEIGHT;
+	printf("%s:: box_width:%f box_height:%f screen_width:%f screen_height:%f\n", msg,box_width,box_height,screen_width,screen_height);
+}
+
 void lu_bbox_check( void)
 {
 	float var = 0.1;
-	if( (LU_BBOX_MAX_X * LU_SCALE)  < LU_BBOX_WIDTH - 20)
-	{
-		if(LU_EDITOR_DEBUG)
-			printf("plus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
-		LU_SCALE += var;
+	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) ;
+	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) ;
+	float screen_width = LU_BBOX_WIDTH;
+	float screen_height = LU_BBOX_HEIGHT;
 
-	}
-	if( (LU_BBOX_MAX_X * LU_SCALE) >= LU_BBOX_WIDTH)
+
+	if( box_width > screen_width  && (box_width > 200))
 	{
-		if(LU_EDITOR_DEBUG)
-		printf("minus:: max_x:%f width:%f\n",LU_BBOX_MAX_X,LU_BBOX_WIDTH);
+		lu_bbox_debug("minus");
 		LU_SCALE -= var;
 	}
+	else if( (box_width < screen_width) )
+	{
+		lu_bbox_debug("plus");
+		LU_SCALE += var;
+	}
+	else
+	{
+		lu_bbox_debug("nope");
+	}
+
+	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
+	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
 }
 #endif
 
@@ -414,7 +423,8 @@ static void lu_editor_char_delete( int offset)
 			}
 		}
 	}
-	lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height);
+
+	//lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height * lu_cursor_y * LU_SCALE);
 }
 
 static void lu_editor_char_add( int key)
@@ -432,7 +442,7 @@ static void lu_editor_char_add( int key)
 			char c = ( char) key;
 			line_add_data( line, lu_cursor_x, 1, &c);
 			lu_cursor_x++;
-			lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height);
+			//lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height * lu_cursor_y * LU_SCALE);
 		}
 	}
 }
@@ -772,7 +782,7 @@ void lu_editor_draw_line_number( int y)
 	lu_func_draw_letter( pos[3]);
 }
 
-void lu_editor_draw_line( char *string, int y, int blink)
+int lu_editor_draw_line( char *string, int y, int blink)
 {
 	int x=0;
 	char *letter;
@@ -858,7 +868,7 @@ void lu_editor_draw_line( char *string, int y, int blink)
 			lu_func_draw_letter( b);
 		}
 	}
-
+	return x;
 }
 
 void lu_editor_draw_line_empty( int lx, int ly)
@@ -1028,6 +1038,8 @@ void lu_editor_draw_file( t_context *C)
 	int y = -20;
 	int lx = 0;
 	int ly = 0;
+	int xcount = 0;
+	int ycount = 1;
 	t_link *l;
 
 	lu_editor_draw_start( C);
@@ -1043,8 +1055,14 @@ void lu_editor_draw_file( t_context *C)
 			if( lu_use_number) lu_editor_draw_line_number( ly + 1);
 			lu_editor_draw_line_color( lx, ly);
 
-			if( *line->data	)	lu_editor_draw_line( line->data, ly, 1);
-			else			lu_editor_draw_line_empty( lx, ly);
+			if( *line->data	)
+			{	
+				xcount = lu_editor_draw_line( line->data, ly, 1);
+			}
+			else
+			{
+				lu_editor_draw_line_empty( lx, ly);
+			}
 
 			glPopMatrix();
 
@@ -1067,12 +1085,18 @@ void lu_editor_draw_file( t_context *C)
 			y -= 20;
 		}
 
+		printf("xcount:%d ycount:%d\n", xcount, ycount);
+		lu_bbox_do( lu_char_width * xcount * LU_SCALE, lu_char_height * ycount * LU_SCALE);
+
 		ly += 1;
 		lx = 0;
+		xcount = 0;
+		ycount += 1;
+
 	}
 
-
 	lu_editor_draw_console( C);
+	//lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height * lu_cursor_y * LU_SCALE);
 	lu_bbox_check();
 
 	glPopMatrix();
