@@ -1198,7 +1198,9 @@ t_screen *lu_editor_screen_init( t_context *C)
 
 	#endif
 
-	lu_set_render( LU_RENDER_TTF);
+	//!editor
+	//lu_set_render( LU_RENDER_TTF);
+	lu_set_render( LU_RENDER_BITMAP);
 
 	return screen;
 };
