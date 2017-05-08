@@ -55,6 +55,9 @@ static int lu_cursor_x = 0;
 static int lu_cursor_y = 0;
 static int lu_cursor_current_line = 0;
 
+static int sx = 0;
+static int sy = 0;
+
 static int lu_editor_line_count;
 static int lu_line_height = 20;
 
@@ -185,36 +188,61 @@ void lu_bbox_reset( void)
 
 void lu_bbox_debug( const char *msg)
 {
+	/*
 	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) ;
 	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) ;
 	float screen_width = LU_BBOX_WIDTH;
 	float screen_height = LU_BBOX_HEIGHT;
-	printf("%s:: box_width:%f box_height:%f screen_width:%f screen_height:%f\n", msg,box_width,box_height,screen_width,screen_height);
+	printf("%s:: sx:%d sy:%d sc:%0.1f bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", msg, sx, sy, LU_SCALE,box_width,box_height,screen_width,screen_height);
+	*/
+	printf("%s", msg);
+
 }
 
 void lu_bbox_check( void)
 {
-	float var = 0.1;
-	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) ;
-	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) ;
+	float var = 0.01;
+	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) * LU_SCALE ;
+	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) * LU_SCALE ;
 	float screen_width = LU_BBOX_WIDTH;
 	float screen_height = LU_BBOX_HEIGHT;
 
+	t_viewport *v = screen_viewport_get( LU_SCREEN);
+	float top = v->top;
+	float width = v->right;
+	screen_height = top;
+	screen_width = width;
 
-	if( box_width > screen_width  && (box_width > 200))
+	//printf("left:%f right:%f \n", v->left, v->right);
+	//if( box_width > screen_width  && (box_width > 200))
+	
+	float error = 10;
+	if( (box_width > (screen_width + error)))
 	{
-		lu_bbox_debug("minus");
+		lu_bbox_debug("w-");
 		LU_SCALE -= var;
 	}
-	else if( (box_width < screen_width) )
+	else if( (box_width < (screen_width - error)))
 	{
-		lu_bbox_debug("plus");
+		lu_bbox_debug("w+");
+		LU_SCALE += var;
+	}
+	else if( box_height > (screen_height + error))
+	{
+		lu_bbox_debug("h-");
+		LU_SCALE -= var;
+	}
+	else if( (box_height < (screen_height - error)))
+	{
+		lu_bbox_debug("h+");
 		LU_SCALE += var;
 	}
 	else
 	{
-		lu_bbox_debug("nope");
+		lu_bbox_debug("_");
 	}
+
+	printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
 
 	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
 	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
@@ -1004,6 +1032,9 @@ void lu_editor_draw_start( t_context *C)
 		glVertex3f( v->left + margin , v->bottom + margin ,0);
 		glEnd();
 
+		//printf("left:%f right:%f %f\n", v->left + margin, v->right - margin);
+		//printf("top:%f bottom:%f \n", v->top - margin, v->bottom + margin );
+
 		//glTranslatef(v->left,v->top - 100 ,0);
 		//float s = 0.1f;
 		float s = 1;
@@ -1043,6 +1074,8 @@ void lu_editor_draw_file( t_context *C)
 	t_link *l;
 
 	lu_editor_draw_start( C);
+
+	lu_bbox_reset();
 
 	for( l = LU_FILE->lines->first; l; l = l->next)
 	{
@@ -1085,8 +1118,11 @@ void lu_editor_draw_file( t_context *C)
 			y -= 20;
 		}
 
-		printf("xcount:%d ycount:%d\n", xcount, ycount);
-		lu_bbox_do( lu_char_width * xcount * LU_SCALE, lu_char_height * ycount * LU_SCALE);
+
+		sy = lu_char_height * ycount * LU_SCALE;
+		sx = lu_char_width * xcount * LU_SCALE;
+		//printf("xcount:%d ycount:%d sx:%f sy:%f\n", xcount, ycount, sx, sy);
+		lu_bbox_do( sx, sy);
 
 		ly += 1;
 		lx = 0;
@@ -1139,7 +1175,7 @@ void lu_editor_screen( t_screen *screen)
 		lu_bbox_reset();
 		LU_BBOX_WIDTH = v->right;
 		LU_BBOX_HEIGHT = v->top;
-		if(LU_EDITOR_DEBUG)
+		//if(LU_EDITOR_DEBUG)
 			printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
 	}
 }
@@ -1162,7 +1198,7 @@ t_screen *lu_editor_screen_init( t_context *C)
 
 	#endif
 
-	lu_set_render( LU_RENDER_BITMAP);
+	lu_set_render( LU_RENDER_TTF);
 
 	return screen;
 };
