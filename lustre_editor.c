@@ -195,7 +195,9 @@ void lu_bbox_debug( const char *msg)
 	float screen_height = LU_BBOX_HEIGHT;
 	printf("%s:: sx:%d sy:%d sc:%0.1f bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", msg, sx, sy, LU_SCALE,box_width,box_height,screen_width,screen_height);
 	*/
-	printf("%s", msg);
+
+	//!editor
+	//printf("%s", msg);
 
 }
 
@@ -242,7 +244,8 @@ void lu_bbox_check( void)
 		lu_bbox_debug("_");
 	}
 
-	printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
+	//!editor
+	//printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
 
 	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
 	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
@@ -1175,7 +1178,7 @@ void lu_editor_screen( t_screen *screen)
 		lu_bbox_reset();
 		LU_BBOX_WIDTH = v->right;
 		LU_BBOX_HEIGHT = v->top;
-		//if(LU_EDITOR_DEBUG)
+		if(LU_EDITOR_DEBUG)
 			printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
 	}
 }
