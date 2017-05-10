@@ -87,6 +87,7 @@ static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
 static int lu_use_debug_bb = 1;
+static int lu_use_debug_bb_frame = 0;
 static int lu_start_ttf = 1;
 static int lu_use_autofocus = 1;
 
@@ -1082,12 +1083,15 @@ void lu_editor_draw_start( t_context *C)
 		double margin = 1;
 
 		/* Draw Frame */
-		glBegin(GL_LINE_LOOP);
-		glVertex3f( v->left + margin, v->top - margin ,0);
-		glVertex3f( v->right - margin, v->top - margin ,0);
-		glVertex3f( v->right - margin , v->bottom + margin ,0);
-		glVertex3f( v->left + margin , v->bottom + margin ,0);
-		glEnd();
+		if(lu_use_debug_bb_frame)
+		{
+			glBegin(GL_LINE_LOOP);
+			glVertex3f( v->left + margin, v->top - margin ,0);
+			glVertex3f( v->right - margin, v->top - margin ,0);
+			glVertex3f( v->right - margin , v->bottom + margin ,0);
+			glVertex3f( v->left + margin , v->bottom + margin ,0);
+			glEnd();
+		}
 
 		//printf("left:%f right:%f %f\n", v->left + margin, v->right - margin);
 		//printf("top:%f bottom:%f \n", v->top - margin, v->bottom + margin );
@@ -1159,7 +1163,7 @@ void lu_editor_draw_file( t_context *C)
 			if( lu_is_render(LU_RENDER_TTF) && LU_HAVE_FREETYPE)
 			{
 				#ifdef HAVE_FREETYPE
-				txt_ttf_vertical_offset( -1);
+				txt_ttf_vertical_offset(1);
 				#endif
 			}
 			else if(lu_is_render( LU_RENDER_STROKE))
