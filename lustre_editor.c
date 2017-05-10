@@ -86,8 +86,8 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
-static int lu_use_debug_bb = 0;
-static int lu_start_ttf = 0;
+static int lu_use_debug_bb = 1;
+static int lu_start_ttf = 1;
 static int lu_use_autofocus = 1;
 
 static t_screen *LU_SCREEN = NULL;
@@ -230,22 +230,26 @@ void lu_bbox_check( void)
 	if( (box_width > (screen_width + error)))
 	{
 		lu_bbox_debug("w-");
-		LU_SCALE -= var;
+		//LU_SCALE -= var;
+		LU_SCALE *= 1 - var;
 	}
 	else if( (box_width < (screen_width - error)))
 	{
 		lu_bbox_debug("w+");
-		LU_SCALE += var;
+		//LU_SCALE += var;
+		LU_SCALE *= 1 + var;
 	}
 	else if( box_height > (screen_height + error))
 	{
 		lu_bbox_debug("h-");
-		LU_SCALE -= var;
+		//LU_SCALE -= var;
+		LU_SCALE *= 1 - var;
 	}
 	else if( (box_height < (screen_height - error)))
 	{
 		lu_bbox_debug("h+");
-		LU_SCALE += var;
+		//LU_SCALE += var;
+		LU_SCALE *= 1 + var;
 	}
 	else
 	{
