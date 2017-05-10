@@ -39,6 +39,8 @@ static int LU_HAVE_FREETYPE = 0;
 #define LU_RENDER_STROKE 2
 #define LU_RENDER_TTF 3
 
+static int LU_FILE_CURRENT = 0;
+t_file *LU_FILES[10] = {NULL};
 t_file *LU_FILE = NULL;
 int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
@@ -570,6 +572,8 @@ static void lu_editor_cmd_file_new( void)
 	file_line_add( LU_FILE, 0, "");
 	LU_INIT = 1;
 	lu_cursor_x = 0;
+	LU_FILES[LU_FILE_CURRENT] = LU_FILE;
+	
 }
 
 static void lu_editor_op_file_open(void)
@@ -626,6 +630,12 @@ void lu_editor_file_open( void)
 	}
 }
 
+void lu_editor_page_change( int page)
+{
+	LU_FILE = LU_FILES[page];
+	LU_FILE_CURRENT = page;
+}
+
 // Keymap
 
 void lu_editor_keymap( int key)
@@ -661,6 +671,7 @@ void lu_editor_keymap( int key)
 					lu_editor_cursor_move( key);
 				break;
 			}
+
 		}
 		else
 		{
@@ -711,6 +722,8 @@ void lu_editor_keymap( int key)
 				{
 					case ESCKEY: LU_MODE = LU_EDITOR_COMMAND; lu_select_init = 0;break;
 					case DELKEY: lu_editor_select_delete(); break;
+
+
 				}
 			}
 
@@ -736,7 +749,23 @@ void lu_editor_keymap( int key)
 					case 43: LU_SCALE += .02; break;
 					case 45: LU_SCALE -= .02; break;
 
+					/* Pages */
+					case 48: /*0*/
+					case 49:
+					case 50:
+					case 51:
+					case 52:
+					case 53:
+					case 54:
+					case 55:
+					case 56:
+					case 57:
+
+						lu_editor_page_change(key-48);
+						;break;
+
 					default: keymap_command( key); break;
+
 				}
 			}
 		}
@@ -760,7 +789,23 @@ void lu_editor_keymap( int key)
 			{
 				case ESCKEY: break;
 				case TABKEY: lu_editor_close( C); break;
+
+					/* Pages */
+					case 48: /*0*/
+					case 49:
+					case 50:
+					case 51:
+					case 52:
+					case 53:
+					case 54:
+					case 55:
+					case 56:
+					case 57:
+
+						lu_editor_page_change(key-48);
+						;break;
 			}
+
 		}
 	}
 }
