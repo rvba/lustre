@@ -45,7 +45,7 @@ static int LU_EDITOR_DEBUG = 0;
 
 //static float LU_SCALE = .1;
 static float LU_SCALE = 0.1;
-static float LU_MIN_SCALE = 0.1;
+static float LU_MIN_SCALE = 0.01;
 static float LU_MAX_SCALE = 10;
 //static float LU_FOCUS_X = 0;
 //static float LU_FOCUS_Y = 0;
@@ -84,6 +84,8 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
+static int lu_use_debug_bb = 0;
+static int lu_start_ttf = 0;
 static int lu_use_autofocus = 1;
 
 static t_screen *LU_SCREEN = NULL;
@@ -196,8 +198,7 @@ void lu_bbox_debug( const char *msg)
 	printf("%s:: sx:%d sy:%d sc:%0.1f bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", msg, sx, sy, LU_SCALE,box_width,box_height,screen_width,screen_height);
 	*/
 
-	//!editor
-	//printf("%s", msg);
+	if( lu_use_debug_bb) printf("%s", msg);
 
 }
 
@@ -206,6 +207,11 @@ void lu_bbox_check( void)
 	float var = 0.01;
 	float box_width = (LU_BBOX_MAX_X - LU_BBOX_MIN_X) * LU_SCALE ;
 	float box_height = (LU_BBOX_MAX_Y - LU_BBOX_MIN_Y) * LU_SCALE ;
+
+	// hack
+	box_width = sx;
+	box_height = sy;
+
 	float screen_width = LU_BBOX_WIDTH;
 	float screen_height = LU_BBOX_HEIGHT;
 
@@ -244,8 +250,7 @@ void lu_bbox_check( void)
 		lu_bbox_debug("_");
 	}
 
-	//!editor
-	//printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
+	if( lu_use_debug_bb) printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
 
 	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
 	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
@@ -1201,9 +1206,8 @@ t_screen *lu_editor_screen_init( t_context *C)
 
 	#endif
 
-	//!editor
-	//lu_set_render( LU_RENDER_TTF);
-	lu_set_render( LU_RENDER_BITMAP);
+	if( lu_start_ttf) lu_set_render( LU_RENDER_TTF);
+	else lu_set_render( LU_RENDER_BITMAP);
 
 	return screen;
 };
