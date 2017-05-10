@@ -47,7 +47,7 @@ static int LU_EDITOR_DEBUG = 0;
 
 //static float LU_SCALE = .1;
 static float LU_SCALE = 0.1;
-static float LU_MIN_SCALE = 0.01;
+static float LU_MIN_SCALE = 0.03;
 static float LU_MAX_SCALE = 10;
 //static float LU_FOCUS_X = 0;
 //static float LU_FOCUS_Y = 0;
@@ -256,7 +256,7 @@ void lu_bbox_check( void)
 		lu_bbox_debug("_");
 	}
 
-	if( lu_use_debug_bb) printf(" sc:%0.2f bw:%0.1f sw:%0.1f bh:%0.1f sh:%0.1f \n", LU_SCALE, box_width, screen_width, box_height, screen_height);
+	if( lu_use_debug_bb) printf(" %f < sc:%0.2f < %f bw:%0.1f sw:%0.1f bh:%0.1f sh:%0.1f \n", LU_MIN_SCALE, LU_SCALE, LU_MAX_SCALE, box_width, screen_width, box_height, screen_height);
 
 	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
 	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
