@@ -233,7 +233,7 @@ void lu_bbox_check( void)
 		//LU_SCALE -= var;
 		LU_SCALE *= 1 - var;
 	}
-	else if( (box_width < (screen_width - error)))
+	else if((box_width < (screen_width - error)) &&(box_height < (screen_height - error)))
 	{
 		lu_bbox_debug("w+");
 		//LU_SCALE += var;
@@ -245,7 +245,7 @@ void lu_bbox_check( void)
 		//LU_SCALE -= var;
 		LU_SCALE *= 1 - var;
 	}
-	else if( (box_height < (screen_height - error)))
+	else if( (box_height < (screen_height - error)) && box_width < (screen_width - error))
 	{
 		lu_bbox_debug("h+");
 		//LU_SCALE += var;
@@ -256,7 +256,7 @@ void lu_bbox_check( void)
 		lu_bbox_debug("_");
 	}
 
-	if( lu_use_debug_bb) printf(" sc:%0.2f sx:%d sy:%d bw:%0.1f bh:%0.1f sw:%0.1f sh:%0.1f\n", LU_SCALE, sx, sy,box_width,box_height,screen_width,screen_height);
+	if( lu_use_debug_bb) printf(" sc:%0.2f bw:%0.1f sw:%0.1f bh:%0.1f sh:%0.1f \n", LU_SCALE, box_width, screen_width, box_height, screen_height);
 
 	if( LU_SCALE > LU_MAX_SCALE) LU_SCALE = LU_MAX_SCALE;
 	if( LU_SCALE < LU_MIN_SCALE) LU_SCALE = LU_MIN_SCALE;
