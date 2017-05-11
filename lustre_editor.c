@@ -86,7 +86,7 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
-static int lu_use_debug_bb = 1;
+static int lu_use_debug_bb = 0;
 static int lu_use_debug_bb_frame = 0;
 static int lu_use_status = 0;
 static int lu_start_ttf = 1;
@@ -1056,6 +1056,7 @@ void lu_db( void)
 	{
 		done = 1;
 		#ifdef HAVE_FREETYPE
+		#if 0
 		t_viewport *v = screen_viewport_get( LU_SCREEN);
 		printf("viewport values:\n");
 		printf("left:%f right:%f bottom:%f top:%f near:%f far: %f\n", v->left, v->right, v->bottom, v->top, v->near, v->far);
@@ -1064,6 +1065,7 @@ void lu_db( void)
 		printf("c: %f %f\n",txt_ttf_glyph_get_width((int)'c'), txt_ttf_glyph_get_height('c'));
 		printf("d: %f %f\n",txt_ttf_glyph_get_width((int)'d'), txt_ttf_glyph_get_height('d'));
 		printf("e: %f %f\n",txt_ttf_glyph_get_width((int)'e'), txt_ttf_glyph_get_height('e'));
+		#endif
 		#endif
 	}
 }
