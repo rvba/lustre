@@ -88,6 +88,7 @@ static int lu_use_number = 0;
 static int lu_use_debug = 0;
 static int lu_use_debug_bb = 1;
 static int lu_use_debug_bb_frame = 0;
+static int lu_use_status = 0;
 static int lu_start_ttf = 1;
 static int lu_use_autofocus = 1;
 
@@ -985,9 +986,13 @@ void lu_editor_draw_console( t_context *C)
 
 	glDisable(GL_POINT);
 
+	if( lu_use_status)
+	{
+
 	if( LU_MODE == LU_EDITOR_COMMAND) lu_editor_draw_line( "COMMAND ", 0, 0);
 	else if( LU_MODE == LU_EDITOR_SELECT) lu_editor_draw_line( "SELECT ", 0, 0);
 	else lu_editor_draw_line( "INSERT ", 0, 0);
+	}
 
 	if( LU_DEBUG_STATE) lu_editor_draw_line( LU_DEBUG_MSG, 0, 0);
 
