@@ -86,7 +86,7 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
-static int lu_use_debug_bb = 0;
+static int lu_use_debug_bb = 1;
 static int lu_use_debug_bb_frame = 0;
 static int lu_use_status = 0;
 static int lu_start_ttf = 1;
@@ -1105,8 +1105,11 @@ void lu_editor_draw_start( t_context *C)
 
 		//glTranslatef(v->left,v->top - 100 ,0);
 		//float s = 0.1f;
+		glTranslatef( 0, C->app->window->height, 0);
 		float s = 1;
 		glScalef(s * LU_SCALE, s * LU_SCALE, 1);
+		float ssy = lu_char_height * LU_SCALE *2;
+		glTranslatef( 0, -ssy, 0);
 		lu_db();
 		#endif
 
@@ -1170,7 +1173,7 @@ void lu_editor_draw_file( t_context *C)
 			if( lu_is_render(LU_RENDER_TTF) && LU_HAVE_FREETYPE)
 			{
 				#ifdef HAVE_FREETYPE
-				txt_ttf_vertical_offset(1);
+				txt_ttf_vertical_offset(-1);
 				#endif
 			}
 			else if(lu_is_render( LU_RENDER_STROKE))
