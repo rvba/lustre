@@ -86,10 +86,10 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
-static int lu_use_debug_bb = 1;
+static int lu_use_debug_bb = 0;
 static int lu_use_debug_bb_frame = 0;
 static int lu_use_status = 0;
-static int lu_start_ttf = 1;
+static int lu_start_ttf = 0;
 static int lu_use_autofocus = 1;
 
 static t_screen *LU_SCREEN = NULL;
