@@ -124,6 +124,9 @@ int lu_lib_mesh_set( lua_State *L)
 	t_object *object = lu_lib_object_get( C, name);
 	t_mesh *mesh = object->mesh;
 	t_vlst *vlst = mesh->vertex;
+	if( vlst)
+	{
+
 	int count = vlst->count;
 	float *v = ( float *) vlst->data;
 	int i;
@@ -157,6 +160,12 @@ int lu_lib_mesh_set( lua_State *L)
 		v += 3;
 
 		lua_pop( L, 3);
+	}
+	}
+	else
+	{
+		printf("[lustre] Error, can't find mesh for object: %s\n", object->id.name);
+
 	}
 
 	return 0;
