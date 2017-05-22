@@ -46,6 +46,7 @@ void lu_lib_object_add( struct Object *obj)
 	t_symbol *symbol = dict_pop(lu_lib_objects,obj->id.name);
 	if( !symbol)
 	{
+		printf("added %s\n", obj->id.name);
 		dict_symbol_add( lu_lib_objects, obj->id.name, 0, obj);
 	}
 	else
@@ -194,6 +195,28 @@ int lu_lib_mesh_update( lua_State *L)
 	return 0;
 }
 
+int lu_lib_set_object_position( lua_State * L)
+{
+	//printf("[lustre] Update\n");
+	t_context *C = ctx_get();
+
+	const char *name = luaL_checkstring( L, 1);	
+	float x = luaL_checknumber( L, 2);
+	float y = luaL_checknumber( L, 3);
+	float z = luaL_checknumber( L, 4);
+
+	t_object *object = lu_lib_object_get( C, name);
+	if( object)
+	{
+
+	object->loc[0] = x;
+	object->loc[1] = y;
+	object->loc[2] = z;
+	}
+
+	return 0;
+}
+
 void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
@@ -269,6 +292,7 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_every_frame, "every_frame");
 	lu_lib_register( L, lu_lib_mesh_set, "set_mesh");
 	lu_lib_register( L, lu_lib_mesh_update, "update_mesh");
+	lu_lib_register( L, lu_lib_set_object_position, "set_object_position");
 	lu_lib_register( L, lu_lib_time, "time");
 }
 
