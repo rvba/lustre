@@ -217,6 +217,23 @@ int lu_lib_set_object_position( lua_State * L)
 	return 0;
 }
 
+int lu_lib_set_object_visibility( lua_State * L)
+{
+	t_context *C = ctx_get();
+
+	const char *name = luaL_checkstring( L, 1);	
+	int val = luaL_checkinteger( L, 2);
+
+	t_object *object = lu_lib_object_get( C, name);
+	if( object)
+	{
+		/* True means hidden */
+		object->is_visible = !val;
+	}
+
+	return 0;
+}
+
 void lu_lib_object_build( t_lua_stone *lua_stone)
 {
 	t_context *C = ctx_get();
@@ -293,6 +310,7 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_mesh_set, "set_mesh");
 	lu_lib_register( L, lu_lib_mesh_update, "update_mesh");
 	lu_lib_register( L, lu_lib_set_object_position, "set_object_position");
+	lu_lib_register( L, lu_lib_set_object_visibility, "set_object_visibility");
 	lu_lib_register( L, lu_lib_time, "time");
 }
 
