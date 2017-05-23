@@ -46,7 +46,6 @@ void lu_lib_object_add( struct Object *obj)
 	t_symbol *symbol = dict_pop(lu_lib_objects,obj->id.name);
 	if( !symbol)
 	{
-		printf("added %s\n", obj->id.name);
 		dict_symbol_add( lu_lib_objects, obj->id.name, 0, obj);
 	}
 	else
