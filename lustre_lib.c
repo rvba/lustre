@@ -115,7 +115,7 @@ int lu_lib_every_frame( lua_State *L)
 int lu_lib_mesh_set( lua_State *L)
 {
 	const char *name = luaL_checkstring( L, 1);	// Object ID
-	luaL_checktype( L, 2, LUA_TFUNCTION);	// CFunc
+	luaL_checktype( L, 2, LUA_TFUNCTION);		// CFunc
 	lua_tocfunction( L, 2);
 
 	lua_setglobal( L, "call");
@@ -173,7 +173,6 @@ int lu_lib_mesh_set( lua_State *L)
 
 int lu_lib_mesh_update( lua_State *L)
 {
-	//printf("[lustre] Update\n");
 	t_context *C = ctx_get();
 
 	const char *name = luaL_checkstring( L, 1);	
@@ -196,7 +195,6 @@ int lu_lib_mesh_update( lua_State *L)
 
 int lu_lib_set_object_position( lua_State * L)
 {
-	//printf("[lustre] Update\n");
 	t_context *C = ctx_get();
 
 	const char *name = luaL_checkstring( L, 1);	
@@ -226,7 +224,6 @@ int lu_lib_set_object_visibility( lua_State * L)
 	t_object *object = lu_lib_object_get( C, name);
 	if( object)
 	{
-		/* True means hidden */
 		object->is_visible = !val;
 	}
 
