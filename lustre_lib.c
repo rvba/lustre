@@ -92,13 +92,13 @@ static t_object *lu_lib_object_get( t_context *C, const char *name)
 		}
 		else
 		{
-			printf("[lustre] Error Object not found %s\n ", name);
+			printf("[lustre] Error Object not found %s\n", name);
 			return NULL;
 		}
 	}
 	else
 	{
-		printf("[lustre] Error No object is stored\n ");
+		printf("[lustre] Error No object is stored\n");
 		return NULL;
 	}
 }
