@@ -122,50 +122,52 @@ int lu_lib_mesh_set( lua_State *L)
 
 	t_context *C = ctx_get();
 	t_object *object = lu_lib_object_get( C, name);
-	t_mesh *mesh = object->mesh;
-	t_vlst *vlst = mesh->vertex;
-	if( vlst)
+	if( object)
 	{
+		t_mesh *mesh = object->mesh;
+		t_vlst *vlst = mesh->vertex;
+		if( vlst)
+		{
+			int count = vlst->count;
+			float *v = ( float *) vlst->data;
+			int i;
 
-	int count = vlst->count;
-	float *v = ( float *) vlst->data;
-	int i;
+			float x,y,z;
+			float rx, ry, rz;
 
-	float x,y,z;
-	float rx, ry, rz;
+			for( i = 0; i < count; i++)
+			{
+				x = v[0];
+				y = v[1];
+				z = v[2];
 
-	for( i = 0; i < count; i++)
-	{
-		x = v[0];
-		y = v[1];
-		z = v[2];
+				lua_getglobal( L, "call");
 
-		lua_getglobal( L, "call");
+				lua_pushinteger( L, i);
+				lua_pushnumber( L, x);
+				lua_pushnumber( L, y);
+				lua_pushnumber( L, z);
 
-		lua_pushinteger( L, i);
-		lua_pushnumber( L, x);
-		lua_pushnumber( L, y);
-		lua_pushnumber( L, z);
+				lua_pcall( L, 4, 3,0);
 
-		lua_pcall( L, 4, 3,0);
+				rx = luaL_checknumber( L, 2);
+				ry = luaL_checknumber( L, 3);
+				rz = luaL_checknumber( L, 4);
 
-		rx = luaL_checknumber( L, 2);
-		ry = luaL_checknumber( L, 3);
-		rz = luaL_checknumber( L, 4);
+				v[0] = rx;
+				v[1] = ry;
+				v[2] = rz;
 
-		v[0] = rx;
-		v[1] = ry;
-		v[2] = rz;
+				v += 3;
 
-		v += 3;
+				lua_pop( L, 3);
+			}
+		}
+		else
+		{
+			printf("[lustre] Error, can't find mesh for object: %s\n", object->id.name);
 
-		lua_pop( L, 3);
-	}
-	}
-	else
-	{
-		printf("[lustre] Error, can't find mesh for object: %s\n", object->id.name);
-
+		}
 	}
 
 	return 0;
@@ -182,13 +184,16 @@ int lu_lib_mesh_update( lua_State *L)
 	float z = luaL_checknumber( L, 5);
 
 	t_object *object = lu_lib_object_get( C, name);
-	t_mesh *mesh = object->mesh;
-	t_vlst *vlst = mesh->vertex;
-	float *v = ( float *) vlst->data;
+	if( object)
+	{
+		t_mesh *mesh = object->mesh;
+		t_vlst *vlst = mesh->vertex;
+		float *v = ( float *) vlst->data;
 
-	v[indice*3+0] = x;
-	v[indice*3+1] = y;
-	v[indice*3+2] = z;
+		v[indice*3+0] = x;
+		v[indice*3+1] = y;
+		v[indice*3+2] = z;
+	}
 
 	return 0;
 }
@@ -205,10 +210,9 @@ int lu_lib_set_object_position( lua_State * L)
 	t_object *object = lu_lib_object_get( C, name);
 	if( object)
 	{
-
-	object->loc[0] = x;
-	object->loc[1] = y;
-	object->loc[2] = z;
+		object->loc[0] = x;
+		object->loc[1] = y;
+		object->loc[2] = z;
 	}
 
 	return 0;
@@ -278,9 +282,12 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	if( lua_stone->is_built)
 	{
 		t_object *obj = lu_lib_object_get( C, lua_stone->name);
-		scene_node_delete( C->scene, obj->id.node);
-		t_symbol *symbol = dict_pop(lu_lib_objects, lua_stone->name);
-		symbol->data = object;
+		if( obj)
+		{
+			scene_node_delete( C->scene, obj->id.node);
+			t_symbol *symbol = dict_pop(lu_lib_objects, lua_stone->name);
+			symbol->data = object;
+		}
 	}
 	else
 	{
