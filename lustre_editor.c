@@ -45,6 +45,8 @@ t_file *LU_FILE = NULL;
 int LU_INIT = 0;
 static int LU_EDITOR_DEBUG = 0;
 
+t_file *LU_DB = NULL;
+
 //static float LU_SCALE = .1;
 static float LU_SCALE = 0.1;
 static float LU_MIN_SCALE = 0.03;
@@ -89,6 +91,8 @@ static int lu_use_debug = 0;
 static int lu_use_debug_bb = 0;
 static int lu_use_debug_bb_frame = 0;
 static int lu_use_status = 0;
+static int lu_use_db = 1;
+static int lu_is_db = 0;
 static int lu_start_ttf = 0;
 static int lu_use_autofocus = 1;
 
@@ -582,6 +586,31 @@ static void lu_editor_cmd_file_new( void)
 	
 }
 
+static void lu_editor_db_open( void)
+{
+	if( !LU_DB)
+	{
+		LU_DB = file_new("db.lua");
+		file_line_add( LU_DB, 0, "(debug) >  ");
+	}
+}
+
+void lu_editor_db_clear( void)
+{
+	//leaks ?
+	file_free( LU_DB);
+	LU_DB = NULL;
+}
+
+void lu_editor_log_add( const char *msg)
+{
+	lu_editor_db_open();
+	//t_file
+	file_line_add( LU_DB, LU_DB->tot_line, msg);
+	//file_line_add( LU_DB, 1, msg);
+	//file_line_add( LU_DB, 2, "hello");
+}
+
 static void lu_editor_op_file_open(void)
 {
 	t_context *C=ctx_get();
@@ -666,6 +695,7 @@ void lu_editor_keymap( int key)
 
 				case 14:lu_switch(&lu_use_number); break;	// N
 				case 4: lu_switch(&lu_use_debug); break; // D
+				case 2: lu_switch(&lu_use_db); break; //B 
 				case 6: lu_switch(&lu_use_autofocus); break;	// F
 
 				case TABKEY: lu_editor_close( C); break;
@@ -1001,6 +1031,7 @@ void lu_editor_draw_console( t_context *C)
 	glPopMatrix();
 }
 
+
 void lu_editor_draw_line_color( int lx, int ly)
 {
 	if( LU_MODE == LU_EDITOR_SELECT)
@@ -1043,6 +1074,7 @@ void lu_editor_init( t_context *C)
 	{
 		lu_func_draw_letter = lu_draw_letter_bitmap;
 	}	
+
 }
 
 int old_length = 0;
@@ -1134,7 +1166,7 @@ void lu_editor_draw_start( t_context *C)
 	glRasterPos2i(0,0);
 }
 
-void lu_editor_draw_file( t_context *C)
+void lu_editor_draw_file( t_context *C, t_file *file)
 {
 
 	int y = -20;
@@ -1144,11 +1176,9 @@ void lu_editor_draw_file( t_context *C)
 	int ycount = 1;
 	t_link *l;
 
-	lu_editor_draw_start( C);
+	if(lu_use_autofocus)  lu_bbox_reset();
 
-	lu_bbox_reset();
-
-	for( l = LU_FILE->lines->first; l; l = l->next)
+	for( l = file->lines->first; l; l = l->next)
 	{
 		if( ly >= lu_cursor_current_line && ly < lu_cursor_current_line + lu_editor_line_count)
 		{
@@ -1189,11 +1219,12 @@ void lu_editor_draw_file( t_context *C)
 			y -= 20;
 		}
 
-
-		sy = lu_char_height * ycount * LU_SCALE;
-		sx = lu_char_width * xcount * LU_SCALE;
-		//printf("xcount:%d ycount:%d sx:%f sy:%f\n", xcount, ycount, sx, sy);
-		lu_bbox_do( sx, sy);
+		if(lu_use_autofocus)
+		{
+			sy = lu_char_height * ycount * LU_SCALE;
+			sx = lu_char_width * xcount * LU_SCALE;
+			lu_bbox_do( sx, sy);
+		}
 
 		ly += 1;
 		lx = 0;
@@ -1201,12 +1232,40 @@ void lu_editor_draw_file( t_context *C)
 		ycount += 1;
 
 	}
+ 
+	if(lu_use_autofocus)
+	{
+		lu_bbox_do( sx, sy);
+		lu_bbox_check();
+	}	
 
-	lu_editor_draw_console( C);
-	//lu_bbox_do( lu_char_width * lu_cursor_x * LU_SCALE, lu_char_height * lu_cursor_y * LU_SCALE);
-	lu_bbox_check();
+	if( !lu_is_db) lu_editor_draw_console( C);
 
 	glPopMatrix();
+}
+
+void lu_editor_draw_db( t_context *C)
+{
+	lu_editor_db_open();
+
+	int use_auto = lu_use_autofocus;
+	lu_use_autofocus = 0;
+	lu_is_db = 1;
+
+	float width = (float)(C->app->window->width / 2);
+	float height = (float)(C->app->window->height - lu_editor_margin_top);
+
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(1,1,1);
+	glRasterPos2i(width,height);
+
+		lu_editor_draw_file( C, LU_DB);
+
+	glPopMatrix();
+
+	lu_is_db = 0;
+	lu_use_autofocus = use_auto;
 }
 
 void lu_editor_draw_prompt( t_context *C)
@@ -1233,8 +1292,12 @@ void lu_editor_screen( t_screen *screen)
 
 	LU_SCREEN = screen;
 
-	if( LU_FILE)	lu_editor_draw_file( C);
+	lu_editor_draw_start( C);
+
+	if( LU_FILE)	lu_editor_draw_file( C, LU_FILE);
 	else		lu_editor_draw_prompt( C);
+
+	if( lu_use_db) lu_editor_draw_db(C);
 
 	glEnable(GL_POINT);
 

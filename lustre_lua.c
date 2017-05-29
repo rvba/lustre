@@ -79,6 +79,9 @@ void lu_lua_error( void)
 
 void lu_lua_exec( void)
 {
+	/* clear db */
+	lu_editor_db_clear();
+
 	if( LU_LUA_SHOW_FILE) printf("%s", lua_file->data);
 	if( LU_LUA_USE_PANIC) lua_atpanic( LU_LUA_STATE, lu_lua_panic);
 

@@ -38,6 +38,13 @@ int lu_lib_time( lua_State *L)
 	return 1;
 }
 
+int lu_lib_log_add( lua_State * L)
+{
+	const char *msg = luaL_checkstring( L, 1);	// Object ID
+	lu_editor_log_add( msg);
+	return 0;
+}
+
 // Add and removes Mesh Objects
 
 void lu_lib_object_add( struct Object *obj)
@@ -315,5 +322,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_set_object_position, "set_object_position");
 	lu_lib_register( L, lu_lib_set_object_visibility, "set_object_visibility");
 	lu_lib_register( L, lu_lib_time, "time");
+	lu_lib_register( L, lu_lib_log_add, "log");
 }
 

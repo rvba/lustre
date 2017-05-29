@@ -43,6 +43,8 @@ extern int LU_INIT;
 extern struct File *LU_FILE;
 void lu_editor_keymap( int key);
 int lu_editor_cmd_exec( void);
+void lu_editor_db_clear( void);
+void lu_editor_log_add( const char *msg);
 
 // lustre_lib
 
