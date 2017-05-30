@@ -590,6 +590,7 @@ static void lu_editor_db_open( void)
 {
 	if( !LU_DB)
 	{
+		//t_file
 		LU_DB = file_new("db.lua");
 		file_line_add( LU_DB, 0, "(debug) >  ");
 	}
@@ -606,6 +607,10 @@ void lu_editor_log_add( const char *msg)
 {
 	lu_editor_db_open();
 	//t_file
+	/*
+	 * tot_line -> print 3 (last
+	 * tot_line -1 print debug (first)
+	 * */
 	file_line_add( LU_DB, LU_DB->tot_line, msg);
 	//file_line_add( LU_DB, 1, msg);
 	//file_line_add( LU_DB, 2, "hello");
@@ -1259,6 +1264,19 @@ void lu_editor_draw_db( t_context *C)
 	glLoadIdentity();
 	glColor3f(1,1,1);
 	glRasterPos2i(width,height);
+				glRasterPos2i(width,height-100);
+
+		int _lu_cursor_current_line  = lu_cursor_current_line;
+		int _lu_cursor_x = lu_cursor_x;
+		int _lu_cursor_y = lu_cursor_y;
+
+		lu_cursor_x = 0;
+		lu_cursor_y = 0;
+
+		/* uncomment this to block scrolling */
+		/*
+		lu_cursor_current_line = 0;
+		*/
 
 		lu_editor_draw_file( C, LU_DB);
 
@@ -1266,6 +1284,9 @@ void lu_editor_draw_db( t_context *C)
 
 	lu_is_db = 0;
 	lu_use_autofocus = use_auto;
+	lu_cursor_current_line  = _lu_cursor_current_line;
+	lu_cursor_x = _lu_cursor_x;
+	lu_cursor_y = _lu_cursor_y;
 }
 
 void lu_editor_draw_prompt( t_context *C)
