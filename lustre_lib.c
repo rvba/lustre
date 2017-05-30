@@ -45,6 +45,18 @@ int lu_lib_log_add( lua_State * L)
 	return 0;
 }
 
+int lu_lib_reshape( lua_State * L)
+{
+	int width = luaL_checkinteger( L, 1);
+	int height = luaL_checkinteger( L, 2);
+	t_context *C = ctx_get();
+	C->app->window->width_def = width;
+	C->app->window->height_def = height;
+	app_gl_reshape(width,height);
+	app_screen_set_fullscreen(C->app,0);
+	return 0;
+}
+
 // Add and removes Mesh Objects
 
 void lu_lib_object_add( struct Object *obj)
@@ -323,5 +335,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_set_object_visibility, "set_object_visibility");
 	lu_lib_register( L, lu_lib_time, "time");
 	lu_lib_register( L, lu_lib_log_add, "log");
+	lu_lib_register( L, lu_lib_reshape, "reshape");
 }
 
