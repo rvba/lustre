@@ -57,6 +57,13 @@ int lu_lib_reshape( lua_State * L)
 	return 0;
 }
 
+int lu_lib_quitting( lua_State * L)
+{
+	t_context *C = ctx_get();
+	lua_pushboolean( L, C->app->quit);
+	return 1;
+}
+
 // Add and removes Mesh Objects
 
 void lu_lib_object_add( struct Object *obj)
@@ -336,5 +343,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_time, "time");
 	lu_lib_register( L, lu_lib_log_add, "log");
 	lu_lib_register( L, lu_lib_reshape, "reshape");
+	lu_lib_register( L, lu_lib_quitting, "quitting");
 }
 
