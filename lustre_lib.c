@@ -24,6 +24,7 @@
 #include "object.h"
 #include "op.h"
 #include "dict.h"
+#include "sketch.h"
 
 #include "stone.h"
 #include "stone_lua.h"
@@ -31,6 +32,14 @@
 static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
 int LU_EVERY_FRAME = 0;
+
+int lu_lib_point_size( lua_State *L)
+{
+	t_context *C = ctx_get();
+	float size = luaL_checknumber( L, 1);
+	C->skt->point_size = size;
+	return 0;
+}
 
 int lu_lib_time( lua_State *L)
 {
@@ -344,5 +353,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_log_add, "log");
 	lu_lib_register( L, lu_lib_reshape, "reshape");
 	lu_lib_register( L, lu_lib_quitting, "quitting");
+	lu_lib_register( L, lu_lib_point_size, "point_size");
 }
 
