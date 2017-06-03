@@ -23,6 +23,7 @@
 #include "viewport.h"
 #include "scene.h"
 #include "lustre.h"
+#include "render.h"
 
 #ifdef HAVE_FREETYPE
 #include "txt.h"
@@ -789,6 +790,7 @@ void lu_editor_keymap( int key)
 					case IKEY: LU_MODE = LU_EDITOR_INSERT;break;
 					case 43: LU_SCALE += .02; break;
 					case 45: LU_SCALE -= .02; break;
+					case PKEY: paint_start(C);break;
 
 					/* Pages */
 					case 48: /*0*/

@@ -33,6 +33,10 @@ static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
 int LU_EVERY_FRAME = 0;
 
+// void mesh_add_default_color(t_mesh *mesh)
+// void draw_mesh(t_draw *draw, t_scene *scene, t_mesh *mesh)
+// void skt_point(float *pos,int width,float *color) 
+
 int lu_lib_point_size( lua_State *L)
 {
 	t_context *C = ctx_get();
