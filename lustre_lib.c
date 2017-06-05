@@ -25,6 +25,7 @@
 #include "op.h"
 #include "dict.h"
 #include "sketch.h"
+#include "draw.h"
 
 #include "stone.h"
 #include "stone_lua.h"
@@ -74,9 +75,14 @@ int lu_lib_set( lua_State * L)
 {
 	const char *name = luaL_checkstring( L ,1);
 	int val = lua_toboolean( L, 2);
+	t_context *C = ctx_get();
 	if( is(name,"pages"))
 	{
 		lu_editor_set("pages",&val);
+	}
+	else if( is(name,"selection"))
+	{
+		C->draw->with_object_selection = val;
 	}
 	return 0;
 }
