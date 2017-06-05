@@ -41,6 +41,7 @@ static int LU_HAVE_FREETYPE = 0;
 #define LU_RENDER_TTF 3
 
 static int LU_USE_PAGES = 0;
+static int LU_USE_STROKE = 0;
 static int LU_FILE_CURRENT = 0;
 t_file *LU_FILES[10] = {NULL};
 t_file *LU_FILE = NULL;
@@ -124,8 +125,17 @@ inline void lu_set_render( int render)
 void lu_switch_rendering( void)
 {
 	if( LU_RENDER == LU_RENDER_BITMAP && LU_HAVE_FREETYPE) LU_RENDER = LU_RENDER_TTF;
-	else if( LU_RENDER == LU_RENDER_BITMAP) LU_RENDER = LU_RENDER_STROKE;
-	else if( LU_RENDER == LU_RENDER_TTF) LU_RENDER = LU_RENDER_STROKE;
+	else if( LU_RENDER == LU_RENDER_BITMAP)
+	{	
+		if(LU_USE_STROKE) LU_RENDER = LU_RENDER_STROKE;
+		else LU_RENDER = LU_RENDER_TTF;
+
+	}
+	else if( LU_RENDER == LU_RENDER_TTF)
+	{
+		if(LU_USE_STROKE) LU_RENDER = LU_RENDER_STROKE;
+		else LU_RENDER = LU_RENDER_BITMAP;
+	}	
 	else LU_RENDER = LU_RENDER_BITMAP;
 }
 
