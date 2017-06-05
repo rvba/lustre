@@ -314,7 +314,6 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	if( !lu_lib_screen_init)
 	{
 		op_add_screen( NULL);
-		op_add_light(NULL);
 		lu_lib_screen_init = 1;
 	}
 
