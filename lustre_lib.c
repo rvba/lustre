@@ -70,6 +70,17 @@ int lu_lib_reshape( lua_State * L)
 	return 0;
 }
 
+int lu_lib_set( lua_State * L)
+{
+	const char *name = luaL_checkstring( L ,1);
+	int val = lua_toboolean( L, 2);
+	if( is(name,"pages"))
+	{
+		lu_editor_set("pages",&val);
+	}
+	return 0;
+}
+
 int lu_lib_quitting( lua_State * L)
 {
 	t_context *C = ctx_get();
@@ -357,5 +368,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_reshape, "reshape");
 	lu_lib_register( L, lu_lib_quitting, "quitting");
 	lu_lib_register( L, lu_lib_point_size, "point_size");
+	lu_lib_register( L, lu_lib_set, "set");
 }
 

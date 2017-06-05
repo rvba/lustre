@@ -40,6 +40,7 @@ static int LU_HAVE_FREETYPE = 0;
 #define LU_RENDER_STROKE 2
 #define LU_RENDER_TTF 3
 
+static int LU_USE_PAGES = 0;
 static int LU_FILE_CURRENT = 0;
 t_file *LU_FILES[10] = {NULL};
 t_file *LU_FILE = NULL;
@@ -101,6 +102,14 @@ static t_screen *LU_SCREEN = NULL;
 
 
 // Utils
+
+void lu_editor_set( const char *name, void *val)
+{
+	if( is(name,"pages"))
+	{
+		LU_USE_PAGES = *((int*)val);
+	}
+}
 
 void lu_switch( int *target)
 {
@@ -673,6 +682,7 @@ void lu_editor_file_open( void)
 
 void lu_editor_page_change( int page)
 {
+	printf("chnge!!\n");
 	LU_FILE = LU_FILES[page];
 	LU_FILE_CURRENT = page;
 }
@@ -792,23 +802,29 @@ void lu_editor_keymap( int key)
 					case 45: LU_SCALE -= .02; break;
 					case PKEY: paint_start(C);break;
 
-					/* Pages */
-					case 48: /*0*/
-					case 49:
-					case 50:
-					case 51:
-					case 52:
-					case 53:
-					case 54:
-					case 55:
-					case 56:
-					case 57:
-
-						lu_editor_page_change(key-48);
-						;break;
 
 					default: keymap_command( key); break;
 
+				}
+
+				/* Pages */
+				if( LU_USE_PAGES)
+				{
+					switch(key)
+					{
+						case 48: /*0*/
+						case 49:
+						case 50:
+						case 51:
+						case 52:
+						case 53:
+						case 54:
+						case 55:
+						case 56:
+						case 57:
+							lu_editor_page_change(key-48);
+							;break;
+					}
 				}
 			}
 		}
@@ -833,6 +849,13 @@ void lu_editor_keymap( int key)
 				case ESCKEY: break;
 				case TABKEY: lu_editor_close( C); break;
 
+			}
+
+			if(LU_USE_PAGES)
+			{
+				switch( key)
+				{
+
 					/* Pages */
 					case 48: /*0*/
 					case 49:
@@ -844,11 +867,10 @@ void lu_editor_keymap( int key)
 					case 55:
 					case 56:
 					case 57:
-
 						lu_editor_page_change(key-48);
 						;break;
+				}
 			}
-
 		}
 	}
 }

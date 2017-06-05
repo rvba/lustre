@@ -45,6 +45,7 @@ void lu_editor_keymap( int key);
 int lu_editor_cmd_exec( void);
 void lu_editor_db_clear( void);
 void lu_editor_log_add( const char *msg);
+void lu_editor_set( const char *name, void *val);
 
 // lustre_lib
 
