@@ -26,6 +26,7 @@
 #include "dict.h"
 #include "sketch.h"
 #include "draw.h"
+#include "event.h"
 
 #include "stone.h"
 #include "stone_lua.h"
@@ -80,9 +81,14 @@ int lu_lib_set( lua_State * L)
 	{
 		lu_editor_set("pages",&val);
 	}
+	// t_draw
 	else if( is(name,"selection"))
 	{
 		C->draw->with_object_selection = val;
+	}
+	else if( is(name,"outline"))
+	{
+		C->event->with_face_outline = val;
 	}
 	return 0;
 }
