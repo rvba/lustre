@@ -24,6 +24,7 @@
 #include "scene.h"
 #include "lustre.h"
 #include "render.h"
+#include "sketch.h"
 
 #ifdef HAVE_FREETYPE
 #include "txt.h"
@@ -106,6 +107,7 @@ static t_screen *LU_SCREEN = NULL;
 
 void lu_editor_set( const char *name, void *val)
 {
+	t_context *C = ctx_get();
 	if( is(name,"pages"))
 	{
 		LU_USE_PAGES = *((int*)val);

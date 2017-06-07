@@ -75,20 +75,36 @@ int lu_lib_reshape( lua_State * L)
 int lu_lib_set( lua_State * L)
 {
 	const char *name = luaL_checkstring( L ,1);
-	int val = lua_toboolean( L, 2);
 	t_context *C = ctx_get();
 	if( is(name,"pages"))
 	{
+		int val = lua_toboolean( L, 2);
 		lu_editor_set("pages",&val);
 	}
-	// t_draw
 	else if( is(name,"selection"))
 	{
+		int val = lua_toboolean( L, 2);
 		C->draw->with_object_selection = val;
 	}
 	else if( is(name,"outline"))
 	{
+		int val = lua_toboolean( L, 2);
 		C->event->with_face_outline = val;
+	}
+	else if( is(name,"line_width"))
+	{
+		float val = luaL_checknumber(L,2);
+		C->skt->line_width = val;
+	}
+	else if( is(name,"draw_edge"))
+	{
+		int val = lua_toboolean( L, 2);
+		C->event->with_edge = val;
+	}
+	else if( is(name,"draw_face"))
+	{
+		int val = lua_toboolean( L, 2);
+		C->event->with_face = val;
 	}
 	return 0;
 }
