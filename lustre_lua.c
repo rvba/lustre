@@ -61,6 +61,19 @@ static int LU_EDITOR_OPEN = 0;
 static int LU_LUA_AUTO_EXEC = 0;
 static int LU_LUA_AUTO_EXEC_FORCE = 0;
 
+static int LU_POS_H = LU_POS_LEFT; 
+static int LU_POS_V = LU_POS_TOP;
+
+int lu_lua_get_pos_h()
+{
+	return LU_POS_H;
+}
+
+int lu_lua_get_pos_v()
+{
+	return LU_POS_V;
+}
+
 // Error managment
 
 static int lu_lua_panic( lua_State *L)
@@ -265,6 +278,17 @@ void lu_lua_scan_args( t_context *C)
 				lu_lua_exec_script( filename);
 			}
 		}
+	}
+
+	/* no-stars +2 ?*/
+	const char *h = app_get_arg( C->app, 4);
+	const char *v = app_get_arg( C->app, 5);
+	if( h && v)
+	{
+		if( is(h,"left")) { LU_POS_H = LU_POS_LEFT; }
+		if( is(h,"right")) {LU_POS_H = LU_POS_RIGHT; }
+		if( is(v,"top")) { LU_POS_V = LU_POS_TOP; }
+		if( is(v,"down")) {LU_POS_V = LU_POS_DOWN; }
 	}
 }
 

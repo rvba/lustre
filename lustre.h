@@ -18,6 +18,14 @@ struct Object;
 struct File;
 struct Lua_Stone;
 
+#define LU_POS_LEFT 1
+#define LU_POS_RIGHT 2
+#define LU_POS_TOP 3
+#define LU_POS_DOWN 4
+
+int lu_lua_get_pos_h();
+int lu_lua_get_pos_v();
+
 // lustre_lua
 
 extern char LU_FILE_PATH[4096];

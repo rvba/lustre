@@ -72,6 +72,33 @@ int lu_lib_reshape( lua_State * L)
 	return 0;
 }
 
+int lu_lib_win_move( lua_State * L)
+{
+	int x = luaL_checkinteger( L, 1);
+	int y = luaL_checkinteger( L, 2);
+	app_gl_move(x,y);
+	return 0;
+}
+
+int lu_lib_win_get( lua_State *L)
+{
+	int pos_h = lu_lua_get_pos_h();
+	int pos_v = lu_lua_get_pos_v();
+
+	/* 1 top-right
+	 * 2 down-right
+	 * 3 down-left
+	 * 4 top-left
+	 */
+
+	if( pos_v == LU_POS_TOP && pos_h == LU_POS_RIGHT) { lua_pushinteger( L, 1); }
+	if( pos_v == LU_POS_DOWN && pos_h == LU_POS_RIGHT) lua_pushinteger( L, 2);
+	if( pos_v == LU_POS_DOWN && pos_h == LU_POS_LEFT) lua_pushinteger( L, 3);
+	if( pos_v == LU_POS_TOP && pos_h == LU_POS_LEFT) lua_pushinteger( L, 4);
+
+	return 1;
+}
+
 int lu_lib_set( lua_State * L)
 {
 	const char *name = luaL_checkstring( L ,1);
@@ -394,6 +421,8 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_time, "time");
 	lu_lib_register( L, lu_lib_log_add, "log");
 	lu_lib_register( L, lu_lib_reshape, "reshape");
+	lu_lib_register( L, lu_lib_win_move, "win_move");
+	lu_lib_register( L, lu_lib_win_get, "win_get");
 	lu_lib_register( L, lu_lib_quitting, "quitting");
 	lu_lib_register( L, lu_lib_point_size, "point_size");
 	lu_lib_register( L, lu_lib_set, "set");
