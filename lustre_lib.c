@@ -39,14 +39,6 @@ int LU_EVERY_FRAME = 0;
 // void draw_mesh(t_draw *draw, t_scene *scene, t_mesh *mesh)
 // void skt_point(float *pos,int width,float *color) 
 
-int lu_lib_point_size( lua_State *L)
-{
-	t_context *C = ctx_get();
-	float size = luaL_checknumber( L, 1);
-	C->skt->point_size = size;
-	return 0;
-}
-
 int lu_lib_time( lua_State *L)
 {
 	lua_pushnumber( L, clock_now_sec_precise());
@@ -122,6 +114,11 @@ int lu_lib_set( lua_State * L)
 	{
 		float val = luaL_checknumber(L,2);
 		C->skt->line_width = val;
+	}
+	else if( is(name,"point_size"))
+	{
+		float val = luaL_checknumber(L,2);
+		C->skt->point_size = val;
 	}
 	else if( is(name,"draw_edge"))
 	{
@@ -424,7 +421,6 @@ void lu_lib_init( lua_State *L)
 	lu_lib_register( L, lu_lib_win_move, "win_move");
 	lu_lib_register( L, lu_lib_win_get, "win_get");
 	lu_lib_register( L, lu_lib_quitting, "quitting");
-	lu_lib_register( L, lu_lib_point_size, "point_size");
 	lu_lib_register( L, lu_lib_set, "set");
 }
 
