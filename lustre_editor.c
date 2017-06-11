@@ -25,6 +25,7 @@
 #include "lustre.h"
 #include "render.h"
 #include "sketch.h"
+#include "draw.h"
 
 #ifdef HAVE_FREETYPE
 #include "txt.h"
@@ -897,7 +898,11 @@ static void lu_draw_cursor( void)
 	
 	glPushMatrix();
 	glTranslatef(t,y,0);
-	glColor3f(1,1,1);
+
+	t_context *C = ctx_get();
+	float *f = C->ui->front_color;
+	glColor3f(f[0],f[1],f[2]);
+
 	glBegin(GL_QUADS);
 	glVertex2f(width,-height);
 	glVertex2f(width,height);
@@ -910,6 +915,9 @@ static void lu_draw_cursor( void)
 
 static void lu_draw_letter_bitmap( int letter)
 {
+	t_context *C = ctx_get();
+	float *f = C->ui->front_color;
+	glColor3f(f[0],f[1],f[2]);
 	glutBitmapCharacter(lu_editor_font,letter);
 }
 
@@ -931,7 +939,7 @@ void lu_editor_draw_line_number( int y)
 {
 	char pos[6]; 
 	sprintf(pos, "%d   ", y);
-	glColor3f(.5,.5,.5);
+	//glColor3f(.5,.5,.5);
 
 	lu_func_draw_letter( pos[0]);
 	lu_func_draw_letter( pos[1]);
@@ -1082,19 +1090,23 @@ void lu_editor_draw_line_color( int lx, int ly)
 		}
 		else
 		{
-			glColor3f(1,1,1);
+			t_context *C = ctx_get();
+			float *f = C->ui->front_color;
+			glColor3f(f[0],f[1],f[2]);
 		}
 	}
 	else
 	{
-		glColor3f(1,1,1);
+		t_context *C = ctx_get();
+		float *f = C->ui->front_color;
+		glColor3f(f[0],f[1],f[2]);
 	}
 }
 
 void lu_editor_init( t_context *C)
 {
-
-	glColor3f(1,1,1);
+	float *f = C->ui->front_color;
+	glColor3f(f[0],f[1],f[2]);
 
 	int wh = C->app->window->height;
 	int h = 20;
@@ -1146,7 +1158,8 @@ void lu_editor_draw_start( t_context *C)
 {
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3f(1,1,1);
+	float *f = C->ui->front_color;
+	glColor3f(f[0],f[1],f[2]);
 
 	if( lu_use_autofocus && lu_is_render( LU_RENDER_TTF))
 	{
@@ -1297,7 +1310,8 @@ void lu_editor_draw_db( t_context *C)
 
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3f(1,1,1);
+	float *f = C->ui->front_color;
+	glColor3f(f[0],f[1],f[2]);
 	glRasterPos2i(width,height);
 				glRasterPos2i(width,height-100);
 
