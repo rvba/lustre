@@ -125,6 +125,11 @@ int lu_lib_set( lua_State * L)
 		int val = lua_toboolean( L, 2);
 		C->event->with_edge = val;
 	}
+	else if( is(name,"edge_white"))
+	{
+		int val = lua_toboolean( L, 2);
+		C->draw->edge_use_front_color = val;
+	}
 	else if( is(name,"draw_face"))
 	{
 		int val = lua_toboolean( L, 2);
