@@ -34,6 +34,7 @@
 static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
 int LU_EVERY_FRAME = 0;
+static int debug_set_mesh = 0;
 
 // void mesh_add_default_color(t_mesh *mesh)
 // void draw_mesh(t_draw *draw, t_scene *scene, t_mesh *mesh)
@@ -135,6 +136,11 @@ int lu_lib_set( lua_State * L)
 		int val = lua_toboolean( L, 2);
 		C->event->with_face = val;
 	}
+	else if( is(name,"debug_set_mesh"))
+	{
+		int val = lua_toboolean( L, 2);
+		debug_set_mesh = val;
+	}
 	return 0;
 }
 
@@ -221,6 +227,7 @@ int lu_lib_every_frame( lua_State *L)
 
 int lu_lib_mesh_set( lua_State *L)
 {
+	if( debug_set_mesh) printf("[lustre] debug set mesh\n");
 	const char *name = luaL_checkstring( L, 1);	// Object ID
 	luaL_checktype( L, 2, LUA_TFUNCTION);		// CFunc
 	lua_tocfunction( L, 2);
