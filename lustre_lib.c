@@ -35,6 +35,7 @@ static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
 int LU_EVERY_FRAME = 0;
 static int debug_set_mesh = 0;
+static int debug_object_get = 0;
 
 // void mesh_add_default_color(t_mesh *mesh)
 // void draw_mesh(t_draw *draw, t_scene *scene, t_mesh *mesh)
@@ -96,6 +97,8 @@ int lu_lib_set( lua_State * L)
 {
 	const char *name = luaL_checkstring( L ,1);
 	t_context *C = ctx_get();
+
+	printf("[lustre] set:%s\n",name);
 	if( is(name,"pages"))
 	{
 		int val = lua_toboolean( L, 2);
@@ -141,6 +144,16 @@ int lu_lib_set( lua_State * L)
 		int val = lua_toboolean( L, 2);
 		debug_set_mesh = val;
 	}
+	else if( is(name,"debug_object_get"))
+	{
+		int val = lua_toboolean( L, 2);
+		debug_object_get = val;
+	}
+	else
+	{
+		printf("[lustre] set not found:%s\n",name);
+	}
+
 	return 0;
 }
 
@@ -205,7 +218,8 @@ static t_object *lu_lib_object_get( t_context *C, const char *name)
 		}
 		else
 		{
-			printf("[lustre] Error Object not found %s\n", name);
+			printf("[lustre] ERROR Object get:not found %s\n", name);
+			if( debug_object_get) dict_show( lu_lib_objects);
 			return NULL;
 		}
 	}
