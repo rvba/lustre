@@ -27,6 +27,7 @@
 #include "sketch.h"
 #include "draw.h"
 #include "event.h"
+#include "ui.h"
 
 #include "stone.h"
 #include "stone_lua.h"
@@ -40,6 +41,20 @@ static int debug_object_get = 0;
 // void mesh_add_default_color(t_mesh *mesh)
 // void draw_mesh(t_draw *draw, t_scene *scene, t_mesh *mesh)
 // void skt_point(float *pos,int width,float *color) 
+void lu_lib_dark( t_context *C)
+{
+	C->draw->color=color_black;
+
+	vset4i(C->draw->background_color,0,0,0,0);
+	vset4i(C->ui->background_color,0,0,0,0);
+	vset4f(C->ui->front_color,1,1,1,0);
+	vset4f(C->draw->front_color,1,1,1,0);
+	vset4f(C->draw->back_color,0,0,0,0);
+	vset4f(C->ui->back_color,0,0,0,0);
+
+	C->event->color_transition = 0;
+	C->event->color_transition_set = 0;
+}
 
 int lu_lib_time( lua_State *L)
 {
@@ -148,6 +163,10 @@ int lu_lib_set( lua_State * L)
 	{
 		int val = lua_toboolean( L, 2);
 		debug_object_get = val;
+	}
+	else if( is(name,"dark"))
+	{
+		lu_lib_dark( C);
 	}
 	else
 	{
