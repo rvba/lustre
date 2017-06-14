@@ -1382,6 +1382,16 @@ void lu_editor_screen( t_screen *screen)
 		if(LU_EDITOR_DEBUG)
 			printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
 	}
+
+	/*
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(1.0,1.0);
+	*/
+
+	glEnable(GL_DEPTH_TEST);
+
 }
 
 t_screen *lu_editor_screen_init( t_context *C)
