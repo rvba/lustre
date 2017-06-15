@@ -813,6 +813,7 @@ void lu_editor_keymap( int key)
 					case 43: LU_SCALE += .02; break;
 					case 45: LU_SCALE -= .02; break;
 					case PKEY: paint_start(C);break;
+					case ESCKEY: paint_stop(C); break;
 
 
 					default: keymap_command( key); break;
