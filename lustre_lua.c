@@ -19,14 +19,12 @@
 #include "mesh.h"
 #include "vlst.h"
 
-
-#ifdef HAVE_LUA_5_1
-#include "compat-5.3.h"
-#include "lualib.h"
-#else
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
+
+#ifdef HAVE_LUA_5_1
+#include "compat-5.3.h"
 #endif
 
 #include "lustre.h"
