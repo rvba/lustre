@@ -23,6 +23,11 @@ struct Lua_Stone;
 #define LU_POS_TOP 3
 #define LU_POS_DOWN 4
 
+#ifdef HAVE_LUA_5_1
+#else
+#define LUA_OK 0
+#endif
+
 int lu_lua_get_pos_h();
 int lu_lua_get_pos_v();
 
