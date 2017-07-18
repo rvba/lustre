@@ -249,11 +249,36 @@ static t_object *lu_lib_object_get( t_context *C, const char *name)
 	}
 }
 
+static void print_jit_status(lua_State *L)
+{
+  int n;
+  const char *s;
+  lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
+  lua_getfield(L, -1, "jit");  /* Get jit.* module table. */
+  lua_remove(L, -2);
+  lua_getfield(L, -1, "status");
+  lua_remove(L, -2);
+  n = lua_gettop(L);
+  lua_call(L, 0, LUA_MULTRET);
+  fputs(lua_toboolean(L, n) ? "JIT: ON" : "JIT: OFF", stdout);
+  for (n++; (s = lua_tostring(L, n)); n++) {
+    putc(' ', stdout);
+    fputs(s, stdout);
+  }
+  putc('\n', stdout);
+}
+
 int lu_lib_every_frame( lua_State *L)
 {
 	luaL_checktype( L, 1, LUA_TFUNCTION);
-	lua_tocfunction( L, 1);
+	//lua_tocfunction( L, 1);
 	lua_setglobal( L, "every_frame_function");
+	/* fix luajit but break lua 5.1 attempt to call a nil value */
+	/* in lua_every_frame_call */
+	/* or just attempt to index a nil value from print_jit_status */
+	#ifdef HAVE_LUAJIT
+	print_jit_status(L);
+	#endif
 	LU_EVERY_FRAME = 1; 
 	return 1;
 }
