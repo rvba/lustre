@@ -29,13 +29,13 @@
 
 #include "lustre.h"
 
-#include "stone.h" //FIXME
-#include "stone_lua.h"
+#include "mud.h" //FIXME
+#include "mud_lua.h"
 #include "stdmath.h"
 #include "stdmath_lua.h"
 
 #ifdef HAVE_TINYSPLINE
-#include "stone_spline_lua.h"
+#include "mud_spline_lua.h"
 #endif
 
 #ifdef HAVE_LPEG
@@ -324,12 +324,12 @@ int lustre_init( void)
 	lu_lua_module_add( C);
 
 	// Register Stone
-	lua_stone_register( LU_LUA_STATE);
+	lua_mud_register( LU_LUA_STATE);
 	lua_mat4_register( LU_LUA_STATE);
 	lua_stdmath_register( LU_LUA_STATE);
 
 	#ifdef HAVE_TINYSPLINE
-	lua_stone_spline_register( LU_LUA_STATE);
+	lua_mud_spline_register( LU_LUA_STATE);
 	#endif
 
 	#ifdef HAVE_LPEG
@@ -345,7 +345,7 @@ int lustre_init( void)
 	lua_fluxa_register( LU_LUA_STATE);
 	#endif
 
-	STONE_BUILD_FUNCTION = lu_lib_object_build;
+	MUD_BUILD_FUNCTION = lu_lib_object_build;
 
 	// Scan args
 	lu_lua_scan_args( C);

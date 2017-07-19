@@ -29,8 +29,8 @@
 #include "event.h"
 #include "ui.h"
 
-#include "stone.h"
-#include "stone_lua.h"
+#include "mud.h"
+#include "mud_lua.h"
 
 static t_dict *lu_lib_objects = NULL;
 static int lu_lib_screen_init = 0;
@@ -406,23 +406,23 @@ int lu_lib_set_object_visibility( lua_State * L)
 	return 0;
 }
 
-void lu_lib_object_build( t_lua_stone *lua_stone)
+void lu_lib_object_build( t_lua_mud *lua_mud)
 {
 	t_context *C = ctx_get();
 
-	t_stone *stone = lua_stone->stone;
-	stone_merge( stone, NULL);
+	t_mud *mud = lua_mud->mud;
+	mud_merge( mud, NULL);
 
 	scene_store(C->scene,1);
-	float *vertex = stone_get_vertex_buffer( stone);
-	int quad_count = stone_get_quad_count( stone);
-	int tri_count = stone_get_tri_count( stone);
-	int *quads = stone_get_quad_buffer( stone, quad_count);
-	int *tris = stone_get_tri_buffer( stone, tri_count);
-	int *edges = stone_get_edge_buffer( stone);
+	float *vertex = mud_get_vertex_buffer( mud);
+	int quad_count = mud_get_quad_count( mud);
+	int tri_count = mud_get_tri_count( mud);
+	int *quads = mud_get_quad_buffer( mud, quad_count);
+	int *tris = mud_get_tri_buffer( mud, tri_count);
+	int *edges = mud_get_edge_buffer( mud);
 
-	t_object *object = op_add_mesh_data( stone->name, 
-			stone->vertex_count,
+	t_object *object = op_add_mesh_data( mud->name, 
+			mud->vertex_count,
 			quad_count,
 			tri_count,
 			vertex,
@@ -433,7 +433,7 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 
 	if( edges)
 	{
-		int edge_count = stone->edge_count;
+		int edge_count = mud->edge_count;
 		t_mesh *mesh = object->mesh;
 		mesh->edges = vlst_make( "edges", dt_uint, 2, edge_count, edges);
 		mesh->state.with_line =1;
@@ -450,13 +450,13 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 		lu_lib_screen_init = 1;
 	}
 
-	if( lua_stone->is_built)
+	if( lua_mud->is_built)
 	{
-		t_object *obj = lu_lib_object_get( C, lua_stone->name);
+		t_object *obj = lu_lib_object_get( C, lua_mud->name);
 		if( obj)
 		{
 			scene_node_delete( C->scene, obj->id.node);
-			t_symbol *symbol = dict_pop(lu_lib_objects, lua_stone->name);
+			t_symbol *symbol = dict_pop(lu_lib_objects, lua_mud->name);
 			symbol->data = object;
 		}
 	}
@@ -466,7 +466,7 @@ void lu_lib_object_build( t_lua_stone *lua_stone)
 	}
 
 
-	lua_stone->is_built = 1;
+	lua_mud->is_built = 1;
 
 	scene_store(C->scene,0);
 

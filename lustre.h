@@ -63,7 +63,7 @@ void lu_editor_set( const char *name, void *val);
 // lustre_lib
 
 void lu_lib_init( struct lua_State *L);
-void lu_lib_object_build( struct Lua_Stone *lua_stone);
+void lu_lib_object_build( struct Lua_Stone *lua_mud);
 void lu_lib_objects_delete( void);
 
 
