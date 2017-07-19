@@ -16,7 +16,7 @@ struct Context;
 struct MNScreen;
 struct Object;
 struct File;
-struct Lua_Stone;
+struct Lua_Mud;
 
 #define LU_POS_LEFT 1
 #define LU_POS_RIGHT 2
@@ -63,7 +63,7 @@ void lu_editor_set( const char *name, void *val);
 // lustre_lib
 
 void lu_lib_init( struct lua_State *L);
-void lu_lib_object_build( struct Lua_Stone *lua_mud);
+void lu_lib_object_build( struct Lua_Mud *lua_mud);
 void lu_lib_objects_delete( void);
 
 

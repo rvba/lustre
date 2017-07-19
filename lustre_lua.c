@@ -323,7 +323,7 @@ int lustre_init( void)
 	// Add Lua module
 	lu_lua_module_add( C);
 
-	// Register Stone
+	// Register Mud
 	lua_mud_register( LU_LUA_STATE);
 	lua_mat4_register( LU_LUA_STATE);
 	lua_stdmath_register( LU_LUA_STATE);
