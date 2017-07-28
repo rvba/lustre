@@ -274,7 +274,7 @@ void lu_lua_scan_args( t_context *C)
 
 	if( arg)
 	{
-		if( is( arg, "file"))
+		if( iseq( arg, "file"))
 		{
 			char *filename  = (char *) app_get_arg( C->app, 2);
 			if( filename)
@@ -289,10 +289,10 @@ void lu_lua_scan_args( t_context *C)
 	const char *v = app_get_arg( C->app, 5);
 	if( h && v)
 	{
-		if( is(h,"left")) { LU_POS_H = LU_POS_LEFT; }
-		if( is(h,"right")) {LU_POS_H = LU_POS_RIGHT; }
-		if( is(v,"top")) { LU_POS_V = LU_POS_TOP; }
-		if( is(v,"down")) {LU_POS_V = LU_POS_DOWN; }
+		if( iseq(h,"left")) { LU_POS_H = LU_POS_LEFT; }
+		if( iseq(h,"right")) {LU_POS_H = LU_POS_RIGHT; }
+		if( iseq(v,"top")) { LU_POS_V = LU_POS_TOP; }
+		if( iseq(v,"down")) {LU_POS_V = LU_POS_DOWN; }
 	}
 }
 

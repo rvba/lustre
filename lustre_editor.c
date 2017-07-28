@@ -108,7 +108,7 @@ static t_screen *LU_SCREEN = NULL;
 
 void lu_editor_set( const char *name, void *val)
 {
-	if( is(name,"pages"))
+	if( iseq(name,"pages"))
 	{
 		LU_USE_PAGES = *((int*)val);
 	}
@@ -645,7 +645,7 @@ static void lu_editor_op_file_open(void)
 	t_file *LU_FILE = file_new( C->app->path_file);
 	file_init(LU_FILE);
 
-	if(is(LU_FILE->ext,"lua"))
+	if(iseq(LU_FILE->ext,"lua"))
 	{
 		lu_lua_load_file( LU_FILE->path);
 	}

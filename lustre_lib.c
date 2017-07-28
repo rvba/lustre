@@ -114,57 +114,57 @@ int lu_lib_set( lua_State * L)
 	t_context *C = ctx_get();
 
 	printf("[lustre] set:%s\n",name);
-	if( is(name,"pages"))
+	if( iseq(name,"pages"))
 	{
 		int val = lua_toboolean( L, 2);
 		lu_editor_set("pages",&val);
 	}
-	else if( is(name,"selection"))
+	else if( iseq(name,"selection"))
 	{
 		int val = lua_toboolean( L, 2);
 		C->draw->with_object_selection = val;
 	}
-	else if( is(name,"outline"))
+	else if( iseq(name,"outline"))
 	{
 		int val = lua_toboolean( L, 2);
 		C->event->with_face_outline = val;
 	}
-	else if( is(name,"line_width"))
+	else if( iseq(name,"line_width"))
 	{
 		float val = luaL_checknumber(L,2);
 		C->skt->line_width = val;
 	}
-	else if( is(name,"point_size"))
+	else if( iseq(name,"point_size"))
 	{
 		float val = luaL_checknumber(L,2);
 		C->skt->point_size = val;
 	}
-	else if( is(name,"draw_edge"))
+	else if( iseq(name,"draw_edge"))
 	{
 		int val = lua_toboolean( L, 2);
 		C->event->with_edge = val;
 	}
-	else if( is(name,"edge_white"))
+	else if( iseq(name,"edge_white"))
 	{
 		int val = lua_toboolean( L, 2);
 		C->draw->edge_use_front_color = val;
 	}
-	else if( is(name,"draw_face"))
+	else if( iseq(name,"draw_face"))
 	{
 		int val = lua_toboolean( L, 2);
 		C->event->with_face = val;
 	}
-	else if( is(name,"debug_set_mesh"))
+	else if( iseq(name,"debug_set_mesh"))
 	{
 		int val = lua_toboolean( L, 2);
 		debug_set_mesh = val;
 	}
-	else if( is(name,"debug_object_get"))
+	else if( iseq(name,"debug_object_get"))
 	{
 		int val = lua_toboolean( L, 2);
 		debug_object_get = val;
 	}
-	else if( is(name,"dark"))
+	else if( iseq(name,"dark"))
 	{
 		lu_lib_dark( C);
 	}
