@@ -63,8 +63,6 @@ static int lu_cursor_x = 0;
 static int lu_cursor_y = 0;
 static int lu_cursor_current_line = 0;
 
-static int sx = 0;
-static int sy = 0;
 
 static int lu_editor_line_count;
 static int lu_line_height = 20;
@@ -73,6 +71,10 @@ static int lu_line_height = 20;
 #ifdef HAVE_FREETYPE
 static float lu_char_height = 0;
 static float lu_char_width = 0;
+static int sx = 0;
+static int sy = 0;
+static int lu_use_debug_bb = 0;
+static int lu_use_debug_bb_frame = 0;
 #endif
 
 static int lu_console_line_count = 3;
@@ -92,8 +94,6 @@ static void lu_draw_letter_bitmap( int letter);
 static void lu_draw_letter_vector( int letter);
 static int lu_use_number = 0;
 static int lu_use_debug = 0;
-static int lu_use_debug_bb = 0;
-static int lu_use_debug_bb_frame = 0;
 static int lu_use_status = 0;
 static int lu_use_db = 0;
 static int lu_is_db = 0;

@@ -5,6 +5,8 @@ set(SRC
 	lustre.h
 	)
 
+add_definitions("-DHAVE_LUAJIT")
+
 GET_PROPERTY(_LUSTRE_LIB GLOBAL PROPERTY LUSTRE_LIB)
 
 if( NOT DEFINED _LUSTRE_LIB)
