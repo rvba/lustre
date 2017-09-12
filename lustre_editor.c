@@ -1226,7 +1226,9 @@ void lu_editor_draw_file( t_context *C, t_file *file)
 	int ycount = 1;
 	t_link *l;
 
+	#ifdef HAVE_FREETYPE
 	if(lu_use_autofocus)  lu_bbox_reset();
+	#endif
 
 	for( l = file->lines->first; l; l = l->next)
 	{
@@ -1269,12 +1271,14 @@ void lu_editor_draw_file( t_context *C, t_file *file)
 			y -= 20;
 		}
 
+		#ifdef HAVE_FREETYPE
 		if(lu_use_autofocus)
 		{
 			sy = lu_char_height * ycount * LU_SCALE;
 			sx = lu_char_width * xcount * LU_SCALE;
 			lu_bbox_do( sx, sy);
 		}
+		#endif
 
 		ly += 1;
 		lx = 0;
@@ -1283,11 +1287,13 @@ void lu_editor_draw_file( t_context *C, t_file *file)
 
 	}
  
+	#ifdef HAVE_FREETYPE
 	if(lu_use_autofocus)
 	{
 		lu_bbox_do( sx, sy);
 		lu_bbox_check();
 	}	
+	#endif
 
 	if( !lu_is_db) lu_editor_draw_console( C);
 
@@ -1368,6 +1374,7 @@ void lu_editor_screen( t_screen *screen)
 
 	glEnable(GL_POINT);
 
+	#ifdef HAVE_FREETYPE
 	if(!iinit)
 	{
 		iinit = 1;
@@ -1379,6 +1386,7 @@ void lu_editor_screen( t_screen *screen)
 		if(LU_EDITOR_DEBUG)
 			printf("set bbox %f %f\n",LU_BBOX_WIDTH, LU_BBOX_HEIGHT);
 	}
+	#endif
 
 	/*
 	glEnable(GL_BLEND);
